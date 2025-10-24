@@ -70,9 +70,6 @@ public class MonotonicDeleting extends FamiliesToPersonsTestCase {
 				srcEdit(helperFamily::deleteFatherHomer), //
 				trgEdit(helperPerson::deleteMaggie));
 		// ------------
-		
-//		if (tool instanceof BXToolForEMF)
-//			((BXToolForEMF)tool).saveModels("NonMatchingDeletion");
 
 		util.assertPostcondition("FamiliesAfterConcSyncNonMatchingDeletion", "PersonsAfterConcSyncNonMatchingDeletion");
 	}

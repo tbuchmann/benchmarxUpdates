@@ -26,15 +26,15 @@ import bitrafo.eval.familyperson.rules.Family2PersonTransformation;
 import bitrafo.eval.familyperson.rules.decisions.ConfigurableTargetToSourceDecision;
 
 public class UbtXtendFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonRegister, Decisions> {
-	private ResourceSet set = new ResourceSetImpl();
-	private Resource source;
-	private Resource target;
-	private Resource corr;
-	private Family2PersonTransformation f2pt;
-	private Configurator<Decisions> conf;
-	private Configurator<Decisions> defaultConf;
+	protected ResourceSet set = new ResourceSetImpl();
+	protected Resource source;
+	protected Resource target;
+	protected Resource corr;
+	protected Family2PersonTransformation f2pt;
+	protected Configurator<Decisions> conf;
+	protected Configurator<Decisions> defaultConf;
 
-	private static final String RESULTPATH = "results/BXtend";
+	protected static final String RESULTPATH = "results/BXtend";
 
 	public UbtXtendFamiliesToPersons() {
 		super(new FamiliesComparator(), new PersonsComparator());
