@@ -32,11 +32,12 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	@Test
 	public void testDatabaseNameChangeOfEmpty()
 	{
-		tool.performAndPropagateSourceEdit(util.execute(helperPerson1::setDatabaseName));
+		// This test is not a batch test!!
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::setDatabaseName));
 
 		util.assertPrecondition("EmptyBundeskanzlerPdb1", "EmptyBundeskanzlerPdb2");
 		//------------
-		tool.performAndPropagateSourceEdit(util.execute(helperPerson1::renameKanzlerDatabaseToPräsidenten));
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::renameKanzlerDatabaseToPräsidenten));
 		//------------
 		util.assertPostcondition("EmptyBundespräsidentenPdb1", "EmptyBundespräsidentenPdb2");
 	}
@@ -53,7 +54,7 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	{
 		// No precondition!
 		//------------
-		tool.performAndPropagateSourceEdit(helperPerson1::createKonradAdenauer);
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::createKonradAdenauer));
 		//------------
 		util.assertPostcondition("AdenauerPdb1", "AdenauerPdb2");
 	}
@@ -65,14 +66,15 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	 */
 	@Test 
 	public void testCreateMultiplePersons(){
-		tool.performAndPropagateSourceEdit(util.execute(helperPerson1::setDatabaseName));
+		// RENAMING THE DATABASE IS NOT A BATCH TEST, but we need it to establish the precondition for the batch test!
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::setDatabaseName));
 
 		util.assertPrecondition("EmptyBundeskanzlerPdb1", "EmptyBundeskanzlerPdb2");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::createKonradAdenauer)
-				.andThen(helperPerson1::createLudwigErhard)
-				.andThen(helperPerson1::createKurtKiesinger));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::createKonradAdenauer,
+				helperPerson1::createLudwigErhard,
+				helperPerson1::createKurtKiesinger));
 		//------------
 		util.assertPostcondition("PDB1FirstThreeChancellors", "Pre_IncrBwdPDB2FirstThreeChancellors");
 	}

@@ -28,5 +28,7 @@
 	<classpathentry kind="lib" path="lib/eneo/ortools-darwin-x86-64-9.12.4544.jar"/>
 	<classpathentry kind="lib" path="lib/eneo/ortools-java-9.12.4544.jar"/>
 	<classpathentry kind="lib" path="lib/eneo/protobuf-java-2.5.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Families2PersonsJava"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.f2p"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

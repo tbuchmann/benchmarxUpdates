@@ -7,7 +7,8 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: pdb2,
+Export-Package: org.benchmarx.pdb2.core,
+ pdb2,
  pdb2.impl,
  pdb2.util
 Require-Bundle: org.eclipse.core.runtime,

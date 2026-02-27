@@ -32,11 +32,12 @@ public class BatchBackwardFixed extends Pdb12Pdb2TestCase {
 	@Test
 	public void testDatabaseNameChangeOfEmpty()
 	{
-		tool.performAndPropagateTargetEdit(util.execute(helperPerson2::setDatabaseName));
+		// Not a batch test!!
+		tool.performAndPropagateTargetEdit(trgEdit(helperPerson2::setDatabaseName));
 
 		util.assertPrecondition("EmptyBundeskanzlerPdb1", "EmptyBundeskanzlerPdb2");
 		//------------
-		tool.performAndPropagateTargetEdit(util.execute(helperPerson2::renameKanzlerDatabaseToPräsidenten));
+		tool.performAndPropagateTargetEdit(trgEdit(helperPerson2::renameKanzlerDatabaseToPräsidenten));
 		//------------
 		util.assertPostcondition("EmptyBundespräsidentenPdb1", "EmptyBundespräsidentenPdb2");
 	}

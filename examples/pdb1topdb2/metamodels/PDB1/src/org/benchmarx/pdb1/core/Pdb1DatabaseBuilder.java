@@ -1,18 +1,35 @@
 package org.benchmarx.pdb1.core;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+
 public class Pdb1DatabaseBuilder {
-	Pdb1DatabaseBuilder(pdb1.Database database) {
+	private pdb1.Pdb1Factory f = pdb1.Pdb1Factory.eINSTANCE;
+	private Supplier<pdb1.Database> database;
+	private Consumer<EObject> createNode;
+	private BiConsumer<EReference, List<EObject>> createEdge;
+	private pdb1.Person lastAdded;
+	
+	Pdb1DatabaseBuilder(Supplier<pdb1.Database> database, Consumer<EObject> cn, 
+			BiConsumer<EReference, List<EObject>> ce) {
 		this.database = database;
+		this.createNode = cn;
+		this.createEdge = ce;
 	}
 	
 	Pdb1DatabaseBuilder databaseName(String name) {
-		database.setName(name);
+		database.get().setName(name);
 		return this;
 	}
 	
 	Pdb1DatabaseBuilder addPerson(String id) {
 		lastAdded = f.createPerson();
-		lastAdded.setDatabase(database);
+		lastAdded.setDatabase(database.get());
 		lastAdded.setId(id);
 		return this;
 	}
@@ -37,7 +54,4 @@ public class Pdb1DatabaseBuilder {
 		return this;
 	}
 	
-	private pdb1.Pdb1Factory f = pdb1.Pdb1Factory.eINSTANCE;
-	private pdb1.Database database;
-	private pdb1.Person lastAdded;
 }

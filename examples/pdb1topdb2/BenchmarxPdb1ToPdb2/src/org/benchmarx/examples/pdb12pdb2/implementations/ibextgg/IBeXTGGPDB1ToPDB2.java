@@ -1,12 +1,13 @@
 package org.benchmarx.examples.pdb12pdb2.implementations.ibextgg;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.benchmarx.pdb1.core.Pdb1Comparator;
@@ -52,10 +53,10 @@ public class IBeXTGGPDB1ToPDB2
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<Database> edit) {
+	public void performAndPropagateSourceEdit(Supplier<IEdit<pdb1.Database>> edit) {
 		// Adapt source model
 		Database db1 = (Database) sync.getSourceResource().getContents().get(0);
-		edit.accept(db1);
+		edit.get();
 
 		// Invoke sync
 		try {
@@ -66,10 +67,10 @@ public class IBeXTGGPDB1ToPDB2
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<pdb2.Database> edit) {
+	public void performAndPropagateTargetEdit(Supplier<IEdit<pdb2.Database>> edit) {
 		// Adapt target model
 		pdb2.Database cn = (pdb2.Database) sync.getTargetResource().getContents().get(0);
-		edit.accept(cn);
+		edit.get();
 
 		// Invoke sync
 		try {
@@ -80,12 +81,12 @@ public class IBeXTGGPDB1ToPDB2
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<Database> edit) {
+	public void performIdleSourceEdit(Supplier<IEdit<pdb1.Database>> edit) {
 		performAndPropagateSourceEdit(edit);
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<pdb2.Database> edit) {
+	public void performIdleTargetEdit(Supplier<IEdit<pdb2.Database>> edit) {
 		performAndPropagateTargetEdit(edit);
 	}
 
@@ -111,6 +112,13 @@ public class IBeXTGGPDB1ToPDB2
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<Database>> sourceEdit,
+			Supplier<IEdit<pdb2.Database>> targetEdit) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

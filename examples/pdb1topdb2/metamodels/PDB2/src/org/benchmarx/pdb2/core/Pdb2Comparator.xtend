@@ -1,14 +1,14 @@
 package org.benchmarx.pdb2.core
 
-import org.benchmarx.emf.Comparator
+import java.util.ArrayList
+import java.util.List
+import java.util.function.BiConsumer
 import pdb2.Database
 import pdb2.Person
-import java.util.List
-import java.util.ArrayList
 
 import static org.junit.Assert.*
 
-class Pdb2Comparator implements Comparator<pdb2.Database> {
+class Pdb2Comparator implements BiConsumer<Database, Database> {
 	
 	Pdb2Normaliser comparator
 	
@@ -16,10 +16,10 @@ class Pdb2Comparator implements Comparator<pdb2.Database> {
 		comparator = new Pdb2Normaliser();
 	}
 	
-	override assertEquals(Database expected, Database actual) {
-		assertTrue(personsToString(expected).startsWith("Pdb2Database"))
-		assertEquals(personsToString(expected), personsToString(actual))
-	}
+//	override assertEquals(Database expected, Database actual) {
+//		assertTrue(personsToString(expected).startsWith("Pdb2Database"))
+//		assertEquals(personsToString(expected), personsToString(actual))
+//	}
 	
 	def personsToString(Database persons) {
 		return '''
@@ -38,6 +38,11 @@ class Pdb2Comparator implements Comparator<pdb2.Database> {
 			]
 		}
 		'''
-	}	
+	}
+	
+	override accept(Database expected, Database actual) {
+		assertTrue(personsToString(expected).startsWith("Pdb2Database"))
+		assertEquals(personsToString(expected), personsToString(actual))
+	}
 	
 }

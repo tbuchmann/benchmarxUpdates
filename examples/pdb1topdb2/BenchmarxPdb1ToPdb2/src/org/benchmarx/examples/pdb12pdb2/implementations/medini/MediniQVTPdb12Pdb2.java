@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -27,6 +29,8 @@ import de.ikv.emf.qvt.EMFQvtProcessorImpl;
 import de.ikv.medini.qvt.QVTProcessorConsts;
 import org.benchmarx.pdb1.core.Pdb1Comparator;
 import org.benchmarx.pdb2.core.Pdb2Comparator;
+
+import pdb1.Database;
 import pdb1.Pdb1Factory;
 import uk.ac.kent.cs.kmf.util.ILog;
 import uk.ac.kent.cs.kmf.util.OutputStreamLog;
@@ -140,8 +144,9 @@ public class MediniQVTPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Databas
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<pdb2.Database> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<pdb2.Database>> edit) {
+		//edit.accept(getTargetModel());
+		edit.get();
 		launchBWD();
 	}
 
@@ -151,8 +156,9 @@ public class MediniQVTPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Databas
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<pdb1.Database> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<pdb1.Database>> edit) {
+		//edit.accept(getSourceModel());
+		edit.get();
 		launchFWD();
 	}
 
@@ -285,8 +291,9 @@ public class MediniQVTPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Databas
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<pdb2.Database> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<pdb2.Database>> edit) {
+		//edit.accept(getTargetModel());
+		edit.get();
 	}
 
 	/**
@@ -295,7 +302,15 @@ public class MediniQVTPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Databas
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<pdb1.Database> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<pdb1.Database>> edit) {
+		//edit.accept(getSourceModel());
+		edit.get();
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<Database>> sourceEdit,
+			Supplier<IEdit<pdb2.Database>> targetEdit) {
+		// TODO Auto-generated method stub
+		
 	}
 }

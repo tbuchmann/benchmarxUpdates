@@ -18,22 +18,33 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 */
 	@Test
 	public void testIncrementalInserts() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::setDatabaseName)
-				.andThen(helperPerson1::createKonradAdenauer)
-				.andThen(helperPerson1::createLudwigErhard)
-				.andThen(helperPerson1::createKurtKiesinger)
-				.andThen(helperPerson1::createWillyBrandt)
-				.andThen(helperPerson1::createHelmutSchmidt)
-				.andThen(helperPerson1::createHelmutKohl));
-		tool.performIdleTargetEdit(helperPerson2::changeIncrementalIDs);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::setDatabaseName,
+				helperPerson1::createKonradAdenauer,
+				helperPerson1::createLudwigErhard,
+				helperPerson1::createKurtKiesinger,
+				helperPerson1::createWillyBrandt,
+				helperPerson1::createHelmutSchmidt,
+				helperPerson1::createHelmutKohl));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::setDatabaseName)
+//				.andThen(helperPerson1::createKonradAdenauer)
+//				.andThen(helperPerson1::createLudwigErhard)
+//				.andThen(helperPerson1::createKurtKiesinger)
+//				.andThen(helperPerson1::createWillyBrandt)
+//				.andThen(helperPerson1::createHelmutSchmidt)
+//				.andThen(helperPerson1::createHelmutKohl));
+		tool.performIdleTargetEdit(trgEdit(helperPerson2::changeIncrementalIDs));
 		
 		util.assertPrecondition("Pre_IncrFwdPDB1FirstSixChancellors", "Pre_IncrFwdPDB2FirstSixChancellors");
 
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::createGerhardSchroeder)
-				.andThen(helperPerson1::createAngelaMerkel));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::createGerhardSchroeder,
+				helperPerson1::createAngelaMerkel));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::createGerhardSchroeder)
+//				.andThen(helperPerson1::createAngelaMerkel));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellors");
 	}
@@ -46,20 +57,29 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 */
 	@Test
 	public void testIncrementalDeletions() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::setDatabaseName)
-				.andThen(helperPerson1::createKonradAdenauer)
-				.andThen(helperPerson1::createLudwigErhard)
-				.andThen(helperPerson1::createKurtKiesinger)
-				.andThen(helperPerson1::createWillyBrandt)
-				.andThen(helperPerson1::createHelmutSchmidt)
-				.andThen(helperPerson1::createHelmutKohl));
-		tool.performIdleTargetEdit(helperPerson2::changeIncrementalIDs);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::setDatabaseName,
+				helperPerson1::createKonradAdenauer,
+				helperPerson1::createLudwigErhard,
+				helperPerson1::createKurtKiesinger,
+				helperPerson1::createWillyBrandt,
+				helperPerson1::createHelmutSchmidt,
+				helperPerson1::createHelmutKohl));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::setDatabaseName)
+//				.andThen(helperPerson1::createKonradAdenauer)
+//				.andThen(helperPerson1::createLudwigErhard)
+//				.andThen(helperPerson1::createKurtKiesinger)
+//				.andThen(helperPerson1::createWillyBrandt)
+//				.andThen(helperPerson1::createHelmutSchmidt)
+//				.andThen(helperPerson1::createHelmutKohl));
+		tool.performIdleTargetEdit(trgEdit(helperPerson2::changeIncrementalIDs));
 		
 		util.assertPrecondition("Pre_IncrFwdPDB1FirstSixChancellors", "Pre_IncrFwdPDB2FirstSixChancellors");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::deleteKurtKiesinger));
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::deleteKurtKiesinger));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::deleteKurtKiesinger));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1FirstSixChancellorsWithoutKiesinger", "IncrFwdPDB2FirstSixChancellorsWithoutKiesinger");
 	}
@@ -72,25 +92,40 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 */
 	@Test
 	public void testIncrementalValueChange() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::setDatabaseName)
-				.andThen(helperPerson1::createKonradAdenauer)
-				.andThen(helperPerson1::createLudwigErhard)
-				.andThen(helperPerson1::createKurtKiesinger)
-				.andThen(helperPerson1::createWillyBrandt)
-				.andThen(helperPerson1::createHelmutSchmidt)
-				.andThen(helperPerson1::createHelmutKohl));
-		tool.performIdleTargetEdit(helperPerson2::changeIncrementalIDs);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::setDatabaseName,
+				helperPerson1::createKonradAdenauer,
+				helperPerson1::createLudwigErhard,
+				helperPerson1::createKurtKiesinger,
+				helperPerson1::createWillyBrandt,
+				helperPerson1::createHelmutSchmidt,
+				helperPerson1::createHelmutKohl));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::setDatabaseName)
+//				.andThen(helperPerson1::createKonradAdenauer)
+//				.andThen(helperPerson1::createLudwigErhard)
+//				.andThen(helperPerson1::createKurtKiesinger)
+//				.andThen(helperPerson1::createWillyBrandt)
+//				.andThen(helperPerson1::createHelmutSchmidt)
+//				.andThen(helperPerson1::createHelmutKohl));
+		tool.performIdleTargetEdit(trgEdit(helperPerson2::changeIncrementalIDs));
 		
 		util.assertPrecondition("Pre_IncrFwdPDB1FirstSixChancellors", "Pre_IncrFwdPDB2FirstSixChancellors");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::changeAllOfHelmutKohl)
-				.andThen(helperPerson1::changeBirthdayOfKurtKiesinger)
-				.andThen(helperPerson1::changeFirstNameOfKonradAdenauer)
-				.andThen(helperPerson1::changeIDOfHelmutSchmidt)
-				.andThen(helperPerson1::changeLastNameOfLudwigErhard)
-				.andThen(helperPerson1::changePlaceOfBirthOfWillyBrandt));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::changeAllOfHelmutKohl,
+				helperPerson1::changeBirthdayOfKurtKiesinger,
+				helperPerson1::changeFirstNameOfKonradAdenauer,
+				helperPerson1::changeIDOfHelmutSchmidt,
+				helperPerson1::changeLastNameOfLudwigErhard,
+				helperPerson1::changePlaceOfBirthOfWillyBrandt));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::changeAllOfHelmutKohl)
+//				.andThen(helperPerson1::changeBirthdayOfKurtKiesinger)
+//				.andThen(helperPerson1::changeFirstNameOfKonradAdenauer)
+//				.andThen(helperPerson1::changeIDOfHelmutSchmidt)
+//				.andThen(helperPerson1::changeLastNameOfLudwigErhard)
+//				.andThen(helperPerson1::changePlaceOfBirthOfWillyBrandt));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1FirstSixChancellorsAfterValueChange", "IncrFwdPDB2FirstSixChancellorsAfterValueChange");
 	}
@@ -101,22 +136,32 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 * <b>Features:</b>: fwd, fixed
 	 */
 	@Test
-	public void testStability() {		
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::setDatabaseName)
-				.andThen(helperPerson1::createKonradAdenauer)
-				.andThen(helperPerson1::createLudwigErhard)
-				.andThen(helperPerson1::createKurtKiesinger)
-				.andThen(helperPerson1::createWillyBrandt)
-				.andThen(helperPerson1::createHelmutSchmidt)
-				.andThen(helperPerson1::createHelmutKohl)
-				.andThen(helperPerson1::createGerhardSchroeder)
-				.andThen(helperPerson1::createAngelaMerkel));
-		tool.performIdleTargetEdit(helperPerson2::changeIncrementalIDs);
+	public void testStability() {
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::setDatabaseName,
+				helperPerson1::createKonradAdenauer,
+				helperPerson1::createLudwigErhard,
+				helperPerson1::createKurtKiesinger,
+				helperPerson1::createWillyBrandt,
+				helperPerson1::createHelmutSchmidt,
+				helperPerson1::createHelmutKohl,
+				helperPerson1::createGerhardSchroeder,
+				helperPerson1::createAngelaMerkel));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::setDatabaseName)
+//				.andThen(helperPerson1::createKonradAdenauer)
+//				.andThen(helperPerson1::createLudwigErhard)
+//				.andThen(helperPerson1::createKurtKiesinger)
+//				.andThen(helperPerson1::createWillyBrandt)
+//				.andThen(helperPerson1::createHelmutSchmidt)
+//				.andThen(helperPerson1::createHelmutKohl)
+//				.andThen(helperPerson1::createGerhardSchroeder)
+//				.andThen(helperPerson1::createAngelaMerkel));
+		tool.performIdleTargetEdit(trgEdit(helperPerson2::changeIncrementalIDs));
 
 		util.assertPrecondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellorsIDs");
 		//------------
-		tool.performAndPropagateSourceEdit(helperPerson1::idleDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::idleDelta));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellorsIDs");
 	}
@@ -128,21 +173,31 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 */
 	@Test
 	public void testHippocraticness() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperPerson1::setDatabaseName)
-				.andThen(helperPerson1::createWrongKonradAdenauer)
-				.andThen(helperPerson1::createLudwigErhard)
-				.andThen(helperPerson1::createKurtKiesinger)
-				.andThen(helperPerson1::createWillyBrandt)
-				.andThen(helperPerson1::createHelmutSchmidt)
-				.andThen(helperPerson1::createHelmutKohl)
-				.andThen(helperPerson1::createGerhardSchroeder)
-				.andThen(helperPerson1::createAngelaMerkel));
-		tool.performIdleTargetEdit(helperPerson2::changeIncrementalIDs);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperPerson1::setDatabaseName,
+				helperPerson1::createWrongKonradAdenauer,
+				helperPerson1::createLudwigErhard,
+				helperPerson1::createKurtKiesinger,
+				helperPerson1::createWillyBrandt,
+				helperPerson1::createHelmutSchmidt,
+				helperPerson1::createHelmutKohl,
+				helperPerson1::createGerhardSchroeder,
+				helperPerson1::createAngelaMerkel));
+//		tool.performAndPropagateSourceEdit(util
+//				.execute(helperPerson1::setDatabaseName)
+//				.andThen(helperPerson1::createWrongKonradAdenauer)
+//				.andThen(helperPerson1::createLudwigErhard)
+//				.andThen(helperPerson1::createKurtKiesinger)
+//				.andThen(helperPerson1::createWillyBrandt)
+//				.andThen(helperPerson1::createHelmutSchmidt)
+//				.andThen(helperPerson1::createHelmutKohl)
+//				.andThen(helperPerson1::createGerhardSchroeder)
+//				.andThen(helperPerson1::createAngelaMerkel));
+		tool.performIdleTargetEdit(trgEdit(helperPerson2::changeIncrementalIDs));
 
 		util.assertPrecondition("IncrFwdPDB1AllChancellorsWrongAdenauer", "IncrFwdPDB2AllChancellorsIDs");
 		//------------
-		tool.performAndPropagateSourceEdit(helperPerson1::hippocraticDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::hippocraticDelta));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellorsIDs");
 	}

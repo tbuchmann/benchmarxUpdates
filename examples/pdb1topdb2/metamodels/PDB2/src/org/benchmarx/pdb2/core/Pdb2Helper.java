@@ -2,8 +2,15 @@ package org.benchmarx.pdb2.core;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import pdb2.Database;
@@ -12,102 +19,121 @@ import pdb2.Person;
 public class Pdb2Helper {
 	
 	private Pdb2DatabaseBuilder builder = null;
+	private Supplier<Database> db;
+	private BiConsumer<EAttribute /* attribute type */, List<?> /* [owning node, old value, new value] */> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EObject, List<EObject>> moveNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
+	private BiConsumer<EReference, List<EObject>> createEdge;
 	
-	public void setDatabaseName(Database database) {
-		database.setName("Bundeskanzler");
+	public Pdb2Helper(Supplier<Database> db, Consumer<EObject> createNode,
+			BiConsumer<EReference, List<EObject>> createEdge, BiConsumer<EAttribute, List<?>> changeAttribute,
+			Consumer<EObject> deleteNode, BiConsumer<EObject, List<EObject>> moveNode,
+			BiConsumer<EReference, List<EObject>> deleteEdge) {
+		builder = new Pdb2DatabaseBuilder(db, createNode, createEdge);
+		this.db = db;
+		this.changeAttribute = changeAttribute;
+		this.deleteEdge = deleteEdge;
+		this.deleteNode = deleteNode;
+		this.moveNode = moveNode;
+		this.createEdge = createEdge;
 	}
 	
-	public void renameKanzlerDatabaseToPräsidenten(Database database) {
-		assertTrue(database.getName().equals("Bundeskanzler"));
-		database.setName("Bundespräsidenten");
+	public void setDatabaseName() {
+		db.get().setName("Bundeskanzler");
 	}
 	
-	public void createKonradAdenauer(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void renameKanzlerDatabaseToPräsidenten() {
+		assertTrue(db.get().getName().equals("Bundeskanzler"));
+		db.get().setName("Bundespräsidenten");
+	}
+	
+	public void createKonradAdenauer() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("KA").name("Konrad Hermann Joseph Adenauer").birthday("05.01.1876").placeOfBirth("Koeln");
 	}
 	
-	public void createLudwigErhard(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createLudwigErhard() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("LE").name("Ludwig Wilhelm Erhard").birthday("04.02.1897").placeOfBirth("Fuerth");
 	}
 	
-	public void createKurtKiesinger(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createKurtKiesinger() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("KK").name("Kurt Georg Kiesinger").birthday("06.04.1904").placeOfBirth("Ebingen");
 	}
 	
-	public void createWillyBrandt(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createWillyBrandt() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("WB").name("Willy Brandt").birthday("18.12.1913").placeOfBirth("Luebeck");
 	}
 	
-	public void createHelmutSchmidt(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createHelmutSchmidt() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("HS").name("Helmut Heinrich Waldemar Schmidt").birthday("23.12.1918").placeOfBirth("Hamburg");
 	}
 	
-	public void createHelmutKohl(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createHelmutKohl() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("HK").name("Helmut Josef Michael Kohl").birthday("03.04.1930").placeOfBirth("Ludwigshafen am Rhein");
 	}
 	
-	public void createGerhardSchroeder(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createGerhardSchroeder() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("GS").name("Gerhard Fritz Kurt Schroeder").birthday("07.04.1944").placeOfBirth("Mossenberg-Woehren");
 	}
 	
-	public void createAngelaMerkel(Database database) {
-		builder = new Pdb2DatabaseBuilder(database);
+	public void createAngelaMerkel() {
+		//builder = new Pdb2DatabaseBuilder(database);
 		builder.addPerson("AM").name("Angela Dorothea Merkel").birthday("17.07.1954").placeOfBirth("Hamburg");
 	}
 	
-	public void deleteKurtKiesinger(Database database) {
-		EcoreUtil.delete(getKurtKiesinger(database));
+	public void deleteKurtKiesinger() {
+		EcoreUtil.delete(getKurtKiesinger());
 	}
 	
-	public void changeFirstNameOfKonradAdenauer(Database database) {
-		getKonradAdenauer(database).setName("Heinz Jochen Adenauer");
+	public void changeFirstNameOfKonradAdenauer() {
+		getKonradAdenauer().setName("Heinz Jochen Adenauer");
 	}
 	
-	public void changeLastNameOfLudwigErhard(Database database) {
-		getLudwigErhard(database).setName("Ludwig Wilhelm Meyer");
+	public void changeLastNameOfLudwigErhard() {
+		getLudwigErhard().setName("Ludwig Wilhelm Meyer");
 	}
 	
-	public void changeBirthdayOfKurtKiesinger(Database database) {
-		getKurtKiesinger(database).setBirthday("01.01.1990");
+	public void changeBirthdayOfKurtKiesinger() {
+		getKurtKiesinger().setBirthday("01.01.1990");
 	}
 	
-	public void changePlaceOfBirthOfWillyBrandt(Database database) {
-		getWillyBrandt(database).setPlaceOfBirth("Germany");
+	public void changePlaceOfBirthOfWillyBrandt() {
+		getWillyBrandt().setPlaceOfBirth("Germany");
 	}
 	
-	public void changeIDOfHelmutSchmidt(Database database) {
-		getHelmutSchmidt(database).setId("Helmut");
+	public void changeIDOfHelmutSchmidt() {
+		getHelmutSchmidt().setId("Helmut");
 	}
 	
-	public void changeAllOfHelmutKohl(Database database) {
-		Person helmut = getHelmutKohl(database);
+	public void changeAllOfHelmutKohl() {
+		Person helmut = getHelmutKohl();
 		helmut.setBirthday("01.01.1990");
 		helmut.setId("Helmut2");
 		helmut.setName("Heinz Meyer");
 		helmut.setPlaceOfBirth("Germany");
 	}
 	
-	public void changeIncrementalIDs(Database database) {
-		database.getPersons().stream().forEach(p -> p.setIncrementalID("incrTestValue"));
+	public void changeIncrementalIDs() {
+		db.get().getPersons().stream().forEach(p -> p.setIncrementalID("incrTestValue"));
 	}
 	
-	public void idleDelta(Database database) {
+	public void idleDelta() {
 		
 	}
 	
-	public void hippocraticDelta(Database database) {
+	public void hippocraticDelta() {
 		
 	}
 	
-	private Person getKonradAdenauer(Database database) {
-		Optional<Person> ka = database.getPersons().stream().filter(p -> p.getId().equals("KA")).findAny();
+	private Person getKonradAdenauer() {
+		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("KA")).findAny();
 		
 		assertTrue(ka.isPresent());
 		Person konrad = ka.get();
@@ -115,8 +141,8 @@ public class Pdb2Helper {
 		return konrad;		
 	}
 	
-	private Person getKurtKiesinger(Database database) {
-		Optional<Person> ka = database.getPersons().stream().filter(p -> p.getId().equals("KK")).findAny();
+	private Person getKurtKiesinger() {
+		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("KK")).findAny();
 		
 		assertTrue(ka.isPresent());
 		Person konrad = ka.get();
@@ -124,8 +150,8 @@ public class Pdb2Helper {
 		return konrad;		
 	}
 	
-	private Person getLudwigErhard(Database database) {
-		Optional<Person> ka = database.getPersons().stream().filter(p -> p.getId().equals("LE")).findAny();
+	private Person getLudwigErhard() {
+		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("LE")).findAny();
 		
 		assertTrue(ka.isPresent());
 		Person konrad = ka.get();
@@ -133,8 +159,8 @@ public class Pdb2Helper {
 		return konrad;		
 	}
 	
-	private Person getWillyBrandt(Database database) {
-		Optional<Person> ka = database.getPersons().stream().filter(p -> p.getId().equals("WB")).findAny();
+	private Person getWillyBrandt() {
+		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("WB")).findAny();
 		
 		assertTrue(ka.isPresent());
 		Person konrad = ka.get();
@@ -142,8 +168,8 @@ public class Pdb2Helper {
 		return konrad;		
 	}
 	
-	private Person getHelmutSchmidt(Database database) {
-		Optional<Person> ka = database.getPersons().stream().filter(p -> p.getId().equals("HS")).findAny();
+	private Person getHelmutSchmidt() {
+		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("HS")).findAny();
 		
 		assertTrue(ka.isPresent());
 		Person konrad = ka.get();
@@ -151,8 +177,8 @@ public class Pdb2Helper {
 		return konrad;		
 	}
 	
-	private Person getHelmutKohl(Database database) {
-		Optional<Person> ka = database.getPersons().stream().filter(p -> p.getId().equals("HK")).findAny();
+	private Person getHelmutKohl() {
+		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("HK")).findAny();
 		
 		assertTrue(ka.isPresent());
 		Person konrad = ka.get();

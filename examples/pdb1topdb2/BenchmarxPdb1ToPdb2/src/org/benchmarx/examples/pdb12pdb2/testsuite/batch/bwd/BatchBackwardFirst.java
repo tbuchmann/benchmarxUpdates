@@ -24,7 +24,7 @@ public class BatchBackwardFirst extends Pdb12Pdb2TestCase {
 		// No precondition!
 		//------------
 		util.configure().makeDecision(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST, true);
-		tool.performAndPropagateTargetEdit(helperPerson2::createKonradAdenauer);
+		tool.performAndPropagateTargetEdit(trgEdit(helperPerson2::createKonradAdenauer));
 		//------------
 		util.assertPostcondition("AdenauerMultipleLastNamesPdb1", "AdenauerPdb2");
 	}
@@ -36,15 +36,15 @@ public class BatchBackwardFirst extends Pdb12Pdb2TestCase {
 	 */
 	@Test 
 	public void testCreateMultiplePersons(){
-		tool.performAndPropagateTargetEdit(util.execute(helperPerson2::setDatabaseName));
+		tool.performAndPropagateTargetEdit(trgEdit(helperPerson2::setDatabaseName));
 
 		util.assertPrecondition("EmptyBundeskanzlerPdb1", "EmptyBundeskanzlerPdb2");
 		//------------
 		util.configure().makeDecision(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST, true);
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperPerson2::createKonradAdenauer)
-				.andThen(helperPerson2::createLudwigErhard)
-				.andThen(helperPerson2::createKurtKiesinger));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperPerson2::createKonradAdenauer,
+				helperPerson2::createLudwigErhard,
+				helperPerson2::createKurtKiesinger));
 		//------------
 		util.assertPostcondition("Pre_IncrBwdPDB1FirstThreeChancellorsMultipleLastNames", "Pre_IncrBwdPDB2FirstThreeChancellors");
 	}
