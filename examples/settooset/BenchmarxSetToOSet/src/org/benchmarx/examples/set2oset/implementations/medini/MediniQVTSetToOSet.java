@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -140,8 +142,9 @@ public class MediniQVTSetToOSet extends BXToolForEMF<sets.MySet, osets.MyOrdered
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<osets.MyOrderedSet> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<osets.MyOrderedSet>> edit) {
+		//edit.accept(getTargetModel());
+		edit.get();
 		launchBWD();
 	}
 
@@ -151,9 +154,16 @@ public class MediniQVTSetToOSet extends BXToolForEMF<sets.MySet, osets.MyOrdered
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<sets.MySet> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<sets.MySet>> edit) {
+		//edit.accept(getSourceModel());
+		edit.get();
 		launchFWD();
+	}
+	
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<sets.MySet>> sourceEdit, Supplier<IEdit<osets.MyOrderedSet>> targetEdit) {
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 	@Override
@@ -285,8 +295,9 @@ public class MediniQVTSetToOSet extends BXToolForEMF<sets.MySet, osets.MyOrdered
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<osets.MyOrderedSet> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<osets.MyOrderedSet>> edit) {
+		//edit.accept(getTargetModel());
+		edit.get();
 	}
 
 	/**
@@ -295,7 +306,8 @@ public class MediniQVTSetToOSet extends BXToolForEMF<sets.MySet, osets.MyOrdered
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<sets.MySet> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<sets.MySet>> edit) {
+		//edit.accept(getSourceModel());
+		edit.get();
 	}
 }

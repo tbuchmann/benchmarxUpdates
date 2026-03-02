@@ -1,80 +1,83 @@
 package org.benchmarx.examples.set2oset.testsuite.batch.bwd;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.benchmarx.examples.set2oset.testsuite.Set2OsetTestCase;
-import org.junit.Test;
+import org.benchmarx.examples.set2oset.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackward extends Set2OsetTestCase {
+	
 	public BatchBackward(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		super(tool);
 	}
 	
-	/**
-	 * <b>Test</b> for agreed upon starting state.<br/>
-	 * <b>Expect</b> root elements of both source and target models.<br/>
-	 * <b>Features</b>: bwd, fixed
-	 */
-	@Test
-	public void testInitialiseSynchronisation()
-	{
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+		return Set2OsetTestCase.tools();
+	}
+	
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testInitialiseSynchronisation(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
 		// No precondition!
 		//------------
 		util.assertPostcondition("RootElementSet", "RootElementOset");
+		terminate();
 	}
 	
-	/**
-	 * <b>Test</b> for name change of an empty OrderedSet.<br/>
-	 * <b>Expect</b> the name in the target Set is also changed.<br/>
-	 * <b>Features</b>: fwd, fixed
-	 */
-	@Test
-	public void testDatabaseNameChangeOfEmpty()
-	{
-		tool.performAndPropagateTargetEdit(util.execute(helperOset::setSetName));
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testDatabaseNameChangeOfEmpty(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::setSetName));
 
 		util.assertPrecondition("EmptyAlphabetSet", "EmptyAlphabetOset");
 		//------------
-		tool.performAndPropagateTargetEdit(util.execute(helperOset::renameAlphabetSetToABC));
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::renameAlphabetSetToABC));
 		//------------
 		util.assertPostcondition("EmptyABCSet", "EmptyABCOset");
+		terminate();
 	}
 	
-	/**
-	 * <b>Test</b> for creation of a single Element (A) in an empty OrderedSet.
-	 * <br/>
-	 * <b>Expect</b> A to be created in the target model.
-	 * <br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test
-	public void testCreateElement()
-	{
-		tool.performAndPropagateTargetEdit(util.execute(helperOset::setSetName));
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testCreateElement(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::setSetName));
 
 		util.assertPrecondition("EmptyAlphabetSet", "EmptyAlphabetOset");
 		//------------
-		tool.performAndPropagateTargetEdit(helperOset::createA);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::createA));
 		//------------
 		util.assertPostcondition("OnlyASet", "OnlyAOset");
+		terminate();
 	}
 
-	/**
-	 * Analogous to @link {@link #testCreateElement()}, but now for
-	 * multiple Elements (first three letters).<br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test 
-	public void testCreateMultipleElements(){
-		tool.performAndPropagateTargetEdit(util.execute(helperOset::setSetName));
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testCreateMultipleElements(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::setSetName));
 
 		util.assertPrecondition("EmptyAlphabetSet", "EmptyAlphabetOset");
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperOset::createA)
-				.andThen(helperOset::createB)
-				.andThen(helperOset::createC));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperOset::createA,
+				helperOset::createB,
+				helperOset::createC));
 		//------------
 		util.assertPostcondition("FirstThreeLettersSet", "FirstThreeLettersOset");
+		terminate();
 	}
 }

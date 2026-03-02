@@ -1,21 +1,23 @@
 package org.benchmarx.examples.set2oset.implementations.ibextgg;
 
 import java.io.IOException;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
-import org.benchmarx.emf.Comparator;
 import org.eclipse.emf.ecore.EObject;
 import org.emoflon.ibex.tgg.operational.strategies.sync.SYNC;
 
 public abstract class IBeXTGGAdapter<S extends EObject, T extends EObject, D, X extends SYNC>
 		extends BXToolForEMF<S, T, D> {
 
-	public IBeXTGGAdapter(Comparator<S> src, Comparator<T> trg) {
+	public IBeXTGGAdapter(BiConsumer<S, S> src, BiConsumer<T, T> trg) {
 		super(src, trg);
 
 		BasicConfigurator.configure();
@@ -48,11 +50,12 @@ public abstract class IBeXTGGAdapter<S extends EObject, T extends EObject, D, X 
 	protected abstract S createInitialSrc();
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<S> edit) {
+	public void performAndPropagateSourceEdit(Supplier<IEdit<S>> edit) {
 		// Adapt source model
 		@SuppressWarnings("unchecked")
 		S o = (S) sync.getSourceResource().getContents().get(0);
-		edit.accept(o);
+		//edit.accept(o);
+		edit.get();
 
 		// Invoke sync
 		try {
@@ -63,11 +66,12 @@ public abstract class IBeXTGGAdapter<S extends EObject, T extends EObject, D, X 
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<T> edit) {
+	public void performAndPropagateTargetEdit(Supplier<IEdit<T>> edit) {
 		// Adapt target model
 		@SuppressWarnings("unchecked")
 		T o = (T) sync.getTargetResource().getContents().get(0);
-		edit.accept(o);
+		//edit.accept(o);
+		edit.get();
 
 		// Invoke sync
 		try {
@@ -78,12 +82,12 @@ public abstract class IBeXTGGAdapter<S extends EObject, T extends EObject, D, X 
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<S> edit) {
+	public void performIdleSourceEdit(Supplier<IEdit<S>> edit) {
 		performAndPropagateSourceEdit(edit);
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<T> edit) {
+	public void performIdleTargetEdit(Supplier<IEdit<T>> edit) {
 		performAndPropagateTargetEdit(edit);
 	}
 

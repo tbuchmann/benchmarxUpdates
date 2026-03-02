@@ -10,6 +10,7 @@ import java.util.Map;
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.benchmarx.examples.set2oset.testsuite.Set2OsetTestCase;
+import org.benchmarx.osets.core.OsetComparator;
 import org.benchmarx.osets.core.OsetHelper;
 import org.benchmarx.sets.core.SetHelper;
 import org.eclipse.emf.common.util.URI;
@@ -18,18 +19,26 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.benchmarx.examples.set2oset.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import org.benchmarx.osets.core.OsetComparator;
 import osets.MyOrderedSet;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalForward extends Set2OsetTestCase {
+	
 	public IncrementalForward(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		super(tool);
 	}
 	
-	@Before
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+		return Set2OsetTestCase.tools();
+	}
+
+	@BeforeEach
 	public void resetTargetHistory() {
 		clearDelta();
 		lastAssertedTarget = osets.OsetsFactory.eINSTANCE.createMyOrderedSet();
@@ -42,23 +51,26 @@ public class IncrementalForward extends Set2OsetTestCase {
 	 * remain unchanged and keep their order. <br/>
 	 * <b>Features</b>: fwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperSet::setSetName)
-				.andThen(helperSet::createA)
-				.andThen(helperSet::createC));
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalInserts(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperSet::setSetName,
+				helperSet::createA,
+				helperSet::createC));
 		appendSourceDelta();
 		assertPrecondition("acSet", generatePossibleTargets().values());
 		//------------
-		tool.performAndPropagateSourceEdit(helperSet::createB);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::createB));
 		appendSourceDelta();
 		//------------	
 		assertPostcondition("FirstThreeLettersSet", generatePossibleTargets().values());
 		
-		tool.performIdleTargetEdit(helperOset::invert);
+		tool.performIdleTargetEdit(trgEdit(helperOset::invert));
 		appendTargetDelta();
-		tool.performAndPropagateSourceEdit(helperSet::createD);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::createD));
 		appendSourceDelta();
 		assertPostcondition("abcdSet", generatePossibleTargets().values());
 	}
@@ -70,25 +82,28 @@ public class IncrementalForward extends Set2OsetTestCase {
 	 * remain unchanged and keep their order. <br/>
 	 * <b>Features</b>: fwd, del, corr-based, structural
 	 */
-	@Test
-	public void testIncrementalDeletions() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperSet::setSetName)
-				.andThen(helperSet::createA)
-				.andThen(helperSet::createB)
-				.andThen(helperSet::createC)
-				.andThen(helperSet::createD));
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperSet::setSetName,
+				helperSet::createA,
+				helperSet::createB,
+				helperSet::createC,
+				helperSet::createD));
 		appendSourceDelta();
 		assertPrecondition("abcdSet", generatePossibleTargets().values());
 		//------------
-		tool.performAndPropagateSourceEdit(helperSet::deleteD);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::deleteD));
 		appendSourceDelta();
 		//------------	
 		assertPostcondition("FirstThreeLettersSet", generatePossibleTargets().values());
 
-		tool.performIdleTargetEdit(helperOset::invert);
+		tool.performIdleTargetEdit(trgEdit(helperOset::invert));
 		appendTargetDelta();
-		tool.performAndPropagateSourceEdit(helperSet::deleteB);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::deleteB));
 		appendSourceDelta();
 		assertPostcondition("acSet", generatePossibleTargets().values());
 	}
@@ -99,24 +114,27 @@ public class IncrementalForward extends Set2OsetTestCase {
 	 * <b>Expect</b>: Change occurs also in the oset, while the elements keep their order.
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalValueChange() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperSet::setSetName)
-				.andThen(helperSet::createA)
-				.andThen(helperSet::createB)
-				.andThen(helperSet::createC));
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalValueChange(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperSet::setSetName,
+				helperSet::createA,
+				helperSet::createB,
+				helperSet::createC));
 		appendSourceDelta();
 		assertPrecondition("FirstThreeLettersSet", generatePossibleTargets().values());
 		//------------
-		tool.performAndPropagateSourceEdit(helperSet::changeABCtoZXY);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::changeABCtoZXY));
 		appendSourceDelta();
 		//------------	
 		assertPostcondition("ZxySet", generatePossibleTargets().values());
 
-		tool.performIdleTargetEdit(helperOset::invert);
+		tool.performIdleTargetEdit(trgEdit(helperOset::invert));
 		appendTargetDelta();
-		tool.performAndPropagateSourceEdit(helperSet::changeZXYtoABC);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::changeZXYtoABC));
 		appendSourceDelta();
 		assertPostcondition("FirstThreeLettersSet", generatePossibleTargets().values());
 	}
@@ -126,18 +144,21 @@ public class IncrementalForward extends Set2OsetTestCase {
 	 * <b>Expect</b> re-running the transformation after an idle source delta does not change the target model.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testStability() {		
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperSet::setSetName)
-				.andThen(helperSet::createA));
-		tool.performAndPropagateSourceEdit(helperSet::createB);
-		tool.performAndPropagateSourceEdit(helperSet::createC);
-		tool.performIdleTargetEdit(helperOset::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testStability(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperSet::setSetName,
+				helperSet::createA));
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::createB));
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::createC));
+		tool.performIdleTargetEdit(trgEdit(helperOset::changeIncrementalID));
 		
 		util.assertPrecondition("FirstThreeLettersSet", "FirstThreeLettersChangedOset");
 		//------------
-		tool.performAndPropagateSourceEdit(helperSet::idleDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::idleDelta));
 		//------------
 		util.assertPostcondition("FirstThreeLettersSet", "FirstThreeLettersChangedOset");
 	}
@@ -147,18 +168,21 @@ public class IncrementalForward extends Set2OsetTestCase {
 	 * <b>Expect</b> re-running the transformation after changing the incrementalID does not change the oset.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testHippocraticness() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperSet::setSetName)
-				.andThen(helperSet::createA));
-		tool.performAndPropagateSourceEdit(helperSet::createB);
-		tool.performAndPropagateSourceEdit(helperSet::createC);
-		tool.performIdleTargetEdit(helperOset::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testHippocraticness(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperSet::setSetName,
+				helperSet::createA));
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::createB));
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::createC));
+		tool.performIdleTargetEdit(trgEdit(helperOset::changeIncrementalID));
 		
 		util.assertPrecondition("FirstThreeLettersSet", "FirstThreeLettersChangedOset");
 		//------------
-		tool.performAndPropagateSourceEdit(helperSet::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::changeIncrementalID));
 		//------------
 		util.assertPostcondition("FirstThreeLettersChangedSet", "FirstThreeLettersChangedOset");
 	}
@@ -167,7 +191,7 @@ public class IncrementalForward extends Set2OsetTestCase {
 	 * The behavior of this function is undefined for invalid input parameters.
 	 */
 	static Map<String, osets.MyOrderedSet> generatePossibleTargets(
-			osets.MyOrderedSet targetBefore, List<Object> sourceDeltas) {
+			osets.MyOrderedSet targetBefore, List<Object> sourceDeltas, OsetHelper helperOset) {
 		LinkedHashMap<String, osets.MyOrderedSet> result = new LinkedHashMap<>();
 		result.put(OsetComparator.myOrderedSetToString(targetBefore), EcoreUtil.copy(targetBefore));
 		
@@ -255,7 +279,11 @@ public class IncrementalForward extends Set2OsetTestCase {
 				
 			} else if (delta instanceof OsetHelper.Delta.OsetElementsInversion) {
 				for (osets.MyOrderedSet target : result.values()) {
-					(new OsetHelper()).invert(target);
+					//(new OsetHelper()).invert(target);
+					//helperOset.invert(target);
+					// hier muss target invertiert werden
+					helperOset.invert();
+						
 					resultDelta.put(OsetComparator.myOrderedSetToString(target), target);
 				}
 				
@@ -290,7 +318,7 @@ public class IncrementalForward extends Set2OsetTestCase {
 	}
 	
 	private Map<String, osets.MyOrderedSet> generatePossibleTargets() {
-		return generatePossibleTargets(lastAssertedTarget, getDelta());
+		return generatePossibleTargets(lastAssertedTarget, getDelta(), helperOset);
 	}
 	
 	private void assertPrecondition(String srcPath, Collection<MyOrderedSet> possibleTargets) {

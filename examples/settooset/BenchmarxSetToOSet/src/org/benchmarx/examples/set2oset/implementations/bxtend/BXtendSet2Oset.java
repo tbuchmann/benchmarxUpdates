@@ -2,8 +2,10 @@ package org.benchmarx.examples.set2oset.implementations.bxtend;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -61,25 +63,31 @@ public class BXtendSet2Oset extends BXToolForEMF<sets.MySet, osets.MyOrderedSet,
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<sets.MySet> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<sets.MySet>> edit) {
+		edit.get();
 		set2oset.sourceToTarget();
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<osets.MyOrderedSet> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<osets.MyOrderedSet>> edit) {
+		edit.get();
 		set2oset.targetToSource();		
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<sets.MySet> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<sets.MySet>> edit) {
+		edit.get();
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<osets.MyOrderedSet> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<osets.MyOrderedSet>> edit) {
+		edit.get();
+	}
+	
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<sets.MySet>> sourceEdit, Supplier<IEdit<osets.MyOrderedSet>> targetEdit) {
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package org.benchmarx.examples.set2oset.implementations.ibextgg;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.benchmarx.osets.core.OsetComparator;
 import org.benchmarx.sets.core.SetComparator;
@@ -47,5 +49,11 @@ public class IBeXTGGSetToOSet extends IBeXTGGAdapter<MySet, MyOrderedSet, Decisi
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<MySet>> sourceEdit, Supplier<IEdit<MyOrderedSet>> targetEdit) {
+		// TODO Auto-generated method stub
+		
 	}
 }

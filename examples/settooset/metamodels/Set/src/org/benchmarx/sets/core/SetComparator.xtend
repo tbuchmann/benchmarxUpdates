@@ -1,22 +1,21 @@
 package org.benchmarx.sets.core
 
-import org.benchmarx.emf.Comparator
-import java.util.List
 import java.util.ArrayList
+import java.util.List
+import java.util.function.BiConsumer
+import sets.Element
+import sets.MySet
 
 import static org.junit.Assert.*
 
-import sets.MySet
-import sets.Element
-
-class SetComparator implements Comparator<MySet> {	
+class SetComparator implements BiConsumer<MySet, MySet> {	
 	ElementNormaliser comparator
 	
 	new (){
 		comparator = new ElementNormaliser();
 	}
 	
-	override assertEquals(MySet expected, MySet actual) {
+	override accept(MySet expected, MySet actual) {
 		assertTrue(mySetToString(expected).startsWith("SetsMySet"))
 		assertEquals(mySetToString(expected), mySetToString(actual))
 	}

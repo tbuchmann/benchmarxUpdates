@@ -1,111 +1,117 @@
 package org.benchmarx.examples.set2oset.testsuite.alignment_based.bwd;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.benchmarx.examples.set2oset.testsuite.Set2OsetTestCase;
-import org.junit.Test;
+import org.benchmarx.examples.set2oset.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalBackward extends Set2OsetTestCase {
+	
 	public IncrementalBackward(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		super(tool);
 	}
 	
-	/**
-	 * <b>Test</b> for inserting elements into an existing oset, after the initial oset has been transformed into a
-	 * set. <br/>
-	 * <b>Expect</b> : New elements are added to the set, while the old elements
-	 * remain unchanged. <br/>
-	 * <b>Features</b>: bwd, add, fixed
-	 */
-	@Test
-	public void testIncrementalInserts() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperOset::setSetName)
-				.andThen(helperOset::createC));
-		tool.performIdleSourceEdit(helperSet::changeIncrementalID);
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+		return Set2OsetTestCase.tools();
+	}
+	
+	
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalInserts(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperOset::setSetName,
+				helperOset::createC));
+		tool.performIdleSourceEdit(srcEdit(helperSet::changeIncrementalID));
 		
 		util.assertPrecondition("CChangedSet", "COset");
 		//------------
-		tool.performAndPropagateTargetEdit(helperOset::insertABeforeC);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::insertABeforeC));
 		//------------
 		util.assertPostcondition("AcChangedSet", "AcOset");
 		
-		tool.performAndPropagateTargetEdit(helperOset::insertBBeforeC);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::insertBBeforeC));
 		util.assertPostcondition("FirstThreeLettersChangedSet", "FirstThreeLettersOset");
 		
-		tool.performAndPropagateTargetEdit(helperOset::insertDAfterC);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::insertDAfterC));
 		util.assertPostcondition("AbcdChangedSet", "AbcdOset");
+		terminate();
 	}
 	
-	/**
-	 * <b>Test</b> for deleting elements from an existing oset, after the initial oset has been transformed into a
-	 * set. <br/>
-	 * <b>Expect</b>: Deletion of the elements in the set, while old elements
-	 * remain unchanged. <br/>
-	 * <b>Features</b>: bwd, del, corr-based, structural
-	 */
-	@Test
-	public void testIncrementalDeletions() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperOset::setSetName)
-				.andThen(helperOset::createA)
-				.andThen(helperOset::createB)
-				.andThen(helperOset::createC)
-				.andThen(helperOset::createD));
-		tool.performIdleSourceEdit(helperSet::changeIncrementalID);
+	
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperOset::setSetName,
+				helperOset::createA,
+				helperOset::createB,
+				helperOset::createC,
+				helperOset::createD));
+		tool.performIdleSourceEdit(srcEdit(helperSet::changeIncrementalID));
 		
 		util.assertPrecondition("AbcdChangedSet", "AbcdOset");
 		//------------
-		tool.performAndPropagateTargetEdit(helperOset::deleteD);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::deleteD));
 		//------------
 		util.assertPostcondition("FirstThreeLettersChangedSet", "FirstThreeLettersOset");
 		
-		tool.performAndPropagateTargetEdit(helperOset::deleteB);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::deleteB));
 		util.assertPostcondition("AcChangedSet", "AcOset");
 		
-		tool.performAndPropagateTargetEdit(helperOset::deleteA);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::deleteA));
 		util.assertPostcondition("CChangedSet", "COset");
+		terminate();
 	}
 	
-	/**
-	 * <b>Test</b> for renaming the elements A, B, C to Z, X, Y, after the initial oset has been transformed into a
-	 * set. <br/>
-	 * <b>Expect</b>: Change occurs also in the set.
-	 * <b>Features</b>: bwd, attribute, structural, corr-based
-	 */
-	@Test
-	public void testIncrementalValueChange() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperOset::setSetName)
-				.andThen(helperOset::createA)
-				.andThen(helperOset::createB)
-				.andThen(helperOset::createC));
-		tool.performIdleSourceEdit(helperSet::changeIncrementalID);
+	
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalValueChange(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperOset::setSetName,
+				helperOset::createA,
+				helperOset::createB,
+				helperOset::createC));
+		tool.performIdleSourceEdit(srcEdit(helperSet::changeIncrementalID));
 		
 		util.assertPrecondition("FirstThreeLettersChangedSet", "FirstThreeLettersOset");
 		//------------
-		tool.performAndPropagateTargetEdit(helperOset::changeABCtoZXY);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::changeABCtoZXY));
 		//------------
 		util.assertPostcondition("ZxyChangedSet", "ZxyOset");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for stability of the transformation.<br/>
-	 * <b>Expect</b> re-running the transformation after an idle target delta does not change the source model.<br/>
-	 * <b>Features:</b>: bwd, fixed
-	 */
-	@Test
-	public void testStability() {		
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperOset::setSetName)
-				.andThen(helperOset::createA)
-				.andThen(helperOset::createB)
-				.andThen(helperOset::createC));
-		tool.performIdleSourceEdit(helperSet::changeIncrementalID);
+	
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testStability(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+		this.tool = tool;
+		initialise();		
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperOset::setSetName,
+				helperOset::createA,
+				helperOset::createB,
+				helperOset::createC));
+		tool.performIdleSourceEdit(srcEdit(helperSet::changeIncrementalID));
 
 		util.assertPrecondition("FirstThreeLettersChangedSet", "FirstThreeLettersOset");
 		//------------
-		tool.performAndPropagateTargetEdit(helperOset::idleDelta);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::idleDelta));
 		//------------
 		util.assertPostcondition("FirstThreeLettersChangedSet", "FirstThreeLettersOset");
 	}
@@ -116,18 +122,19 @@ public class IncrementalBackward extends Set2OsetTestCase {
 	 * set.<br/>
 	 * <b>Features:</b>: bwd, fixed
 	 */
-	@Test
+	@ParameterizedTest
+	@MethodSource("tools")
 	public void testHippocraticness() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperOset::setSetName)
-				.andThen(helperOset::createA)
-				.andThen(helperOset::createB)
-				.andThen(helperOset::createC));
-		tool.performIdleSourceEdit(helperSet::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperOset::setSetName,
+				helperOset::createA,
+				helperOset::createB,
+				helperOset::createC));
+		tool.performIdleSourceEdit(srcEdit(helperSet::changeIncrementalID));
 
 		util.assertPrecondition("FirstThreeLettersChangedSet", "FirstThreeLettersOset");
 		//------------
-		tool.performAndPropagateTargetEdit(helperOset::invert);
+		tool.performAndPropagateTargetEdit(trgEdit(helperOset::invert));
 		//------------
 		util.assertPostcondition("FirstThreeLettersChangedSet", "CbaOset");
 	}

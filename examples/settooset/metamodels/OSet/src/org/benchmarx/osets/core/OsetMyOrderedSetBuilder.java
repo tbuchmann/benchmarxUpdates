@@ -1,32 +1,34 @@
 package org.benchmarx.osets.core;
 
+import java.util.function.Supplier;
+
 import osets.Element;
 import osets.MyOrderedSet;
 import osets.OsetsFactory;
 
 public class OsetMyOrderedSetBuilder {
-	private MyOrderedSet set;
+	private Supplier<MyOrderedSet> set;
 	private Element last; // last element inserted in the oset, the position in the oset is arbitrary
 	private OsetsFactory f = OsetsFactory.eINSTANCE;
 	
-	OsetMyOrderedSetBuilder(MyOrderedSet set) {
+	OsetMyOrderedSetBuilder(Supplier<MyOrderedSet> set) {
 		this.set = set;
 	}
 	
 	OsetMyOrderedSetBuilder mySetName(String name) {
-		set.setName(name);
+		set.get().setName(name);
 		return this;
 	}
 	
 	OsetMyOrderedSetBuilder next() {
 		Element temp = f.createElement();
-		if(!set.getElements().isEmpty()) {
+		if(!set.get().getElements().isEmpty()) {
 			if(last == null)
-				last = set.getElements().get(set.getElements().size()-1);
-			temp.setOrderedSet(set);
+				last = set.get().getElements().get(set.get().getElements().size()-1);
+			temp.setOrderedSet(set.get());
 			last.setNext(temp);
 		} else {
-			temp.setOrderedSet(set);
+			temp.setOrderedSet(set.get());
 		}
 		
 		last = temp;
@@ -40,7 +42,7 @@ public class OsetMyOrderedSetBuilder {
 	
 	OsetMyOrderedSetBuilder insertNewElementBefore(String val) {
 		Element find = null;
-		for(Element e : set.getElements()) {
+		for(Element e : set.get().getElements()) {
 			if(e.getValue().equals(val)) {
 				find = e;
 				break;
@@ -48,7 +50,7 @@ public class OsetMyOrderedSetBuilder {
 		}
 		if(find != null) {
 			last = f.createElement();
-			last.setOrderedSet(set);
+			last.setOrderedSet(set.get());
 			last.setPrevious(find.getPrevious());
 			last.setNext(find);
 		}
@@ -57,7 +59,7 @@ public class OsetMyOrderedSetBuilder {
 	
 	OsetMyOrderedSetBuilder insertNewElementAfter(String val) {
 		Element find = null;
-		for(Element e : set.getElements()) {
+		for(Element e : set.get().getElements()) {
 			if(e.getValue().equals(val)) {
 				find = e;
 				break;
@@ -65,7 +67,7 @@ public class OsetMyOrderedSetBuilder {
 		}
 		if(find != null) {
 			last = f.createElement();
-			last.setOrderedSet(set);
+			last.setOrderedSet(set.get());
 			last.setNext(find.getNext());
 			last.setPrevious(find);
 		}

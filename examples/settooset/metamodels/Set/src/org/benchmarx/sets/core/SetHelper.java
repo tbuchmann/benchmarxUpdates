@@ -5,7 +5,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import sets.Element;
@@ -48,6 +54,29 @@ public class SetHelper {
 		}
 	}
 	
+	private SetMySetBuilder builder = null;
+	private List<Delta> delta = new ArrayList<>();
+	
+	private Supplier<MySet> set;
+	private BiConsumer<EAttribute, List<?>> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EObject, List<EObject>> moveNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
+	private BiConsumer<EReference, List<EObject>> createEdge;
+	
+	public SetHelper(Supplier<MySet> set, Consumer<EObject> createNode,
+			BiConsumer<EReference, List<EObject>> createEdge, BiConsumer<EAttribute, List<?>> changeAttribute,
+			Consumer<EObject> deleteNode, BiConsumer<EObject, List<EObject>> moveNode,
+			BiConsumer<EReference, List<EObject>> deleteEdge) {
+		builder = new SetMySetBuilder(set);
+		this.set = set;
+		this.changeAttribute = changeAttribute;
+		this.deleteEdge = deleteEdge;
+		this.deleteNode = deleteNode;
+		this.moveNode = moveNode;
+		this.createEdge = createEdge;
+	}
+	
 	public List<Delta> getDelta() {
 		return delta;
 	}
@@ -55,96 +84,89 @@ public class SetHelper {
 		delta.clear();
 	}
 	
-	public void setSetName(MySet set) {
-		set.setName("Alphabet");
+	public void setSetName() {
+		set.get().setName("Alphabet");
 		delta.add(new SetHelper.Delta.SetNameChange("Alphabet"));
 	}
 	
-	public void renameAlphabetSetToABC(MySet set) {
-		assertTrue(set.getName().equals("Alphabet"));
-		set.setName("ABC");
+	public void renameAlphabetSetToABC() {
+		assertTrue(set.get().getName().equals("Alphabet"));
+		set.get().setName("ABC");
 		delta.add(new SetHelper.Delta.SetNameChange("ABC"));
 	}
 	
-	public void changeIncrementalID(MySet set) {
-		if ("changed".equals(set.getIncrementalID())) {
-			set.setIncrementalID("changed again");
+	public void changeIncrementalID() {
+		if ("changed".equals(set.get().getIncrementalID())) {
+			set.get().setIncrementalID("changed again");
 		} else {
-			set.setIncrementalID("changed");
+			set.get().setIncrementalID("changed");
 		}
 	}
 	
-	public void createA(MySet set) {
-		builder = new SetMySetBuilder(set);
+	public void createA() {		
 		builder.addElement().setElementValue("A");
 		delta.add(new SetHelper.Delta.ElementCreation("A"));
 	}
 	
-	public void deleteA(MySet set) {
-		EcoreUtil.delete(getElement(set, "A"));
+	public void deleteA() {
+		EcoreUtil.delete(getElement("A"));
 		delta.add(new SetHelper.Delta.ElementDeletion("A"));
 	}
 	
-	public void createB(MySet set) {
-		builder = new SetMySetBuilder(set);
+	public void createB() {
 		builder.addElement().setElementValue("B");
 		delta.add(new SetHelper.Delta.ElementCreation("B"));
 	}
 	
-	public void deleteB(MySet set) {
-		EcoreUtil.delete(getElement(set, "B"));
+	public void deleteB() {
+		EcoreUtil.delete(getElement("B"));
 		delta.add(new SetHelper.Delta.ElementDeletion("B"));
 	}
 	
-	public void createC(MySet set) {
-		builder = new SetMySetBuilder(set);
+	public void createC() {
 		builder.addElement().setElementValue("C");
 		delta.add(new SetHelper.Delta.ElementCreation("C"));
 	}
 	
-	public void deleteC(MySet set) {
-		EcoreUtil.delete(getElement(set, "C"));
+	public void deleteC() {
+		EcoreUtil.delete(getElement("C"));
 		delta.add(new SetHelper.Delta.ElementDeletion("C"));
 	}
 	
-	public void createD(MySet set) {
-		builder = new SetMySetBuilder(set);
+	public void createD() {
 		builder.addElement().setElementValue("D");
 		delta.add(new SetHelper.Delta.ElementCreation("D"));
 	}
 	
-	public void deleteD(MySet set) {
-		EcoreUtil.delete(getElement(set, "D"));
+	public void deleteD() {
+		EcoreUtil.delete(getElement("D"));
 		delta.add(new SetHelper.Delta.ElementDeletion("D"));
 	}
 	
-	public void changeABCtoZXY(MySet set) {
-		getElement(set, "A").setValue("Z");
-		getElement(set, "B").setValue("X");
-		getElement(set, "C").setValue("Y");
+	public void changeABCtoZXY() {
+		getElement("A").setValue("Z");
+		getElement("B").setValue("X");
+		getElement("C").setValue("Y");
 		delta.add(new SetHelper.Delta.ElementChange("A", "Z"));
 		delta.add(new SetHelper.Delta.ElementChange("B", "X"));
 		delta.add(new SetHelper.Delta.ElementChange("C", "Y"));
 	}
 	
-	public void changeZXYtoABC(MySet set) {
-		getElement(set, "Z").setValue("A");
-		getElement(set, "X").setValue("B");
-		getElement(set, "Y").setValue("C");
+	public void changeZXYtoABC() {
+		getElement("Z").setValue("A");
+		getElement("X").setValue("B");
+		getElement("Y").setValue("C");
 		delta.add(new SetHelper.Delta.ElementChange("Z", "A"));
 		delta.add(new SetHelper.Delta.ElementChange("X", "B"));
 		delta.add(new SetHelper.Delta.ElementChange("Y", "C"));
 	}
 	
-	public void idleDelta(MySet set) {
+	public void idleDelta() {
 		
-	}
+	}	
 	
-	private SetMySetBuilder builder = null;
-	private List<Delta> delta = new ArrayList<>();
-	
-	private Element getElement(MySet set, String value) {
-		Optional<Element> elementOpt = set.getElements().stream().filter(e -> e.getValue().equals(value)).findAny();
+	private Element getElement(String value) {
+		Optional<Element> elementOpt = set.get().getElements().stream().filter(e -> e.getValue().equals(value)).findAny();
 		
 		assertTrue(elementOpt.isPresent());
 		Element element = elementOpt.get();

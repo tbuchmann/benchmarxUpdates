@@ -1,6 +1,5 @@
 package org.benchmarx.osets.core
 
-import org.benchmarx.emf.Comparator
 import java.util.List
 import java.util.ArrayList
 
@@ -8,8 +7,9 @@ import static org.junit.Assert.*
 
 import osets.MyOrderedSet
 import osets.Element
+import java.util.function.BiConsumer
 
-class OsetComparator implements Comparator<MyOrderedSet> {	
+class OsetComparator implements BiConsumer<MyOrderedSet, MyOrderedSet> {	
 	static val ElementNormaliser comparator = new ElementNormaliser()
 	
 	def static myOrderedSetToString(MyOrderedSet set) {
@@ -69,7 +69,7 @@ class OsetComparator implements Comparator<MyOrderedSet> {
 		return false;
 	}
 	
-	override assertEquals(MyOrderedSet expected, MyOrderedSet actual) {
+	override accept(MyOrderedSet expected, MyOrderedSet actual) {
 		assertTrue(myOrderedSetToString(expected).startsWith("SetsMyOrderedSet"))
 		assertEquals(myOrderedSetToString(expected), myOrderedSetToString(actual))
 	}
