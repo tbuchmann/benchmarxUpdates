@@ -1,16 +1,26 @@
 package org.benchmarx.examples.bag12bag2.testsuite.batch.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.bag12bag2.testsuite.Bag12Bag2TestCase;
+import org.benchmarx.examples.bag12bag2.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.bag12bag2.testsuite.Decisions;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import bags1.MyBag;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackward extends Bag12Bag2TestCase {
 
-	public BatchBackward(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
-		super(tool);
+	public BatchBackward() {
+		super();
+	}
+
+	public static Collection<BXTool<bags1.MyBag, bags2.MyBag, Decisions>> tools() {
+		return Bag12Bag2TestCase.tools();
 	}
 
 	/**
@@ -20,14 +30,18 @@ public class BatchBackward extends Bag12Bag2TestCase {
 	 * <br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testCreateElement()
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testCreateElement(BXTool<MyBag, bags2.MyBag, Decisions> tool)
 	{
+		this.tool = tool;
+		initialise();
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(helperBag2::createOneBeer);
+		tool.performAndPropagateTargetEdit(trgEdit(helperBag2::createOneBeer));
 		//------------
 		util.assertPostcondition("OneBeerBags1", "OneBeerBags2");
+		terminate();
 	}
 
 	/**
@@ -35,14 +49,18 @@ public class BatchBackward extends Bag12Bag2TestCase {
 	 * multiple Elements (5 Beers and 1 Beer Glass).<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test 
-	public void testCreateMultipleElements(){
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testCreateMultipleElements(BXTool<MyBag, bags2.MyBag, Decisions> tool){
+		this.tool = tool;
+		initialise();
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::createFiveBeer)
-				.andThen(helperBag2::createBeerGlass));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::createFiveBeer,
+				helperBag2::createBeerGlass));
 		//------------
 		util.assertPostcondition("FiveBeerWithGlassBags1", "FiveBeerWithGlassBags2");
+		terminate();
 	}
 }

@@ -2,6 +2,7 @@ package org.benchmarx.examples.familiestopersons.scalability;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,8 +15,6 @@ import org.benchmarx.examples.familiestopersons.testsuite.FamiliesToPersonsTestC
 import org.benchmarx.families.core.FamiliesComparator;
 import org.benchmarx.persons.core.PersonsComparator;
 import org.benchmarx.util.BenchmarxUtil;
-import org.junit.runners.Parameterized.AfterParam;
-import org.junit.runners.Parameterized.BeforeParam;
 
 import Families.FamiliesPackage;
 import Families.FamilyRegister;
@@ -34,7 +33,7 @@ public abstract class ScalabilityTests extends FamiliesToPersonsTestCase {
 	@Override
 	public void initialise() {
 		Logger.getRootLogger().setLevel(Level.INFO);
-		
+
 		// Make sure packages are registered
 		FamiliesPackage.eINSTANCE.getName();
 		PersonsPackage.eINSTANCE.getName();
@@ -50,19 +49,18 @@ public abstract class ScalabilityTests extends FamiliesToPersonsTestCase {
 		helperFamily = createAndInitialiseHelperFamily(() -> tool.getSourceModel(), () -> sourceEdit);
 		helperPerson = createAndInitialiseHelperPerson(() -> tool.getTargetModel(), () -> targetEdit);
 	}
-	
+
 	@Override
 	public void terminate() {
 		// we overwrite the super method to avoid terminating the synchronisationDialog
 		// this happens within each test
 	}
-	
-	@AfterParam
+
 	public static void saveResults(BXTool<FamilyRegister, PersonRegister, Decisions> tool)
 			throws FileNotFoundException {
-		if(results.isEmpty())
+		if (results.isEmpty())
 			return;
-					
+
 		try (PrintWriter out = new PrintWriter(resultFolder + "/" + label + tool.getName() + ".txt")) {
 			out.println(results.keySet().stream()//
 					.sorted()//
@@ -71,13 +69,16 @@ public abstract class ScalabilityTests extends FamiliesToPersonsTestCase {
 		}
 	}
 
-	@BeforeParam
-	public static void initResults(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+	public static void initResults() {
 		results = new HashMap<>();
 	}
 
 	public ScalabilityTests(BXTool<FamilyRegister, PersonRegister, Decisions> tool, String l) {
 		super(tool);
 		label = l;
+	}
+
+	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
+		return FamiliesToPersonsTestCase.tools();
 	}
 }

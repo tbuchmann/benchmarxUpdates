@@ -15,6 +15,7 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.pdb12pdb2.implementations.bxagent.BXAgentPdb12Pdb2;
+import org.benchmarx.examples.pdb12pdb2.implementations.bxlang.BXLangPdb12Pdb2;
 import org.benchmarx.examples.pdb12pdb2.implementations.bxtend.BXtendPdb12Pdb2;
 import org.benchmarx.pdb1.core.Pdb1Comparator;
 import org.benchmarx.pdb1.core.Pdb1Helper;
@@ -24,13 +25,9 @@ import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
-@RunWith(Parameterized.class)
 public abstract class Pdb12Pdb2TestCase {
 
 	protected BXTool<pdb1.Database, pdb2.Database, Decisions> tool;
@@ -42,7 +39,7 @@ public abstract class Pdb12Pdb2TestCase {
 	protected IEdit<pdb1.Database> sourceEdit;
 	protected IEdit<pdb2.Database> targetEdit;
 
-	@Before
+	@BeforeEach
 	public void initialise() {
 		// Make sure packages are registered
 		pdb1.Pdb1Package.eINSTANCE.getPdb1Factory();
@@ -97,23 +94,26 @@ public abstract class Pdb12Pdb2TestCase {
 		return new Pdb2Helper(personRegister, createTargetNode, createTargetEdge, changeTargetAttribute, deleteTargetNode, moveTargetNode, deleteTargetEdge);
 	}
 
-	@After
+	@AfterEach
 	public void terminate(){
 		tool.terminateSynchronisationDialogue();
 	}
 	
-	@Parameters(name = "{0}")
 	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
 		return Arrays.asList(
 				//new BXtendPdb12Pdb2()				
 				//new MediniQVTPdb12Pdb2(),
 				//new IBeXTGGPDB1ToPDB2()
-				new BXAgentPdb12Pdb2()
+				//new BXAgentPdb12Pdb2(),
+				new BXLangPdb12Pdb2()
 			);
 	}
 	
 	protected Pdb12Pdb2TestCase(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
 		this.tool = tool; 
+	}
+
+	protected Pdb12Pdb2TestCase() {
 	}
 	
 	protected Supplier<IEdit<pdb1.Database>> srcEdit(Runnable... ops) {

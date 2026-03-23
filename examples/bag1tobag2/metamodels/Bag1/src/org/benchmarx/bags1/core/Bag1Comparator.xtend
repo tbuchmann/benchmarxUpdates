@@ -1,20 +1,20 @@
 package org.benchmarx.bags1.core
 
 import bags1.MyBag
-import org.benchmarx.emf.Comparator
 
 import static org.junit.Assert.*
 import bags1.Element
 import java.util.ArrayList
+import java.util.function.BiConsumer
 
-class Bag1Comparator implements Comparator<MyBag> {
+class Bag1Comparator implements BiConsumer<MyBag, MyBag> {
 	
 	ElementNormaliser comparator
 	
 	new (){
 		comparator = new ElementNormaliser();
 	}
-	override assertEquals(MyBag expected, MyBag actual) {
+	override accept(MyBag expected, MyBag actual) {
 		assertTrue(bagToString(expected).startsWith("Bag1"))
 		assertEquals(bagToString(expected), bagToString(actual))
 	}

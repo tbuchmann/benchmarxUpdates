@@ -1,80 +1,67 @@
 package org.benchmarx.examples.familiestopersons.testsuite.batch.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.familiestopersons.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.familiestopersons.testsuite.Decisions;
 import org.benchmarx.examples.familiestopersons.testsuite.FamiliesToPersonsTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBwdNotENotP extends FamiliesToPersonsTestCase {
 
 	public BatchBwdNotENotP(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
 		super(tool);
 	}
 
-	/**
-	 * <b>Test</b> for creation of a single male person (Flanders, Rod).<br/>
-	 * <b>Expect</b> the creation of a family member in the families model with the
-	 * given first name, in a suitable family. Creation of children is
-	 * preferred.<br/>
-	 * <b>Features</b>: bwd, runtime
-	 */
-	@Test
-	public void testCreateMalePersonAsSon() {
+	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
+		return FamiliesToPersonsTestCase.tools();
+	}
+
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateMalePersonAsSon(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ---------------------------------
 		util.configure()//
 				.makeDecision(Decisions.PREFER_EXISTING_FAMILY_TO_NEW, false)//
 				.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, false);
 		tool.performAndPropagateTargetEdit(trgEdit(helperPerson::createRod));
-		// ---------------------------------
 		util.assertPostcondition("OneFamilyWithOneFamilyMemberSon", "PersonOneMaleMember");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for creation of family members in existing families.<br/>
-	 * <b>Expect</b> the creation of a family member in the families model with the
-	 * given first name, in a suitable family. Creation of children is
-	 * preferred.<br/>
-	 * <b>Features</b>: bwd, runtime
-	 */
-	@Test
-	public void testCreateFamilyMembersInNewFamilyAsChildren() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateFamilyMembersInNewFamilyAsChildren(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ---------------------------------
 		util.configure()//
 				.makeDecision(Decisions.PREFER_EXISTING_FAMILY_TO_NEW, false)//
 				.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, false);
 		tool.performAndPropagateTargetEdit(trgEdit(//
-				helperPerson::createRod, //
-				helperPerson::createHomer, //
-				helperPerson::createBart, //
-				helperPerson::createMarge, //
-				helperPerson::createLisa, //
-				helperPerson::createMaggie));
-		// ---------------------------------
+				helperPerson::createRod, helperPerson::createHomer, helperPerson::createBart,
+				helperPerson::createMarge, helperPerson::createLisa, helperPerson::createMaggie));
 		util.assertPostcondition("MultiFamiliesChildren", "PersonsMulti");
+		terminate();
 	}
 
-	@Test
-	public void testCreateDuplicateFamilyMembersInNewFamilyAsChildren() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateDuplicateFamilyMembersInNewFamilyAsChildren(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ---------------------------------
 		util.configure()//
 				.makeDecision(Decisions.PREFER_EXISTING_FAMILY_TO_NEW, false)//
 				.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, false);
 		tool.performAndPropagateTargetEdit(trgEdit(//
-				helperPerson::createRod, //
-				helperPerson::createBart, //
-				helperPerson::createHomer, //
-				helperPerson::createBart, //
-				helperPerson::createBart, //
-				helperPerson::createMarge, //
-				helperPerson::createLisa, //
-				helperPerson::createMaggie));
-		// ---------------------------------
+				helperPerson::createRod, helperPerson::createBart, helperPerson::createHomer,
+				helperPerson::createBart, helperPerson::createBart, helperPerson::createMarge,
+				helperPerson::createLisa, helperPerson::createMaggie));
 		util.assertPostcondition("MultiFamiliesWithDuplicateNamesChildren", "PersonsDuplicateMulti");
+		terminate();
 	}
 }

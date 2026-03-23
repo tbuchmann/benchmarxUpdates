@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.benchmarx.BXTool;
 import org.benchmarx.config.Configurator;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.ComparisonFailure;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * A collection of helper methods used by the test framework. See {@link BXTool}
@@ -53,7 +53,7 @@ public class BenchmarxUtil<S, T, D> {
 	 *                     Each entry is a possible postcondition (consistent pair).
 	 */
 	public void assertAnyPostcondition(Map<String, String> alternativePostconditions) {
-		var failures = new ArrayList<ComparisonFailure>();
+		var failures = new ArrayList<AssertionFailedError>();
 		for (var entry : alternativePostconditions.entrySet()) {
 			try {
 				// Attempt to assert post condition
@@ -61,18 +61,20 @@ public class BenchmarxUtil<S, T, D> {
 
 				// Attempt was successful so exit
 				return;
-			} catch (ComparisonFailure failed) {
+			} catch (AssertionFailedError failed) {
 				// Attempt was unsuccessful so continue search
 				failures.add(failed);
 			}
 		}
 
 		// No attempt was successful so fail
-		var finalError = new ComparisonFailure("None of the provided postconditions holds.",
-				failures.stream().map(ComparisonFailure::getExpected).collect(Collectors.joining("========>\n")),
-				failures.stream().map(ComparisonFailure::getActual).collect(Collectors.joining("========>\n")));
-
-		throw finalError;
+		var expected = failures.stream()
+				.map(f -> f.getExpected() != null ? String.valueOf(f.getExpected().getValue()) : "")
+				.collect(Collectors.joining("========>\n"));
+		var actual = failures.stream()
+				.map(f -> f.getActual() != null ? String.valueOf(f.getActual().getValue()) : "")
+				.collect(Collectors.joining("========>\n"));
+		throw new AssertionFailedError("None of the provided postconditions holds.", expected, actual);
 	}
 
 	/**

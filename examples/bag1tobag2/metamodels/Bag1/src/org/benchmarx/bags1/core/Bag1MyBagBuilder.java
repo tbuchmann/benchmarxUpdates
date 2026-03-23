@@ -1,5 +1,7 @@
 package org.benchmarx.bags1.core;
 
+import java.util.function.Supplier;
+
 import bags1.Bags1Factory;
 import bags1.Element;
 import bags1.MyBag;
@@ -9,8 +11,8 @@ public class Bag1MyBagBuilder {
 	private MyBag bag;
 	private Element last;
 	
-	Bag1MyBagBuilder(MyBag bag) {
-		this.bag = bag;
+	Bag1MyBagBuilder(Supplier<MyBag> bag) {
+		this.bag = bag.get();
 	}
 	
 	public Bag1MyBagBuilder addElement() {

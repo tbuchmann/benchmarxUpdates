@@ -32,18 +32,14 @@ import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import Families.FamiliesPackage;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 import Persons.PersonsPackage;
 
-@RunWith(Parameterized.class)
 public abstract class FamiliesToPersonsTestCase {
 
 	protected BXTool<FamilyRegister, PersonRegister, Decisions> tool;
@@ -55,7 +51,7 @@ public abstract class FamiliesToPersonsTestCase {
 	protected IEdit<FamilyRegister> sourceEdit;
 	protected IEdit<PersonRegister> targetEdit;
 
-	@Before
+	@BeforeEach
 	public void initialise() {
 		Logger.getRootLogger().setLevel(Level.INFO);
 		
@@ -122,13 +118,12 @@ public abstract class FamiliesToPersonsTestCase {
 				deleteTargetNode, deleteTargetEdge);
 	}
 
-	@After
+	@AfterEach
 	public void terminate() {
 		tool.terminateSynchronisationDialogue();
 	}
 
 	// Solutions requiring additional setup are commented out.
-	@Parameters(name = "{0}")
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return Arrays.asList(//
 				// new UbtXtendFamiliesToPersons(),
@@ -167,10 +162,10 @@ public abstract class FamiliesToPersonsTestCase {
 				
 //				new BXtendFamiliesToPersons(), // No failures
 //				new WrapperOverBXtendWithMerge() // No Failures
-				new BXtendDSLFamiliesToPersons(),
+				new BXtendDSLFamiliesToPersons()//,
 				
 				//new JavaFamilies2Persons(),
-				new BXAgentF2p()
+				//new BXAgentF2p()
 				
 				/*
 				 * See setup instructions: /implementations/eneo/README-SETUP

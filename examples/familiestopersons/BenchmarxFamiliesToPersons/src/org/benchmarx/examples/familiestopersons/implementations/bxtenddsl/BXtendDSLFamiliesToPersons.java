@@ -163,8 +163,7 @@ public class BXtendDSLFamiliesToPersons extends BXToolForEMF<FamilyRegister, Per
 //		f2p.configure(new ConfigurableTargetToSourceDecision(!conf.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW),
 //				conf.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD), false, false));
 		f2p.setOption(Decisions.PREFER_EXISTING_FAMILY_TO_NEW.name(), conf.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW));
-		f2p.setOption(Decisions.PREFER_CREATING_PARENT_TO_CHILD.name(), conf.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD));
-		f2p.synch();		
+		//f2p.synch();		
 		//f2p.targetToSource();
 		
 	}

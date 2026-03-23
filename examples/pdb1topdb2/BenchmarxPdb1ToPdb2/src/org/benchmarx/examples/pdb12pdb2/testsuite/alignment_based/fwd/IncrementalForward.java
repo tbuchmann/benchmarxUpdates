@@ -3,11 +3,20 @@ package org.benchmarx.examples.pdb12pdb2.testsuite.alignment_based.fwd;
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Pdb12Pdb2TestCase;
-import org.junit.Test;
+import java.util.Collection;
+import org.benchmarx.examples.pdb12pdb2.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalForward extends Pdb12Pdb2TestCase {
 	public IncrementalForward(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
 		super(tool);
+	}
+
+	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
+		return Pdb12Pdb2TestCase.tools();
 	}
 	
 	/**
@@ -16,8 +25,8 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 * remain unchanged. <br/>
 	 * <b>Features</b>: fwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalInserts(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(
 				helperPerson1::setDatabaseName,
 				helperPerson1::createKonradAdenauer,
@@ -47,6 +56,7 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 //				.andThen(helperPerson1::createAngelaMerkel));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellors");
+		terminate();
 	}
 	
 	/**
@@ -55,8 +65,8 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b>: Delete the correct Person in the pdb2 database
 	 * <b>Features</b>: fwd, del, corr-based, structural
 	 */
-	@Test
-	public void testIncrementalDeletions() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(
 				helperPerson1::setDatabaseName,
 				helperPerson1::createKonradAdenauer,
@@ -82,6 +92,7 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 //				.execute(helperPerson1::deleteKurtKiesinger));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1FirstSixChancellorsWithoutKiesinger", "IncrFwdPDB2FirstSixChancellorsWithoutKiesinger");
+		terminate();
 	}
 	
 	/**
@@ -90,8 +101,8 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b>: Change the values of the affected variables in Persons of the pdb2 database.
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalValueChange() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalValueChange(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(
 				helperPerson1::setDatabaseName,
 				helperPerson1::createKonradAdenauer,
@@ -128,6 +139,7 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 //				.andThen(helperPerson1::changePlaceOfBirthOfWillyBrandt));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1FirstSixChancellorsAfterValueChange", "IncrFwdPDB2FirstSixChancellorsAfterValueChange");
+		terminate();
 	}
 
 	/**
@@ -135,8 +147,8 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b> re-running the transformation after an idle source delta does not change the target model.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testStability() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testStability(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(
 				helperPerson1::setDatabaseName,
 				helperPerson1::createKonradAdenauer,
@@ -164,6 +176,7 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::idleDelta));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellorsIDs");
+		terminate();
 	}
 	
 	/**
@@ -171,8 +184,8 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b> re-running the transformation after getting the first part of the last name of a person to the firstname does not change the pdb2 Database<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testHippocraticness() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testHippocraticness(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(
 				helperPerson1::setDatabaseName,
 				helperPerson1::createWrongKonradAdenauer,
@@ -200,5 +213,6 @@ public class IncrementalForward extends Pdb12Pdb2TestCase {
 		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::hippocraticDelta));
 		//------------
 		util.assertPostcondition("IncrFwdPDB1AllChancellors", "IncrFwdPDB2AllChancellorsIDs");
+		terminate();
 	}
 }

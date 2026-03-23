@@ -2,20 +2,29 @@ package org.benchmarx.examples.familiestopersons.testsuite.concurrent;
 
 import static java.util.Map.entry;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.familiestopersons.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.familiestopersons.testsuite.Decisions;
 import org.benchmarx.examples.familiestopersons.testsuite.FamiliesToPersonsTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class Conflicts extends FamiliesToPersonsTestCase {
 
 	public Conflicts(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
 		super(tool);
+	}
+
+	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
+		return FamiliesToPersonsTestCase.tools();
 	}
 
 	/**
@@ -23,8 +32,9 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 	 * <b>Expect</b> : One of provided postconditions <br/>
 	 * <b>Features</b>: conflict resolution
 	 */
-	@Test
-	public void testMoveDeleteConflict() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testMoveDeleteConflict(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createNewFamilySimpsonWithMembers, //
 				helperFamily::createNewFamilyFlandersWithMembers//
@@ -44,6 +54,7 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 				entry("Post_MoveDeleteConflictFamily_2", "Post_MoveDeleteConflictPersons_2"),
 				// Propagate move, reject delete
 				entry("Post_MoveDeleteConflictFamily_3", "Post_MoveDeleteConflictPersons_3")));
+		terminate();
 	}
 
 	/**
@@ -51,8 +62,9 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 	 * <b>Expect</b> : One of provided postconditions <br/>
 	 * <b>Features</b>: conflict resolution
 	 */
-	@Test
-	public void testMoveRenameConflict() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testMoveRenameConflict(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createNewFamilySimpsonWithMembers, //
 				helperFamily::createNewFamilyFlandersWithMembers//
@@ -72,6 +84,7 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 				entry("Post_MoveRenameConflictFamily_1", "Post_MoveRenameConflictPersons_1"),
 				// Propagate move, reject family name change
 				entry("Post_MoveRenameConflictFamily_2", "Post_MoveRenameConflictPersons_2")));
+		terminate();
 	}
 
 	/**
@@ -79,8 +92,9 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 	 * <b>Expect</b> : One of provided postconditions <br/>
 	 * <b>Features</b>: conflict resolution
 	 */
-	@Test
-	public void testDeleteRenameConflict() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testDeleteRenameConflict(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createNewFamilySimpsonWithMembers, //
 				helperFamily::createNewFamilyFlandersWithMembers//
@@ -100,6 +114,7 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 				entry("Post_DeleteRenameConflictFamily_1", "Post_DeleteRenameConflictPersons_1"),
 				// Propagate deletion, reject renaming
 				entry("Post_DeleteRenameConflictFamily_2", "Post_DeleteRenameConflictPersons_2")));
+		terminate();
 	}
 
 	/**
@@ -107,8 +122,9 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 	 * <b>Expect</b> : One of provided postconditions <br/>
 	 * <b>Features</b>: conflict resolution
 	 */
-	@Test
-	public void testRenameRenameConflict() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testRenameRenameConflict(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createNewFamilySimpsonWithMembers, //
 				helperFamily::createNewFamilyFlandersWithMembers//
@@ -127,5 +143,6 @@ public class Conflicts extends FamiliesToPersonsTestCase {
 				entry("Post_RenameRenameConflictFamily_2", "Post_RenameRenameConflictPersons_2"),
 				// Keep both renamings by propagating renamed family member vs. person)
 				entry("Post_RenameRenameConflictFamily_3", "Post_RenameRenameConflictPersons_3")));
+		terminate();
 	}
 }

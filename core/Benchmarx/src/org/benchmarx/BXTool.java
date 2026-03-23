@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 
 import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import junit.framework.AssertionFailedError;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * This interface describes the expected functionality of a "BXTool" from the

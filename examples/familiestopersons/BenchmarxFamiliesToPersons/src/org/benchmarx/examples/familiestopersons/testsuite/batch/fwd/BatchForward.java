@@ -1,130 +1,97 @@
 package org.benchmarx.examples.familiestopersons.testsuite.batch.fwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.familiestopersons.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.familiestopersons.testsuite.Decisions;
 import org.benchmarx.examples.familiestopersons.testsuite.FamiliesToPersonsTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchForward extends FamiliesToPersonsTestCase {
 
 	public BatchForward(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
 		super(tool);
 	}
 
-	/**
-	 * <b>Test</b> for agreed upon starting state.<br/>
-	 * <b>Expect</b> root elements of both source and target models.<br/>
-	 * <b>Features</b>: fwd, fixed
-	 */
-	@Test
-	public void testInitialiseSynchronisation() {
+	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
+		return FamiliesToPersonsTestCase.tools();
+	}
+
+	@ParameterizedTest @MethodSource("tools")
+	public void testInitialiseSynchronisation(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ------------
 		util.assertPostcondition("RootElementFamilies", "RootElementPersons");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for name change of an empty family, i.e, a family without any
-	 * family members.<br/>
-	 * <b>Expect</b> no change in the persons model.<br/>
-	 * <b>Features</b>: fwd, fixed
-	 */
-	@Test
-	public void testFamilyNameChangeOfEmpty() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testFamilyNameChangeOfEmpty(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(helperFamily::createSimpsonFamily));
-
 		util.assertPrecondition("Pre_NameChangeFamilyEmpty", "Pre_NameChangePersonEmpty");
-		// ------------
 		tool.performAndPropagateSourceEdit(srcEdit(helperFamily::renameEmptySimpsonToBouvier));
-		// ------------
 		util.assertPostcondition("NameChangeFamilyEmpty", "NameChangePersonEmpty");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for creation of a single family (Skinner) in an empty root
-	 * container. <br/>
-	 * <b>Expect</b> nothing to be changed in the person model. <br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test
-	public void testCreateFamily() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateFamily(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ------------
 		tool.performAndPropagateSourceEdit(srcEdit(helperFamily::createSkinnerFamily));
-		// ------------
 		util.assertPostcondition("OneFamily", "PersonsForOneFamily");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for creation of a single family member (a son - Rod) in a new
-	 * family (Flanders). <br/>
-	 * <b>Expect</b> the creation of a new male person in the persons model, with
-	 * full name consisting of the first name and family name of the associated
-	 * family member. <br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test
-	public void testCreateFamilyMember() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateFamilyMember(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ------------
 		tool.performAndPropagateSourceEdit(srcEdit(helperFamily::createFlandersFamily, helperFamily::createSonRod));
-		// ------------
 		util.assertPostcondition("OneFamilyWithOneFamilyMemberSon", "PersonOneMaleMember");
+		terminate();
 	}
 
-	/**
-	 * Analogous to @link {@link #testCreateFamilyMember()}, but now for multiple
-	 * new family members (Simpsons Family).<br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test
-	public void testNewFamilyWithMultiMembers() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testNewFamilyWithMultiMembers(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ------------
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createFlandersFamily, //
 				helperFamily::createSonRod, //
 				helperFamily::createNewFamilySimpsonWithMembers));
-		// ------------
 		util.assertPostcondition("NewFamilyWithMembers", "PersonsMulti");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for creation of another Family with the same name (Simpson).<br/>
-	 * In the new Simpson family, Bart is the father. <b>Expect</b> a new male
-	 * Person with the name "Simpson, Bart" is created in the person register.<br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test
-	public void testNewDuplicateFamilyNames() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testNewDuplicateFamilyNames(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ------------
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createNewFamilySimpsonWithMembers, //
 				helperFamily::createSimpsonFamily, //
 				helperFamily::createFatherBart));
-		// ------------
 		util.assertPostcondition("FamiliesWithSameName", "PersonWithSameName");
+		terminate();
 	}
 
-	/**
-	 * <b>Test</b> for creation of another family member with the same name
-	 * (Bart).<br/>
-	 * <b>Expect</b> a new male Person with the name "Simpson, Bart" is created in
-	 * the person register.<br/>
-	 * <b>Features:</b>: fwd, fixed
-	 */
-	@Test
-	public void testDuplicateFamilyMemberNames() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testDuplicateFamilyMemberNames(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.noPrecondition();
-		// ------------
 		tool.performAndPropagateSourceEdit(srcEdit(//
 				helperFamily::createNewFamilySimpsonWithMembers, //
 				helperFamily::createSonBart));
-		// ------------
 		util.assertPostcondition("FamilyWithDuplicateMember", "PersonWithSameName");
+		terminate();
 	}
 }

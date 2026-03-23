@@ -11,11 +11,12 @@ import plainjavaubt.bags22bags1.Bags22Bags1;
 import plainjavaubt.util.test.BXToolForPlainJavaUbt;
 import plainjavaubt.util.trafo.Transformation;
 
-public class PlainJavaUbtBag12Bag2 extends BXToolForPlainJavaUbt<bags1.MyBag, bags2.MyBag, Decisions> {
+public class PlainJavaUbtBag12Bag2 {/* extends BXToolForPlainJavaUbt<bags1.MyBag, bags2.MyBag, Decisions> {
 	public PlainJavaUbtBag12Bag2() {
 		super(new Bags12Bags2(), new Bags22Bags1(), "src/de/ubt/ai1/m2m/bags12bags2/implementations/plainjavaubt",
 				Bags1Factory.eINSTANCE.createMyBag(), Bags2Factory.eINSTANCE.createMyBag(),
 				new Bag1Comparator(), new Bag2Comparator());
 		Transformation.validateInput = true;
-	}
+		
+	}*/
 }

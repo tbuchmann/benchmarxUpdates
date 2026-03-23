@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.bag12bag2.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -23,10 +24,14 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
+import bags1.MyBag;
 import de.ikv.emf.qvt.EMFQvtProcessorImpl;
 import de.ikv.medini.qvt.QVTProcessorConsts;
 import org.benchmarx.bags1.core.Bag1Comparator;
 import org.benchmarx.bags2.core.Bag2Comparator;
+import org.benchmarx.edit.IEdit;
+
 import uk.ac.kent.cs.kmf.util.ILog;
 import uk.ac.kent.cs.kmf.util.OutputStreamLog;
 
@@ -185,9 +190,9 @@ public class MediniQVTBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, D
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<bags2.MyBag> edit) {
+	public void performAndPropagateTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
 		target.getContents().add(bags2.Bags2Factory.eINSTANCE.createMyBag());
-		edit.accept(getTargetModel());
+		edit.get();
 		launchBWD();
 	}
 
@@ -197,9 +202,9 @@ public class MediniQVTBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, D
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<bags1.MyBag> edit) {
+	public void performAndPropagateSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
 		source.getContents().add(bags1.Bags1Factory.eINSTANCE.createMyBag());
-		edit.accept(getSourceModel());
+		edit.get();
 		launchFWD();
 	}
 
@@ -312,8 +317,8 @@ public class MediniQVTBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, D
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<bags2.MyBag> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
+		edit.get();
 	}
 
 	/**
@@ -322,7 +327,14 @@ public class MediniQVTBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, D
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<bags1.MyBag> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
+		edit.get();
 	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<MyBag>> sourceEdit, Supplier<IEdit<bags2.MyBag>> targetEdit) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

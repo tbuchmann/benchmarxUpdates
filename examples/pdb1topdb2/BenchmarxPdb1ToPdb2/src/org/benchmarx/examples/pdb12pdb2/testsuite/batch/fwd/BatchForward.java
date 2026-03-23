@@ -3,12 +3,21 @@ package org.benchmarx.examples.pdb12pdb2.testsuite.batch.fwd;
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Pdb12Pdb2TestCase;
-import org.junit.Test;
+import java.util.Collection;
+import org.benchmarx.examples.pdb12pdb2.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchForward extends Pdb12Pdb2TestCase {
 
 	public BatchForward(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
 		super(tool);
+	}
+
+	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
+		return Pdb12Pdb2TestCase.tools();
 	}
 	
 	/**
@@ -16,9 +25,9 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b> root elements of both source and target models.<br/>
 	 * <b>Features</b>: fwd, fixed
 	 */
-	@Test
-	public void testInitialiseSynchronisation()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testInitialiseSynchronisation(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		util.assertPostcondition("RootElementPdb1", "RootElementPdb2");
@@ -29,9 +38,9 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b> the name in the target Database is also changed.<br/>
 	 * <b>Features</b>: fwd, fixed
 	 */
-	@Test
-	public void testDatabaseNameChangeOfEmpty()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testDatabaseNameChangeOfEmpty(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
+		this.tool = tool; initialise();
 		// This test is not a batch test!!
 		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::setDatabaseName));
 
@@ -49,9 +58,9 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	 * <br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testCreatePerson()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreatePerson(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::createKonradAdenauer));
@@ -64,8 +73,8 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 	 * multiple Persons (first three chancellors).<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test 
-	public void testCreateMultiplePersons(){
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateMultiplePersons(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		// RENAMING THE DATABASE IS NOT A BATCH TEST, but we need it to establish the precondition for the batch test!
 		tool.performAndPropagateSourceEdit(srcEdit(helperPerson1::setDatabaseName));
 
@@ -77,5 +86,6 @@ public class BatchForward extends Pdb12Pdb2TestCase {
 				helperPerson1::createKurtKiesinger));
 		//------------
 		util.assertPostcondition("PDB1FirstThreeChancellors", "Pre_IncrBwdPDB2FirstThreeChancellors");
+		terminate();
 	}
 }

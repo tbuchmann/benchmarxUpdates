@@ -15,6 +15,7 @@ import org.benchmarx.edit.CreateNode;
 import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
+import org.benchmarx.examples.set2oset.implementations.bxlang.BXLangSet2Oset;
 import org.benchmarx.examples.set2oset.implementations.bxtend.BXtendSet2Oset;
 import org.benchmarx.examples.set2oset.implementations.medini.MediniQVTSetToOSet;
 import org.benchmarx.osets.core.OsetComparator;
@@ -113,8 +114,9 @@ public class Set2OsetTestCase {
 		return Arrays.asList(
 				new BXtendSet2Oset(),
 				//new PlainJavaUbtSet2Oset(),
-				new MediniQVTSetToOSet()
+				new MediniQVTSetToOSet(),
 				//new IBeXTGGSetToOSet()
+				new BXLangSet2Oset()
 			);
 	}
 	

@@ -1,16 +1,26 @@
 package org.benchmarx.examples.bag12bag2.testsuite.alignment_based.fwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.bag12bag2.testsuite.Bag12Bag2TestCase;
+import org.benchmarx.examples.bag12bag2.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.bag12bag2.testsuite.Decisions;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import bags1.MyBag;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalForward extends Bag12Bag2TestCase {
 
-	public IncrementalForward(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
-		super(tool);
+	public IncrementalForward() {
+		super();
+	}
+
+	public static Collection<BXTool<bags1.MyBag, bags2.MyBag, Decisions>> tools() {
+		return Bag12Bag2TestCase.tools();
 	}
 
 	/**
@@ -18,20 +28,24 @@ public class IncrementalForward extends Bag12Bag2TestCase {
 	 * <b>Expect</b> : New elements are added to the amount of the existing elements in bag2 and one new Element should be created.<br/>
 	 * <b>Features</b>: fwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::createOneBeer));
-		tool.performIdleTargetEdit(helperBag2::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalInserts(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::createOneBeer));
+		tool.performIdleTargetEdit(trgEdit(helperBag2::changeIncrementalID));
 		
 		util.assertPrecondition("OneBeerBags1", "OneBeerIncrIDBags2");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::createFiveBeers)
-				.andThen(helperBag1::createBeerGlass)
-				.andThen(helperBag1::createBeerGlass));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::createFiveBeers,
+				helperBag1::createBeerGlass,
+				helperBag1::createBeerGlass));
 		//------------
 		util.assertPostcondition("SixBeerWithTwoGlassesBags1", "SixBeerWithTwoGlassesBags2");
+		terminate();
 	}
 	
 	/**
@@ -39,21 +53,25 @@ public class IncrementalForward extends Bag12Bag2TestCase {
 	 * <b>Expect</b>: Change of multiplicity in bag2 of Element with value Beer and Deletion of Element with value Beer Glass.
 	 * <b>Features</b>: fwd, del, corr-based, structural
 	 */
-	@Test
-	public void testIncrementalDeletions() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::createFiveBeers)
-				.andThen(helperBag1::createBeerGlass));
-		tool.performIdleTargetEdit(helperBag2::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::createFiveBeers,
+				helperBag1::createBeerGlass));
+		tool.performIdleTargetEdit(trgEdit(helperBag2::changeIncrementalID));
 		
 		util.assertPrecondition("FiveBeerWithGlassBags1", "FiveBeerWithGlassIncrIDBags2");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::deleteBeer)
-				.andThen(helperBag1::deleteBeer)
-				.andThen(helperBag1::deleteBeerGlass));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::deleteBeer,
+				helperBag1::deleteBeer,
+				helperBag1::deleteBeerGlass));
 		//------------
 		util.assertPostcondition("ThreeBeerBags1", "ThreeBeerBags2");
+		terminate();
 	}
 	
 	/**
@@ -61,20 +79,24 @@ public class IncrementalForward extends Bag12Bag2TestCase {
 	 * <b>Expect</b>: Change occurs also in bag2.
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalValueChangeOfOne() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::createFiveBeers)
-				.andThen(helperBag1::createBeerGlass));
-		tool.performIdleTargetEdit(helperBag2::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalValueChangeOfOne(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::createFiveBeers,
+				helperBag1::createBeerGlass));
+		tool.performIdleTargetEdit(trgEdit(helperBag2::changeIncrementalID));
 		
 		util.assertPrecondition("FiveBeerWithGlassBags1", "FiveBeerWithGlassIncrIDBags2");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::changeOneBeerToEmptyBottle));
-		tool.performIdleSourceEdit(helperBag1::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::changeOneBeerToEmptyBottle));
+		tool.performIdleSourceEdit(srcEdit(helperBag1::changeIncrementalID));
 		//------------
 		util.assertPostcondition("FourBeerOneEmptyBottleWithGlassBags1", "FourBeerOneEmptyBottleWithGlassIncrIDBags2");
+		terminate();
 	}
 	
 	/**
@@ -82,19 +104,23 @@ public class IncrementalForward extends Bag12Bag2TestCase {
 	 * <b>Expect</b>: Change occurs also in bag2: A Element with multiplicity 5 and value Empty Bottle should be there.
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalValueChangeOfAll() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::createFiveBeers)
-				.andThen(helperBag1::createBeerGlass));
-		tool.performIdleTargetEdit(helperBag2::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalValueChangeOfAll(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::createFiveBeers,
+				helperBag1::createBeerGlass));
+		tool.performIdleTargetEdit(trgEdit(helperBag2::changeIncrementalID));
 		
 		util.assertPrecondition("FiveBeerWithGlassBags1", "FiveBeerWithGlassIncrIDBags2");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::changeAllBeerToEmptyBottles));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::changeAllBeerToEmptyBottles));
 		//------------
 		util.assertPostcondition("FiveEmptyBottlesWithGlassBags1", "FiveEmptyBottlesWithGlassBags2");
+		terminate();
 	}
 
 	/**
@@ -102,19 +128,23 @@ public class IncrementalForward extends Bag12Bag2TestCase {
 	 * <b>Expect</b> re-running the transformation after an idle source delta does not change the target model.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testStability() {		
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperBag1::createFiveBeers)
-				.andThen(helperBag1::createBeerGlass)
-				.andThen(helperBag1::createBeerGlass)
-				.andThen(helperBag1::createOneBeer));
-		tool.performIdleTargetEdit(helperBag2::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testStability(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperBag1::createFiveBeers,
+				helperBag1::createBeerGlass,
+				helperBag1::createBeerGlass,
+				helperBag1::createOneBeer));
+		tool.performIdleTargetEdit(trgEdit(helperBag2::changeIncrementalID));
 
 		util.assertPrecondition("SixBeerWithTwoGlassesBags1", "SixBeerWithTwoGlassesBags2");
 		//------------
-		tool.performAndPropagateSourceEdit(helperBag1::idleDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperBag1::idleDelta));
 		//------------
 		util.assertPostcondition("SixBeerWithTwoGlassesBags1", "SixBeerWithTwoGlassesBags2");
+		terminate();
 	}
 }

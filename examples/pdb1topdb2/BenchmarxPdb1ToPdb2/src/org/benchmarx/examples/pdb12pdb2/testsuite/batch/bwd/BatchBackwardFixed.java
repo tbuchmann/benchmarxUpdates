@@ -3,12 +3,21 @@ package org.benchmarx.examples.pdb12pdb2.testsuite.batch.bwd;
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Pdb12Pdb2TestCase;
-import org.junit.Test;
+import java.util.Collection;
+import org.benchmarx.examples.pdb12pdb2.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackwardFixed extends Pdb12Pdb2TestCase {
 
 	public BatchBackwardFixed(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
 		super(tool);
+	}
+
+	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
+		return Pdb12Pdb2TestCase.tools();
 	}
 	
 	/**
@@ -16,9 +25,9 @@ public class BatchBackwardFixed extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b> root elements of both source and target models.<br/>
 	 * <b>Features</b>: bwd, fixed
 	 */
-	@Test
-	public void testInitialiseSynchronisation()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testInitialiseSynchronisation(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		util.assertPostcondition("RootElementPdb1", "RootElementPdb2");
@@ -29,9 +38,9 @@ public class BatchBackwardFixed extends Pdb12Pdb2TestCase {
 	 * <b>Expect</b> the name in the source Database is also changed.<br/>
 	 * <b>Features</b>: bwd, fixed
 	 */
-	@Test
-	public void testDatabaseNameChangeOfEmpty()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testDatabaseNameChangeOfEmpty(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
+		this.tool = tool; initialise();
 		// Not a batch test!!
 		tool.performAndPropagateTargetEdit(trgEdit(helperPerson2::setDatabaseName));
 

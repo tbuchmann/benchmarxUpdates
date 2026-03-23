@@ -1,16 +1,26 @@
 package org.benchmarx.examples.bag12bag2.testsuite.alignment_based.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.bag12bag2.testsuite.Bag12Bag2TestCase;
+import org.benchmarx.examples.bag12bag2.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.bag12bag2.testsuite.Decisions;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import bags1.MyBag;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalBackward extends Bag12Bag2TestCase {
 
-	public IncrementalBackward(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
-		super(tool);
+	public IncrementalBackward() {
+		super();
+	}
+
+	public static Collection<BXTool<bags1.MyBag, bags2.MyBag, Decisions>> tools() {
+		return Bag12Bag2TestCase.tools();
 	}
 
 	/**
@@ -19,18 +29,22 @@ public class IncrementalBackward extends Bag12Bag2TestCase {
 	 * elements remain unchanged. <br/>
 	 * <b>Features</b>: fwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
-		tool.performAndPropagateTargetEdit(helperBag2::createEmptyBottle);
-		tool.performIdleSourceEdit(helperBag1::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalInserts(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(helperBag2::createEmptyBottle));
+		tool.performIdleSourceEdit(srcEdit(helperBag1::changeIncrementalID));
 
 		util.assertPrecondition("OneEmptyBottleBags1", "OneEmptyBottleBags2");
 		// ------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::createBeerGlass)
-				.andThen(helperBag2::createFourBeer));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::createBeerGlass,
+				helperBag2::createFourBeer));
 		// ------------
 		util.assertPostcondition("FourBeerOneEmptyBottleWithGlassBags1", "FourBeerOneEmptyBottleWithGlassBags2");
+		terminate();
 	}
 
 	/**
@@ -40,21 +54,25 @@ public class IncrementalBackward extends Bag12Bag2TestCase {
 	 * <b>Expect</b>: Deletion of 1 Beer Glass and 4 Beers in bag2. <br/>
 	 * <b>Features</b>: fwd, del, corr-based, structural
 	 */
-	@Test
-	public void testIncrementalDeletions() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::createBeerGlass)
-				.andThen(helperBag2::createFourBeer)
-				.andThen(helperBag2::createEmptyBottle));
-		tool.performIdleSourceEdit(helperBag1::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::createBeerGlass,
+				helperBag2::createFourBeer,
+				helperBag2::createEmptyBottle));
+		tool.performIdleSourceEdit(srcEdit(helperBag1::changeIncrementalID));
 
 		util.assertPrecondition("FourBeerOneEmptyBottleWithGlassBags1", "FourBeerOneEmptyBottleWithGlassBags2");
 		// ------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::deleteBeerGlass)
-				.andThen(helperBag2::deleteAllBeers));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::deleteBeerGlass,
+				helperBag2::deleteAllBeers));
 		// ------------
 		util.assertPostcondition("OneEmptyBottleBags1", "OneEmptyBottleBags2");
+		terminate();
 	}
 
 	/**
@@ -65,23 +83,27 @@ public class IncrementalBackward extends Bag12Bag2TestCase {
 	 * <b>Expect</b>: Change occurs also in bag1.<br/>
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalValueChangeOfAll() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::createBeerGlass)
-				.andThen(helperBag2::createFourBeer)
-				.andThen(helperBag2::createEmptyBottle));
-		tool.performIdleSourceEdit(helperBag1::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalValueChangeOfAll(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::createBeerGlass,
+				helperBag2::createFourBeer,
+				helperBag2::createEmptyBottle));
+		tool.performIdleSourceEdit(srcEdit(helperBag1::changeIncrementalID));
 
 		util.assertPrecondition("FourBeerOneEmptyBottleWithGlassBags1", "FourBeerOneEmptyBottleWithGlassBags2");
 		// ------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::changeEmptyBottleToBrokenBottle)
-				.andThen(helperBag2::changeMultiplicityOfBeer)
-				.andThen(helperBag2::changeBeerToEmptyBottle)
-				.andThen(helperBag2::changeMultiplicityOfBeerGlass));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::changeEmptyBottleToBrokenBottle,
+				helperBag2::changeMultiplicityOfBeer,
+				helperBag2::changeBeerToEmptyBottle,
+				helperBag2::changeMultiplicityOfBeerGlass));
 		// ------------
 		util.assertPostcondition("OneBrokenBottleTwoEmptyBottleWithTwoGlassesBags1", "OneBrokenBottleTwoEmptyBottleWithTwoGlassesBags2");
+		terminate();
 	}
 
 	/**
@@ -90,18 +112,22 @@ public class IncrementalBackward extends Bag12Bag2TestCase {
 	 * does not change the target model.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testStability() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperBag2::createBeerGlass)
-				.andThen(helperBag2::createFourBeer)
-				.andThen(helperBag2::createEmptyBottle));
-		tool.performIdleSourceEdit(helperBag1::changeIncrementalID);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testStability(BXTool<MyBag, bags2.MyBag, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperBag2::createBeerGlass,
+				helperBag2::createFourBeer,
+				helperBag2::createEmptyBottle));
+		tool.performIdleSourceEdit(srcEdit(helperBag1::changeIncrementalID));
 
 		util.assertPrecondition("FourBeerOneEmptyBottleWithGlassBags1", "FourBeerOneEmptyBottleWithGlassBags2");
 		// ------------
-		tool.performAndPropagateTargetEdit(helperBag2::idleDelta);
+		tool.performAndPropagateTargetEdit(trgEdit(helperBag2::idleDelta));
 		// ------------
 		util.assertPostcondition("FourBeerOneEmptyBottleWithGlassBags1", "FourBeerOneEmptyBottleWithGlassBags2");
+		terminate();
 	}
 }

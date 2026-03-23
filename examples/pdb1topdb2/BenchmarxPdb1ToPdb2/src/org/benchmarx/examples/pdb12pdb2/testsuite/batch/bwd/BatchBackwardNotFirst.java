@@ -3,12 +3,21 @@ package org.benchmarx.examples.pdb12pdb2.testsuite.batch.bwd;
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Pdb12Pdb2TestCase;
-import org.junit.Test;
+import java.util.Collection;
+import org.benchmarx.examples.pdb12pdb2.testsuite.BXToolParameterResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackwardNotFirst extends Pdb12Pdb2TestCase {
 
 	public BatchBackwardNotFirst(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
 		super(tool);
+	}
+
+	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
+		return Pdb12Pdb2TestCase.tools();
 	}
 	
 	/**
@@ -18,9 +27,9 @@ public class BatchBackwardNotFirst extends Pdb12Pdb2TestCase {
 	 * <br/>
 	 * <b>Features:</b>: bwd, runtime
 	 */
-	@Test
-	public void testCreatePerson()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreatePerson(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		util.configure().makeDecision(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST, false);
@@ -34,8 +43,8 @@ public class BatchBackwardNotFirst extends Pdb12Pdb2TestCase {
 	 * multiple Persons (first three chancellors).<br/>
 	 * <b>Features:</b>: bwd, runtime
 	 */
-	@Test 
-	public void testCreateMultiplePersons(){
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateMultiplePersons(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) { this.tool = tool; initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(helperPerson2::setDatabaseName));
 
 		util.assertPrecondition("EmptyBundeskanzlerPdb1", "EmptyBundeskanzlerPdb2");
@@ -47,5 +56,6 @@ public class BatchBackwardNotFirst extends Pdb12Pdb2TestCase {
 				helperPerson2::createKurtKiesinger));
 		//------------
 		util.assertPostcondition("PDB1FirstThreeChancellors", "Pre_IncrBwdPDB2FirstThreeChancellors");
+		terminate();
 	}
 }

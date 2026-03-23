@@ -2,8 +2,10 @@ package org.benchmarx.examples.bag12bag2.implementations.bxtend;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.bag12bag2.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -14,7 +16,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import bags1.MyBag;
 import de.ubt.ai1.m2m.bag12bag2.rules.Bag12bag2Transformation;
+
 import org.benchmarx.bags1.core.Bag1Comparator;
 import org.benchmarx.bags2.core.Bag2Comparator;
 
@@ -23,10 +27,11 @@ public class BXtendBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Deci
 	private ResourceSet set = new ResourceSetImpl();
 	private Resource source;
 	private Resource target;
-	private Resource corr;
-	private Bag12bag2Transformation set2oset;
+	private Resource corr;	
 	
-	private static final String RESULTPATH = "results/BXtend";
+	private Bag12bag2Transformation bags2bags;
+	
+	private static final String RESULTPATH = "results/bxtend";
 	
 	public BXtendBag12Bag2() {
 		super(new Bag1Comparator(), new Bag2Comparator());
@@ -51,32 +56,32 @@ public class BXtendBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Deci
 		corr = set.createResource(URI.createURI("corr.xmi"));
 		bags1.MyBag root = bags1.Bags1Factory.eINSTANCE.createMyBag();
 		source.getContents().add(root);
-		set2oset = new Bag12bag2Transformation(source, target, corr);
+		bags2bags = new Bag12bag2Transformation(source, target, corr);
 				
 		// perform batch to establish consistent starting state
-		set2oset.sourceToTarget();
+		bags2bags.sourceToTarget();
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<bags1.MyBag> edit) {
-		edit.accept(getSourceModel());
-		set2oset.sourceToTarget();
+	public void performAndPropagateSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
+		edit.get();
+		bags2bags.sourceToTarget();
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<bags2.MyBag> edit) {
-		edit.accept(getTargetModel());
-		set2oset.targetToSource();
+	public void performAndPropagateTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
+		edit.get();
+		bags2bags.targetToSource();
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<bags1.MyBag> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
+		edit.get();
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<bags2.MyBag> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
+		edit.get();
 	}
 
 	@Override
@@ -115,6 +120,13 @@ public class BXtendBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Deci
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<MyBag>> sourceEdit, Supplier<IEdit<bags2.MyBag>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 }
