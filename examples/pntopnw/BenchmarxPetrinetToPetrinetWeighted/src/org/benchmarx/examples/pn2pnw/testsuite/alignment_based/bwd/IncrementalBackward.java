@@ -116,7 +116,7 @@ public class IncrementalBackward extends Pn2PnwTestCase {
 		tool.performAndPropagateTargetEdit(trgEdit(helperPnw::createComplexLettersDigits));
 		tool.performIdleSourceEdit(srcEdit(helperPn::changeIncrementalID));
 		
-		util.assertPostcondition("ComplexLettersDigitsChangedPn", "ComplexLettersDigitsWeightedPnw");
+		util.assertPrecondition("ComplexLettersDigitsChangedPn", "ComplexLettersDigitsWeightedPnw");
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperPnw::idleDelta));
 		//------------

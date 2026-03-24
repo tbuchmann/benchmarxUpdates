@@ -11,5 +11,6 @@ Require-Bundle: Benchmarx;bundle-version="1.0.0",
  com.google.guava;bundle-version="21.0.0",
  Petrinet;bundle-version="0.1.0",
  PetrinetWeighted;bundle-version="0.1.0"
-Import-Package: org.apache.commons.io.output
+Import-Package: dev.bxlang.generated.petrinet2weighted,
+ org.apache.commons.io.output
 Automatic-Module-Name: BenchmarxPetrinetToPetrinetWeighted
