@@ -1,16 +1,16 @@
 package org.benchmarx.petrinet.core
 
-import static org.junit.Assert.*
-
-import org.benchmarx.emf.Comparator
-import pn.Net
 import java.util.ArrayList
+import java.util.List
+import java.util.function.BiConsumer
+import pn.Net
 import pn.NetElement
 import pn.Place
 import pn.Transition
-import java.util.List
 
-class PNComparator implements Comparator<Net> {
+import static org.junit.Assert.*
+
+class PNComparator implements BiConsumer<Net, Net> {
 	def static netToString(Net net) {
 		val ArrayList<NetElement> sortedElements = new ArrayList<NetElement>(net.elements)
 		PNNormalizer.normalize(sortedElements)
@@ -19,7 +19,7 @@ class PNComparator implements Comparator<Net> {
 				+ " {" + sortedElements.map[e | e.elementToString].join(", ") + "}"
 	}
 	
-	override assertEquals(Net expected, Net actual) {
+	override accept(Net expected, Net actual) {
 		assertTrue(netToString(expected).startsWith("PetriNet "))
 		assertEquals(netToString(expected), netToString(actual))
 	}

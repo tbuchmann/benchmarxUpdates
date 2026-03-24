@@ -2,6 +2,7 @@ package org.benchmarx.petrinetweighted.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -22,18 +23,23 @@ import pnw.Transition;
  *
  */
 public class PNWBuilder {
-	public PNWBuilder(Net n) {
+	
+	private final Supplier<Net> net;
+	private final PnwFactory f = PnwFactory.eINSTANCE;
+	private Transition lastTransition;
+	
+	public PNWBuilder(Supplier<Net> n) {
 		net = n;
 	}
 	
 	public PNWBuilder netName(String name) {
-		net.setName(name);
+		net.get().setName(name);
 		return this;
 	}
 	
 	public PNWBuilder place(String name, int numberOfTokens) {
 		Place p = f.createPlace();
-		net.getElements().add(p);
+		net.get().getElements().add(p);
 		p.setName(name);
 		p.setNoOfTokens(numberOfTokens);
 		return this;
@@ -65,7 +71,7 @@ public class PNWBuilder {
 		if (trans == null) {		
 			trans = f.createTransition();
 			trans.setName(name);
-			net.getElements().add(trans);
+			net.get().getElements().add(trans);
 		}
 		lastTransition = trans;
 		if (source != null) {
@@ -142,12 +148,8 @@ public class PNWBuilder {
 		return this;
 	}
 	
-	private final Net net;
-	private final PnwFactory f = PnwFactory.eINSTANCE;
-	private Transition lastTransition;
-	
 	private Place findPlaceByName(String name) {
-		List<Place> result = net.getElements().stream()
+		List<Place> result = net.get().getElements().stream()
 				.filter(Place.class::isInstance)
 				.map(Place.class::cast)
 				.filter(a -> a.getName().equals(name))
@@ -158,7 +160,7 @@ public class PNWBuilder {
 	}
 	
 	private Transition findTransitionByName(String name) {
-		List<Transition> result = net.getElements().stream()
+		List<Transition> result = net.get().getElements().stream()
 				.filter(Transition.class::isInstance)
 				.map(Transition.class::cast)
 				.filter(t -> t.getName().equals(name))
@@ -204,7 +206,7 @@ public class PNWBuilder {
 				.findAny().orElse(null);
 		if (add && edge == null) {
 			PTEdge pte = f.createPTEdge();
-			pte.setNet(net);
+			pte.setNet(net.get());
 			pte.setWeight(weight);
 			pte.setFromPlace(s);
 			pte.setToTransition(lastTransition);
@@ -228,7 +230,7 @@ public class PNWBuilder {
 				.findAny().orElse(null);
 		if (add && edge == null) {
 			TPEdge tpe = f.createTPEdge();
-			tpe.setNet(net);
+			tpe.setNet(net.get());
 			tpe.setWeight(weight);
 			tpe.setToPlace(t);
 			tpe.setFromTransition(lastTransition);

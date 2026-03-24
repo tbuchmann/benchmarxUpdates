@@ -100,7 +100,7 @@ public class Bag2Helper {
 		
 		assertTrue(elementOpt.isPresent());
 		Element element = elementOpt.get();
-		assertTrue(element.getValue().equals(value));
+		assertTrue(element.getValue().equals(value));		
 		return element;		
 	}
 }

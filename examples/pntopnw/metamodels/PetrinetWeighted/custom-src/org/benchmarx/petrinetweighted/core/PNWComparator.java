@@ -1,12 +1,11 @@
 package org.benchmarx.petrinetweighted.core;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import org.benchmarx.emf.Comparator;
 
 import pnw.Net;
 import pnw.NetElement;
@@ -15,7 +14,7 @@ import pnw.Place;
 import pnw.TPEdge;
 import pnw.Transition;
 
-public class PNWComparator implements Comparator<Net> {
+public class PNWComparator implements BiConsumer<Net, Net> {
 	public static String netToString(Net net) {
 		String name = net.getName() == null ? "" : net.getName();
 		ArrayList<Place> places = new ArrayList<>();
@@ -50,7 +49,7 @@ public class PNWComparator implements Comparator<Net> {
 	}
 	
 	@Override
-	public void assertEquals(Net expected, Net actual) {
+	public void accept(Net expected, Net actual) {
 		assertTrue(netToString(expected).startsWith("PetriNetWeighted "));
 		org.junit.Assert.assertEquals(netToString(expected), netToString(actual));
 	}

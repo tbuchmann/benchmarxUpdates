@@ -1,6 +1,7 @@
 package org.benchmarx.petrinet.core;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -18,12 +19,16 @@ import pn.Transition;
  *
  */
 public class PNBuilder {
-	public PNBuilder(Net n) {
+	private final Supplier<Net> net;
+	private final PnFactory f = PnFactory.eINSTANCE;
+	private Transition lastTransition;
+	
+	public PNBuilder(Supplier<Net> n) {
 		net = n;
 	}
 	
 	public PNBuilder netName(String name) {
-		net.setName(name);
+		net.get().setName(name);
 		return this;
 	}
 	
@@ -31,7 +36,7 @@ public class PNBuilder {
 		Place p = f.createPlace();
 		p.setName(name);
 		p.setNoOfTokens(numberOfTokens);
-		net.getElements().add(p);
+		net.get().getElements().add(p);
 		return this;
 	}
 	
@@ -54,7 +59,7 @@ public class PNBuilder {
 		Transition trans = findTransitionByName(name); 
 		if (trans == null) {
 			trans = f.createTransition();
-			net.getElements().add(trans);
+			net.get().getElements().add(trans);
 			trans.setName(name);
 		}
 		lastTransition = trans;
@@ -90,12 +95,8 @@ public class PNBuilder {
 		return changeTarget(place, false);
 	}
 	
-	private final Net net;
-	private final PnFactory f = PnFactory.eINSTANCE;
-	private Transition lastTransition;
-	
 	private Place findPlaceByName(String name) {
-		List<Place> result = net.getElements().stream()
+		List<Place> result = net.get().getElements().stream()
 				.filter(Place.class::isInstance)
 				.map(Place.class::cast)
 				.filter(a -> a.getName().equals(name))
@@ -106,7 +107,7 @@ public class PNBuilder {
 	}
 	
 	private Transition findTransitionByName(String name) {
-		List<Transition> result = net.getElements().stream()
+		List<Transition> result = net.get().getElements().stream()
 				.filter(Transition.class::isInstance)
 				.map(Transition.class::cast)
 				.filter(t -> t.getName().equals(name))

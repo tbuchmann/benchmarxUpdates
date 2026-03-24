@@ -1,27 +1,54 @@
 package org.benchmarx.petrinetweighted.core;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+
 import pnw.Net;
 
 public class PNWHelper {
-	public void renameToLettersAndDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	private PNWBuilder builder;
+	private Supplier<Net> net;
+	private BiConsumer<EAttribute /* attribute type */, List<?> /* [owning node, old value, new value] */> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EObject, List<EObject>> moveNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
+	private BiConsumer<EReference, List<EObject>> createEdge;
+	
+	public PNWHelper(Supplier<Net> net, Consumer<EObject> createNode,
+			BiConsumer<EReference, List<EObject>> createEdge, BiConsumer<EAttribute, List<?>> changeAttribute,
+			Consumer<EObject> deleteNode, BiConsumer<EObject, List<EObject>> moveNode,
+			BiConsumer<EReference, List<EObject>> deleteEdge) {
+		builder = new PNWBuilder(net);//, createNode, createEdge);
+		this.net = net;
+		this.changeAttribute = changeAttribute;
+		this.deleteEdge = deleteEdge;
+		this.deleteNode = deleteNode;
+		this.moveNode = moveNode;
+		this.createEdge = createEdge;
+	}
+	
+	public void renameToLettersAndDigits() {		
 		builder.netName("LettersAndDigits");
 	}
-	public void renameToFactoryModel(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void renameToFactoryModel() {		
 		builder.netName("FactoryModel");
 	}
 	
-	public void changeIncrementalID(Net net) {
-		if ("changed".equals(net.getIncrementalID())) {
-			net.setIncrementalID("changed again");
+	public void changeIncrementalID() {
+		if ("changed".equals(net.get().getIncrementalID())) {
+			net.get().setIncrementalID("changed again");
 		} else {
-			net.setIncrementalID("changed");
+			net.get().setIncrementalID("changed");
 		}
 	}
 		
-	public void createSimpleLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void createSimpleLettersDigits() {
 		builder
 			.netName("LettersAndDigits")
 		
@@ -38,8 +65,7 @@ public class PNWHelper {
 			.transition("3", "D",  "E", 34, 55)
 			.transition("4", "F", "G", 89, 144);
 	}	
-	public void createComplexLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void createComplexLettersDigits() {
 		builder
 			.netName("LettersAndDigits")
 		
@@ -54,8 +80,7 @@ public class PNWHelper {
 			.transition("4", "B", "B", 5, 6).addSource("D", 7).addTarget("D", 8);
 	}
 	
-	public void createPTPLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void createPTPLettersDigits() {
 		builder
 			.netName("LettersAndDigits")
 		
@@ -64,36 +89,31 @@ public class PNWHelper {
 			
 			.transition("1", "A", "B", 1, 1);
 	}
-	public void extendPTPLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void extendPTPLettersDigits() {
 		builder
 			.place("C", 0)
 			
 			.transition("1", "C", null, 1, 1)
 			.transition("2", "A", "B", 1, 1);
 	}
-	public void furtherExtendPTPLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void furtherExtendPTPLettersDigits() {
 		builder
 			.transition("1", "B", null, 1, 1)
 			.transition("2", null, "C", 1, 1);
 	}
-	public void reducePTPExtendedLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void reducePTPExtendedLettersDigits() {
 		builder
 			.deletePlace("C")
 
 			.deleteTransition("2");
 	}
-	public void reducePTPFurtherExtendedLettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void reducePTPFurtherExtendedLettersDigits() {
 		builder
 			.transition("1", null, null, -1, -1).removeSource("B")
 			.transition("2", null, null, -1, -1).removeTarget("C");
 	}
 	
-	public void create1234LettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void create1234LettersDigits() {
 		builder
 			.netName("LettersAndDigits")
 		
@@ -105,8 +125,7 @@ public class PNWHelper {
 			.transition("1", "A", "B", 1, 1)
 			.transition("2", "C", "D", 1, 1).addSource("B", 1);
 	}	
-	public void construct9012LettersDigits(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void construct9012LettersDigits() {
 		builder
 			.changeTokens("A", 9)
 			.changeTokens("B", 0)
@@ -126,30 +145,26 @@ public class PNWHelper {
 			.renameTransition("tmp", "2");
 	}
 	
-	public void weightA1BWith42(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void weightA1BWith42() {
 		builder
 			.weightPTEdge("A", "1", 4)
 			.weightTPEdge("1", "B", 2);
 	}
-	public void weightA1BWith73(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void weightA1BWith73() {
 		builder
 			.weightPTEdge("A", "1", 7)
 			.weightTPEdge("1", "B", 3);
 	}
-	public void weightA3DWith24(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void weightA3DWith24() {
 		builder
 			.weightPTEdge("A", "3", 2)
 			.weightTPEdge("3", "D", 4);
 	}
-	public void weightB2With9(Net net) {
-		PNWBuilder builder = new PNWBuilder(net);
+	public void weightB2With9() {
 		builder
 			.weightPTEdge("B", "2", 9);
 	}
 	
-	public void idleDelta(Net net) {	
+	public void idleDelta() {	
 	}
 }

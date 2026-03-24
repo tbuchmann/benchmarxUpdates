@@ -9,12 +9,14 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.pn2pnw.testsuite.Decisions;
+import org.benchmarx.petrinet.core.PNComparator;
 import org.benchmarx.petrinetweighted.core.PNWComparator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -24,9 +26,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
 import de.ikv.emf.qvt.EMFQvtProcessorImpl;
 import de.ikv.medini.qvt.QVTProcessorConsts;
-import org.benchmarx.petrinet.core.PNComparator;
+import pn.Net;
 import pn.PnFactory;
 import uk.ac.kent.cs.kmf.util.ILog;
 import uk.ac.kent.cs.kmf.util.OutputStreamLog;
@@ -138,8 +141,8 @@ public class MediniQVTPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<pnw.Net> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<pnw.Net>> edit) {
+		edit.get();
 		launchBWD();
 	}
 
@@ -149,8 +152,8 @@ public class MediniQVTPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<pn.Net> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<pn.Net>> edit) {
+		edit.get();
 		launchFWD();
 	}
 
@@ -283,8 +286,8 @@ public class MediniQVTPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<pnw.Net> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<pnw.Net>> edit) {
+		edit.get();
 	}
 
 	/**
@@ -293,7 +296,14 @@ public class MediniQVTPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<pn.Net> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<pn.Net>> edit) {
+		edit.get();
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<Net>> sourceEdit, Supplier<IEdit<pnw.Net>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 }

@@ -1,14 +1,14 @@
-package org.benchmarx.examples.pn2pnw.implementations.bxtend;
+package org.benchmarx.examples.bag12bag2.implementations.bxlang;
 
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import org.benchmarx.bags1.core.Bag1Comparator;
+import org.benchmarx.bags2.core.Bag2Comparator;
+import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
-import org.benchmarx.config.Configurator;
-import org.benchmarx.examples.pn2pnw.testsuite.Decisions;
-import org.benchmarx.petrinet.core.PNComparator;
-import org.benchmarx.petrinetweighted.core.PNWComparator;
+import org.benchmarx.examples.bag12bag2.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -17,62 +17,69 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import de.ubt.ai1.m2m.pn2pnw.rules.Pn2pnwTransformation;
-import pn.Net;
+import bags1.MyBag;
+import dev.bxlang.generated.bags1tobags2.Bags1ToBags2Transformation;
 
-public class BXtendPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
+
+public class BXLangBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Decisions> {
 
 	private ResourceSet set = new ResourceSetImpl();
 	private Resource source;
 	private Resource target;
-	private Resource corr;
-	private Pn2pnwTransformation pn2pnw;
+	private Resource corr;	
 	
-	private static final String RESULTPATH = "results/BXtend";
+	private Bags1ToBags2Transformation bags2bags;
 	
-	public BXtendPn2Pnw() {		
-		super(new PNComparator(), new PNWComparator());
+	private static final String RESULTPATH = "results/bxtend";
+	
+	public BXLangBag12Bag2() {
+		super(new Bag1Comparator(), new Bag2Comparator());
 	}
 	
 	@Override
 	public String getName() {
 		return "BXtend";
 	}
+	
+	@Override
+	public String toString() {
+		return this.getName();
+	}
 
 	@Override
 	public void initiateSynchronisationDialogue() {
 		set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());		
 		
-		source = set.createResource(URI.createURI("pn.xmi"));
-		target = set.createResource(URI.createURI("pnw.xmi"));
+		source = set.createResource(URI.createURI("bag1.xmi"));
+		target = set.createResource(URI.createURI("bag2.xmi"));
 		corr = set.createResource(URI.createURI("corr.xmi"));
-		pn.Net root = pn.PnFactory.eINSTANCE.createNet();
+		bags1.MyBag root = bags1.Bags1Factory.eINSTANCE.createMyBag();
 		source.getContents().add(root);
-		pn2pnw = new Pn2pnwTransformation(source, target, corr);
+		bags2bags = new Bags1ToBags2Transformation();
 				
 		// perform batch to establish consistent starting state
-		pn2pnw.sourceToTarget();
+		bags2bags.transformForward(source, target);
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Supplier<IEdit<pn.Net>> edit) {
+	public void performAndPropagateSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
 		edit.get();
-		pn2pnw.sourceToTarget();
+		bags2bags.transformForward(source, target);
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Supplier<IEdit<pnw.Net>> edit) {
+	public void performAndPropagateTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
 		edit.get();
-		pn2pnw.targetToSource();
+		bags2bags.transformBackward(target, source);
 	}
 
 	@Override
-	public void performIdleSourceEdit(Supplier<IEdit<pn.Net> >edit) {
+	public void performIdleSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
 		edit.get();
 	}
 
 	@Override
-	public void performIdleTargetEdit(Supplier<IEdit<pnw.Net>> edit) {
+	public void performIdleTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
 		edit.get();
 	}
 
@@ -82,21 +89,21 @@ public class BXtendPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	}
 
 	@Override
-	public pn.Net getSourceModel() {
-		return (pn.Net) source.getContents().get(0);
+	public bags1.MyBag getSourceModel() {
+		return (bags1.MyBag) source.getContents().get(0);
 	}
 
 	@Override
-	public pnw.Net getTargetModel() {
-		return (pnw.Net) target.getContents().get(0);
+	public bags2.MyBag getTargetModel() {
+		return (bags2.MyBag) target.getContents().get(0);
 	}
 
 	@Override
 	public void saveModels(String name) {
 		ResourceSet set = new ResourceSetImpl();
 		set.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-		URI srcURI = URI.createFileURI(RESULTPATH + "/" + name + "ast.xmi");
-		URI trgURI = URI.createFileURI(RESULTPATH + "/" + name + "dag.xmi");
+		URI srcURI = URI.createFileURI(RESULTPATH + "/" + name + "bag1.xmi");
+		URI trgURI = URI.createFileURI(RESULTPATH + "/" + name + "bag2.xmi");
 		Resource resSource = set.createResource(srcURI);
 		Resource resTarget = set.createResource(trgURI);
 		
@@ -115,10 +122,11 @@ public class BXtendPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	}
 
 	@Override
-	public void performAndPropagateEdit(Supplier<IEdit<Net>> sourceEdit, Supplier<IEdit<pnw.Net>> targetEdit) {
+	public void performAndPropagateEdit(Supplier<IEdit<MyBag>> sourceEdit, Supplier<IEdit<bags2.MyBag>> targetEdit) {
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
 	}
+
 
 }

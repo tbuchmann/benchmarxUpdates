@@ -1,7 +1,9 @@
 package org.benchmarx.examples.pn2pnw.implementations.ibextgg;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.examples.pn2pnw.testsuite.Decisions;
 import org.benchmarx.petrinet.core.PNComparator;
 import org.benchmarx.petrinetweighted.core.PNWComparator;
@@ -26,6 +28,13 @@ public class IBeXTGGPetrinets extends IBeXTGGAdapter<pn.Net, pnw.Net, Decisions,
 		pn.Net net = pn.PnFactory.eINSTANCE.createNet();
 		net.setName("");
 		return net;
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<Net>> sourceEdit, Supplier<IEdit<pnw.Net>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 }
