@@ -21,17 +21,17 @@ public class IncrementalBackward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testIncrementalInserts() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::createCPM2GanttTestCases)
-				.andThen(helperCPM::changeIncrementalID));
-		tool.performIdleSourceEdit(helperGantt::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::createCPM2GanttTestCases,
+				helperCPM::changeIncrementalID));
+		tool.performIdleSourceEdit(srcEdit(helperGantt::changeIncrementalID));
 		
 		util.assertPrecondition("TestsGantt", "TestsCPM");
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::addCPM2GanttHelpers)
-				.andThen(helperCPM::addCPM2GanttComparators)
-				.andThen(helperCPM::addCPM2GanttModels));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::addCPM2GanttHelpers,
+				helperCPM::addCPM2GanttComparators,
+				helperCPM::addCPM2GanttModels));
 		//------------
 		util.assertPostcondition("TestsHelperModelComparatorGantt", "TestsHelperModelComparatorCPM");
 	}
@@ -43,25 +43,25 @@ public class IncrementalBackward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testIncrementalDeletions() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::createCPM2GanttTestCases)
-				.andThen(helperCPM::addCPM2GanttHelpers)
-				.andThen(helperCPM::addCPM2GanttComparators)
-				.andThen(helperCPM::addCPM2GanttModels)
-				.andThen(helperCPM::addCPM2GanttModelsToComparatorDependencies)
-				.andThen(helperCPM::changeIncrementalID));
-		tool.performIdleSourceEdit(helperGantt::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::createCPM2GanttTestCases,
+				helperCPM::addCPM2GanttHelpers,
+				helperCPM::addCPM2GanttComparators,
+				helperCPM::addCPM2GanttModels,
+				helperCPM::addCPM2GanttModelsToComparatorDependencies,
+				helperCPM::changeIncrementalID));
+		tool.performIdleSourceEdit(srcEdit(helperGantt::changeIncrementalID));
 		
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//Delete Dependency
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::deleteCPM2GanttModelsToComparatorDependencies);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::deleteCPM2GanttModelsToComparatorDependencies));
 		//------------
 		util.assertPostcondition("TestsHelperModelComparatorGantt", "TestsHelperModelComparatorCPM");
 		
 		//Delete Activity
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::deleteCPM2GanttHelpers);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::deleteCPM2GanttHelpers));
 		//------------
 		util.assertPostcondition("TestsModelComparatorGantt", "TestsModelComparatorCPM");
 	}
@@ -73,26 +73,26 @@ public class IncrementalBackward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testIncrementalValueChange() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::createCPM2GanttTestCases)
-				.andThen(helperCPM::addCPM2GanttHelpers)
-				.andThen(helperCPM::addCPM2GanttComparators)
-				.andThen(helperCPM::addCPM2GanttModels)
-				.andThen(helperCPM::addCPM2GanttModelsToComparatorDependencies)
-				.andThen(helperCPM::changeIncrementalID));
-		tool.performIdleSourceEdit(helperGantt::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::createCPM2GanttTestCases,
+				helperCPM::addCPM2GanttHelpers,
+				helperCPM::addCPM2GanttComparators,
+				helperCPM::addCPM2GanttModels,
+				helperCPM::addCPM2GanttModelsToComparatorDependencies,
+				helperCPM::changeIncrementalID));
+		tool.performIdleSourceEdit(srcEdit(helperGantt::changeIncrementalID));
 		
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::changeCPM2GanttHelperToBuilder)
-				.andThen(helperCPM::changeCPM2GanttModelDuration));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::changeCPM2GanttHelperToBuilder,
+				helperCPM::changeCPM2GanttModelDuration));
 		//------------
 		util.assertPostcondition("TestsBuilderMModel-ComparatorGantt", "TestsBuilderMModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::changeCPM2GanttTestCasesNameDuration)
-				.andThen(helperCPM::changeCPM2GanttModelToComparatorDependencyTypeDurationTargetAndSource));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::changeCPM2GanttTestCasesNameDuration,
+				helperCPM::changeCPM2GanttModelToComparatorDependencyTypeDurationTargetAndSource));
 		//------------
 		util.assertPostcondition("TestsBuilderModelComparatorModifiedGantt", "TestsBuilderModelComparatorModifiedCPM");
 	}
@@ -104,18 +104,18 @@ public class IncrementalBackward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testStability() {		
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::createCPM2GanttTestCases)
-				.andThen(helperCPM::addCPM2GanttHelpers)
-				.andThen(helperCPM::addCPM2GanttComparators)
-				.andThen(helperCPM::addCPM2GanttModels)
-				.andThen(helperCPM::addCPM2GanttModelsToComparatorDependencies)
-				.andThen(helperCPM::changeIncrementalID));
-		tool.performIdleSourceEdit(helperGantt::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::createCPM2GanttTestCases,
+				helperCPM::addCPM2GanttHelpers,
+				helperCPM::addCPM2GanttComparators,
+				helperCPM::addCPM2GanttModels,
+				helperCPM::addCPM2GanttModelsToComparatorDependencies,
+				helperCPM::changeIncrementalID));
+		tool.performIdleSourceEdit(srcEdit(helperGantt::changeIncrementalID));
 
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::idleDelta);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::idleDelta));
 		//------------
 		util.assertPostcondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 	}
@@ -127,18 +127,18 @@ public class IncrementalBackward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testHipporcraticness() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperCPM::createCPM2GanttTestCases)
-				.andThen(helperCPM::addCPM2GanttHelpers)
-				.andThen(helperCPM::addCPM2GanttComparators)
-				.andThen(helperCPM::addCPM2GanttModels)
-				.andThen(helperCPM::addCPM2GanttModelsToComparatorDependencies)
-				.andThen(helperCPM::changeIncrementalID));
-		tool.performIdleSourceEdit(helperGantt::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperCPM::createCPM2GanttTestCases,
+				helperCPM::addCPM2GanttHelpers,
+				helperCPM::addCPM2GanttComparators,
+				helperCPM::addCPM2GanttModels,
+				helperCPM::addCPM2GanttModelsToComparatorDependencies,
+				helperCPM::changeIncrementalID));
+		tool.performIdleSourceEdit(srcEdit(helperGantt::changeIncrementalID));
 		
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::changeIncrementalID));
 		//------------
 		util.assertPostcondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorChangedAgainCPM");
 	}

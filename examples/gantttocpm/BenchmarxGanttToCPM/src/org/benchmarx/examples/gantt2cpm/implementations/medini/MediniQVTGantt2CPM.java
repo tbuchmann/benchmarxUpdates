@@ -9,12 +9,15 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.cpm.core.CPMComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.gantt2cpm.testsuite.Decisions;
+import org.benchmarx.gantt.core.GanttComparator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -23,14 +26,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 
 import cpm.CPMNetwork;
 import de.ikv.emf.qvt.EMFQvtProcessorImpl;
 import de.ikv.medini.qvt.QVTProcessorConsts;
-import org.benchmarx.cpm.core.CPMComparator;
-import org.benchmarx.gantt.core.GanttComparator;
-
 import gantt.GanttDiagram;
 import uk.ac.kent.cs.kmf.util.ILog;
 import uk.ac.kent.cs.kmf.util.OutputStreamLog;
@@ -142,8 +141,9 @@ public class MediniQVTGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, D
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<CPMNetwork> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<CPMNetwork>> edit) {
+		//edit.accept(getTargetModel());
+		edit.get();
 		launchBWD();
 	}
 
@@ -153,8 +153,9 @@ public class MediniQVTGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, D
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<GanttDiagram> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<GanttDiagram>> edit) {
+		//edit.accept(getSourceModel());
+		edit.get();
 		launchFWD();
 	}
 
@@ -287,8 +288,9 @@ public class MediniQVTGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, D
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<CPMNetwork> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<CPMNetwork>> edit) {
+		//edit.accept(getTargetModel());
+		edit.get();
 	}
 
 	/**
@@ -297,7 +299,16 @@ public class MediniQVTGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, D
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<GanttDiagram> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<GanttDiagram>> edit) {
+		//edit.accept(getSourceModel());
+		edit.get();
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<GanttDiagram>> sourceEdit,
+			Supplier<IEdit<CPMNetwork>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 }

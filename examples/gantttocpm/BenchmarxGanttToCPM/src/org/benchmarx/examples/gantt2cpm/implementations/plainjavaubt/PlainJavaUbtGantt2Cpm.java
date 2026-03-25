@@ -11,11 +11,15 @@ import plainjavaubt.gantt2cpm.Gantt2Cpm;
 import plainjavaubt.util.test.BXToolForPlainJavaUbt;
 import plainjavaubt.util.trafo.Transformation;
 
-public class PlainJavaUbtGantt2Cpm extends BXToolForPlainJavaUbt<gantt.GanttDiagram, cpm.CPMNetwork, Decisions> {
+public class PlainJavaUbtGantt2Cpm {
+	/*
+	extends BXToolForPlainJavaUbt<gantt.GanttDiagram, cpm.CPMNetwork, Decisions> {
+}
 	public PlainJavaUbtGantt2Cpm() {
 		super(new Gantt2Cpm(), new Cpm2Gantt(), "src/de/ubt/ai1/m2m/gantt2cpm/implementations/plainjavaubt",
 				GanttFactory.eINSTANCE.createGanttDiagram(), CpmFactory.eINSTANCE.createCPMNetwork(),
 				new GanttComparator(), new CPMComparator());
 		Transformation.validateInput = false;
 	}
+	*/
 }

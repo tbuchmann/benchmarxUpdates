@@ -21,17 +21,17 @@ public class IncrementalForward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testIncrementalInserts() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::createGantt2CPMTestCases)
-				.andThen(helperGantt::changeIncrementalID));
-		tool.performIdleTargetEdit(helperCPM::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::createGantt2CPMTestCases,
+				helperGantt::changeIncrementalID));
+		tool.performIdleTargetEdit(trgEdit(helperCPM::changeIncrementalID));
 		
 		util.assertPrecondition("TestsGantt", "TestsCPM");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::addGantt2CPMHelpers)
-				.andThen(helperGantt::addGantt2CPMComparators)
-				.andThen(helperGantt::addGantt2CPMModels));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::addGantt2CPMHelpers,
+				helperGantt::addGantt2CPMComparators,
+				helperGantt::addGantt2CPMModels));
 		//------------
 		util.assertPostcondition("TestsHelperModelComparatorGantt", "TestsHelperModelComparatorCPM");
 	}
@@ -43,25 +43,25 @@ public class IncrementalForward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testIncrementalDeletions() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::createGantt2CPMTestCases)
-				.andThen(helperGantt::addGantt2CPMHelpers)
-				.andThen(helperGantt::addGantt2CPMComparators)
-				.andThen(helperGantt::addGantt2CPMModels)
-				.andThen(helperGantt::addGantt2CPMModelsToComparatorDependencies)
-				.andThen(helperGantt::changeIncrementalID));
-		tool.performIdleTargetEdit(helperCPM::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::createGantt2CPMTestCases,
+				helperGantt::addGantt2CPMHelpers,
+				helperGantt::addGantt2CPMComparators,
+				helperGantt::addGantt2CPMModels,
+				helperGantt::addGantt2CPMModelsToComparatorDependencies,
+				helperGantt::changeIncrementalID));
+		tool.performIdleTargetEdit(trgEdit(helperCPM::changeIncrementalID));
 		
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");	
 		//Delete Dependency
 		//------------
-		tool.performAndPropagateSourceEdit(helperGantt::deleteGantt2CPMModelsToComparatorDependencies);
+		tool.performAndPropagateSourceEdit(srcEdit(helperGantt::deleteGantt2CPMModelsToComparatorDependencies));
 		//------------
 		util.assertPostcondition("TestsHelperModelComparatorGantt", "TestsHelperModelComparatorCPM");
 		
 		//Delete Activity
 		//------------
-		tool.performAndPropagateSourceEdit(helperGantt::deleteGantt2CPMHelpers);
+		tool.performAndPropagateSourceEdit(srcEdit(helperGantt::deleteGantt2CPMHelpers));
 		//------------
 		util.assertPostcondition("TestsModelComparatorGantt", "TestsModelComparatorCPM");
 	}
@@ -74,26 +74,26 @@ public class IncrementalForward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testIncrementalValueChange() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::createGantt2CPMTestCases)
-				.andThen(helperGantt::addGantt2CPMHelpers)
-				.andThen(helperGantt::addGantt2CPMComparators)
-				.andThen(helperGantt::addGantt2CPMModels)
-				.andThen(helperGantt::addGantt2CPMModelsToComparatorDependencies)
-				.andThen(helperGantt::changeIncrementalID));
-		tool.performIdleTargetEdit(helperCPM::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::createGantt2CPMTestCases,
+				helperGantt::addGantt2CPMHelpers,
+				helperGantt::addGantt2CPMComparators,
+				helperGantt::addGantt2CPMModels,
+				helperGantt::addGantt2CPMModelsToComparatorDependencies,
+				helperGantt::changeIncrementalID));
+		tool.performIdleTargetEdit(trgEdit(helperCPM::changeIncrementalID));
 		
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::changeGantt2CPMHelperToBuilder)
-				.andThen(helperGantt::changeGantt2CPMModelDuration));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::changeGantt2CPMHelperToBuilder,
+				helperGantt::changeGantt2CPMModelDuration));
 		//------------
 		util.assertPostcondition("TestsBuilderMModel-ComparatorGantt", "TestsBuilderMModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::changeGantt2CPMTestCasesNameDuration)
-				.andThen(helperGantt::changeGantt2CPMModelToComparatorDependencyTypeDurationTargetAndSource));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::changeGantt2CPMTestCasesNameDuration,
+				helperGantt::changeGantt2CPMModelToComparatorDependencyTypeDurationTargetAndSource));
 		//------------
 		util.assertPostcondition("TestsBuilderModelComparatorModifiedGantt", "TestsBuilderModelComparatorModifiedCPM");
 	}
@@ -105,18 +105,18 @@ public class IncrementalForward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testStability() {		
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::createGantt2CPMTestCases)
-				.andThen(helperGantt::addGantt2CPMHelpers)
-				.andThen(helperGantt::addGantt2CPMComparators)
-				.andThen(helperGantt::addGantt2CPMModels)
-				.andThen(helperGantt::addGantt2CPMModelsToComparatorDependencies)
-				.andThen(helperGantt::changeIncrementalID));
-		tool.performIdleTargetEdit(helperCPM::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::createGantt2CPMTestCases,
+				helperGantt::addGantt2CPMHelpers,
+				helperGantt::addGantt2CPMComparators,
+				helperGantt::addGantt2CPMModels,
+				helperGantt::addGantt2CPMModelsToComparatorDependencies,
+				helperGantt::changeIncrementalID));
+		tool.performIdleTargetEdit(trgEdit(helperCPM::changeIncrementalID));
 
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateSourceEdit(helperGantt::idleDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperGantt::idleDelta));
 		//------------
 		util.assertPostcondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 	}
@@ -128,18 +128,18 @@ public class IncrementalForward extends GanttToCPMTestCase {
 	 */
 	@Test
 	public void testHippocraticness() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperGantt::createGantt2CPMTestCases)
-				.andThen(helperGantt::addGantt2CPMHelpers)
-				.andThen(helperGantt::addGantt2CPMComparators)
-				.andThen(helperGantt::addGantt2CPMModels)
-				.andThen(helperGantt::addGantt2CPMModelsToComparatorDependencies)
-				.andThen(helperGantt::changeIncrementalID));
-		tool.performIdleTargetEdit(helperCPM::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperGantt::createGantt2CPMTestCases,
+				helperGantt::addGantt2CPMHelpers,
+				helperGantt::addGantt2CPMComparators,
+				helperGantt::addGantt2CPMModels,
+				helperGantt::addGantt2CPMModelsToComparatorDependencies,
+				helperGantt::changeIncrementalID));
+		tool.performIdleTargetEdit(trgEdit(helperCPM::changeIncrementalID));
 
 		util.assertPrecondition("TestsHelperModel-ComparatorGantt", "TestsHelperModel-ComparatorCPM");
 		//------------
-		tool.performAndPropagateSourceEdit(helperGantt::changeIncrementalID);
+		tool.performAndPropagateSourceEdit(srcEdit(helperGantt::changeIncrementalID));
 		//------------
 		util.assertPostcondition("TestsHelperModel-ComparatorChangedAgainGantt", "TestsHelperModel-ComparatorCPM");
 	}

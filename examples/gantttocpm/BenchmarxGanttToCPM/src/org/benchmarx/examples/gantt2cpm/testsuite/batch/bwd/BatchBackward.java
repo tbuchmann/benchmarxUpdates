@@ -21,11 +21,11 @@ public class BatchBackward extends GanttToCPMTestCase {
 	@Test
 	public void testCpmNameChangeOfEmpty()
 	{
-		tool.performAndPropagateTargetEdit(helperCPM::createEmptyGantt2CPMProcedure);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createEmptyGantt2CPMProcedure));
 
 		util.assertPrecondition("EmptyGantt2CpmGantt", "EmptyGantt2CpmCpm");
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::createEmptyItalyTankRush);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createEmptyItalyTankRush));
 		//------------
 		util.assertPostcondition("EmptyItalyTankRushGantt", "EmptyItalyTankRushCpm");
 	}
@@ -42,7 +42,7 @@ public class BatchBackward extends GanttToCPMTestCase {
 	{
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::createSimpleTankRush);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createSimpleTankRush));
 		//------------
 		util.assertPostcondition("SimpleTankRushGantt", "SimpleTankRushCpm");
 	}
@@ -55,7 +55,7 @@ public class BatchBackward extends GanttToCPMTestCase {
 	public void testCreateComplexGantt(){ // rename to CPM?
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(helperCPM::createComplexTankRush);
+		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createComplexTankRush));
 		//------------
 		util.assertPostcondition("ComplexTankRushGantt", "ComplexTankRushCpm");
 	}

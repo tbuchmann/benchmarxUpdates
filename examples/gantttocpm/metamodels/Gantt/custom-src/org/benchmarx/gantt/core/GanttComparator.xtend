@@ -1,15 +1,15 @@
 package org.benchmarx.gantt.core
 
-import static org.junit.Assert.*
-
-import org.benchmarx.emf.Comparator
-import gantt.GanttDiagram
 import gantt.Activity
 import gantt.Dependency
-import java.util.ArrayList
 import gantt.Element
+import gantt.GanttDiagram
+import java.util.ArrayList
+import java.util.function.BiConsumer
 
-class GanttComparator implements Comparator<GanttDiagram> {
+import static org.junit.Assert.*
+
+class GanttComparator implements BiConsumer<GanttDiagram, GanttDiagram> {
 	def static modelToString(GanttDiagram diagram) {
 		val ArrayList<Element> sortedElements = new ArrayList<Element>(diagram.elements)
 		GanttNormalizer.normalize(sortedElements)
@@ -22,7 +22,7 @@ class GanttComparator implements Comparator<GanttDiagram> {
 		'''
 	}
 	
-	override assertEquals(GanttDiagram expected, GanttDiagram actual) {
+	override accept(GanttDiagram expected, GanttDiagram actual) {
 		assertTrue(modelToString(expected).startsWith("GanttDiagram "))
 		assertEquals(modelToString(expected), modelToString(actual))
 	}

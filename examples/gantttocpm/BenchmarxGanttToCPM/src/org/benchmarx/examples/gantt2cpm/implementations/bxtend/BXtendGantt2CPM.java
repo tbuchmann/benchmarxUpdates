@@ -1,11 +1,14 @@
 package org.benchmarx.examples.gantt2cpm.implementations.bxtend;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.cpm.core.CPMComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.gantt2cpm.testsuite.Decisions;
+import org.benchmarx.gantt.core.GanttComparator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -15,8 +18,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import cpm.CPMNetwork;
-import org.benchmarx.cpm.core.CPMComparator;
-import org.benchmarx.gantt.core.GanttComparator;
 import de.ubt.ai1.m2m.gantt2cpm.rules.Gantt2cpmTransformation;
 import gantt.GanttDiagram;
 
@@ -55,26 +56,28 @@ public class BXtendGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Deci
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<GanttDiagram> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<GanttDiagram>> edit) {
+		edit.get();
 		gantt2cpm.sourceToTarget();
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<CPMNetwork> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<CPMNetwork>> edit) {
+		edit.get();
 		gantt2cpm.targetToSource();
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<GanttDiagram> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<GanttDiagram>> edit) {
+		edit.get();
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<CPMNetwork> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<CPMNetwork>> edit) {
+		edit.get();
 	}
+	
+	
 
 	@Override
 	public void setConfigurator(Configurator<Decisions> configurator) {
@@ -112,6 +115,14 @@ public class BXtendGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Deci
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<GanttDiagram>> sourceEdit,
+			Supplier<IEdit<CPMNetwork>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 }

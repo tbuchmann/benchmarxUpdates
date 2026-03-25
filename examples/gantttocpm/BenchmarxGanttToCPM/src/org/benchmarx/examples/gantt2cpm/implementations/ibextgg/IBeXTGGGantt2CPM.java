@@ -1,13 +1,14 @@
 package org.benchmarx.examples.gantt2cpm.implementations.ibextgg;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
 import org.benchmarx.cpm.core.CPMComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.gantt2cpm.testsuite.Decisions;
 import org.benchmarx.gantt.core.GanttComparator;
@@ -53,10 +54,10 @@ public class IBeXTGGGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Dec
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<GanttDiagram> edit) {
+	public void performAndPropagateSourceEdit(Supplier<IEdit<GanttDiagram>> edit) {
 		// Adapt source model
 		GanttDiagram gd = (GanttDiagram) sync.getSourceResource().getContents().get(0);
-		edit.accept(gd);
+		edit.get();
 		
 		// Invoke sync
 		try {
@@ -67,10 +68,10 @@ public class IBeXTGGGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Dec
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<CPMNetwork> edit) {
+	public void performAndPropagateTargetEdit(Supplier<IEdit<CPMNetwork>> edit) {
 		// Adapt target model
 		CPMNetwork cn = (CPMNetwork) sync.getTargetResource().getContents().get(0);
-		edit.accept(cn);
+		edit.get();
 		
  		// Invoke sync
 		try {
@@ -81,12 +82,15 @@ public class IBeXTGGGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Dec
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<GanttDiagram> edit) {
+	public void performIdleSourceEdit(Supplier<IEdit<GanttDiagram>> edit) {
+		edit.get();
 		performAndPropagateSourceEdit(edit);
+		
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<CPMNetwork> edit) {
+	public void performIdleTargetEdit(Supplier<IEdit<CPMNetwork>> edit) {
+		edit.get();
 		performAndPropagateTargetEdit(edit);
 	}
 
@@ -112,6 +116,14 @@ public class IBeXTGGGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Dec
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<GanttDiagram>> sourceEdit,
+			Supplier<IEdit<CPMNetwork>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 }

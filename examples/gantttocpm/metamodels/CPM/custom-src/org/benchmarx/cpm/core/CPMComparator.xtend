@@ -2,15 +2,15 @@ package org.benchmarx.cpm.core
 
 import static org.junit.Assert.*
 
-import org.benchmarx.emf.Comparator
 import cpm.CPMNetwork
 import java.util.ArrayList
 import cpm.Element
 import cpm.Event
 import cpm.Activity
 import java.util.HashMap
+import java.util.function.BiConsumer
 
-class CPMComparator implements Comparator<CPMNetwork> {
+class CPMComparator implements BiConsumer<CPMNetwork, CPMNetwork> {
 	def static networkToString(CPMNetwork network) {
 		val ArrayList<Element> sortedElements = new ArrayList<Element>(network.elements)
 		CPMNormalizer.normalize(sortedElements)
@@ -33,7 +33,7 @@ class CPMComparator implements Comparator<CPMNetwork> {
 		'''
 	}
 	
-	override assertEquals(CPMNetwork expected, CPMNetwork actual) {
+	override accept(CPMNetwork expected, CPMNetwork actual) {
 		assertTrue(networkToString(expected).startsWith("CPMNetwork "))
 		assertEquals(networkToString(expected), networkToString(actual))
 	}

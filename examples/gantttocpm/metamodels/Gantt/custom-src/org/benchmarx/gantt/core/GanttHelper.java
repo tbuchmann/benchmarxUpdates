@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import gantt.Activity;
@@ -15,67 +21,84 @@ import gantt.Element;
 import gantt.GanttDiagram;
 
 public class GanttHelper {
-	public void createEmptyGantt2CPMProcedure(GanttDiagram diag) {
-		GanttBuilder builder = new GanttBuilder(diag);
+	private GanttBuilder builder;
+	private Supplier<GanttDiagram> diag;
+	private BiConsumer<EAttribute, List<?>> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
+		
+	public GanttHelper(Supplier<GanttDiagram> rootSupplier, Consumer<EObject> createSourceNode,
+			BiConsumer<EReference, List<EObject>> createSourceEdge,
+			BiConsumer<EAttribute, List<?>> changeSourceAttribute, Consumer<EObject> deleteSourceNode,
+			BiConsumer<EObject, List<EObject>> moveSourceNode, BiConsumer<EReference, List<EObject>> deleteSourceEdge) {
+		builder = new GanttBuilder(rootSupplier);
+		this.diag = rootSupplier;
+		this.changeAttribute = changeSourceAttribute;
+		this.deleteEdge = deleteSourceEdge;
+		this.deleteNode = deleteSourceNode;
+	}
+
+	public void createEmptyGantt2CPMProcedure() {
+		
 		builder.name("Gantt2CPM");
 	}
 	
-	public void createEmptyItalyTankRush(GanttDiagram diag) {
-		GanttBuilder builder = new GanttBuilder(diag);
+	public void createEmptyItalyTankRush() {
+		
 		builder.name("ItalyTankRush");
 	}
 	
-	public void createGantt2CPMTestCases(GanttDiagram diag) {
-		GanttBuilder builder = new GanttBuilder(diag);
+	public void createGantt2CPMTestCases() {
+		
 		builder.name("Gantt2CPM")
 		.activity("Gantt2CPMTestCases", 5);
 	}
 	
-	public void changeIncrementalID(GanttDiagram diag) {
-		if ("changed".equals(diag.getIncrementalID())) {
-			diag.setIncrementalID("changed again");
+	public void changeIncrementalID() {
+		if ("changed".equals(diag.get().getIncrementalID())) {
+			diag.get().setIncrementalID("changed again");
 		} else {
-			diag.setIncrementalID("changed");
+			diag.get().setIncrementalID("changed");
 		}
 	}
 	
-	public void addGantt2CPMHelpers(GanttDiagram diag) {
+	public void addGantt2CPMHelpers() {
 		//Precondition: createGantt2CPMTestCases
-		GanttBuilder builder = new GanttBuilder(diag);
+		
 		builder.activity("GanttHelper", 2)
 		.activity("CPMHelper", 2)
 		.startend("Gantt2CPMTestCases", "CPMHelper", 4)
 		.startstart("Gantt2CPMTestCases", "GanttHelper", 0);
 	}
 	
-	public void addGantt2CPMComparators(GanttDiagram diag) {
+	public void addGantt2CPMComparators() {
 		//Precondition: createGantt2CPMTestCases
-		GanttBuilder builder = new GanttBuilder(diag);
+		
 		builder.activity("GanttComparator", 3)
 		.activity("CPMComparator", 1)
 		.endend("Gantt2CPMTestCases", "GanttComparator", 0)
 		.endend("Gantt2CPMTestCases","CPMComparator",0);
 	}
 	
-	public void addGantt2CPMModels(GanttDiagram diag) {
+	public void addGantt2CPMModels() {
 		//Precondition: createGantt2CPMTestCases
-		GanttBuilder builder = new GanttBuilder(diag);
+		
 		builder.activity("GanttModel", 1)
 		.activity("CPMModel", 1)
 		.endstart("GanttModel", "Gantt2CPMTestCases", 1)
 		.endstart("CPMModel","Gantt2CPMTestCases",2);
 	}
 	
-	public void addGantt2CPMModelsToComparatorDependencies(GanttDiagram diag) {
+	public void addGantt2CPMModelsToComparatorDependencies() {
 		//Precondition: addGantt2CPMModels, addGantt2CPMComparators
-		GanttBuilder builder = new GanttBuilder(diag);
+		
 		builder.endstart("GanttModel", "GanttComparator", 3);
 		builder.endstart("CPMModel", "CPMComparator", 6);
 	}
 	
-	public void deleteGantt2CPMModelsToComparatorDependencies(GanttDiagram diag) {
-		Activity ganttModel = findActivityByName("GanttModel", diag);
-		Activity cpmModel = findActivityByName("CPMModel", diag);
+	public void deleteGantt2CPMModelsToComparatorDependencies() {
+		Activity ganttModel = findActivityByName("GanttModel");
+		Activity cpmModel = findActivityByName("CPMModel");
 		Set<Dependency> s = new HashSet<Dependency>();
 		s.addAll(ganttModel.getIncomingDependencies());
 		s.addAll(ganttModel.getOutgoingDependencies());
@@ -87,9 +110,9 @@ public class GanttHelper {
 		}
 	}
 	
-	public void deleteGantt2CPMHelpers(GanttDiagram diag) {
-		Activity a = findActivityByName("GanttHelper", diag);
-		Activity b = findActivityByName("CPMHelper", diag);
+	public void deleteGantt2CPMHelpers() {
+		Activity a = findActivityByName("GanttHelper");
+		Activity b = findActivityByName("CPMHelper");
 		Set<Element> s = new HashSet<Element>();
 		s.addAll(a.getIncomingDependencies());
 		s.addAll(a.getOutgoingDependencies());
@@ -101,20 +124,20 @@ public class GanttHelper {
 		}
 	}
 	
-	public void changeGantt2CPMHelperToBuilder(GanttDiagram diag) {
-		findActivityByName("GanttHelper", diag).setName("CPMBuilder");
-		findActivityByName("CPMHelper", diag).setName("GanttBuilder");
+	public void changeGantt2CPMHelperToBuilder() {
+		findActivityByName("GanttHelper").setName("CPMBuilder");
+		findActivityByName("CPMHelper").setName("GanttBuilder");
 	}
 	
-	public void changeGantt2CPMModelDuration(GanttDiagram diag) {
-		findActivityByName("GanttModel", diag).setDuration(0);
-		findActivityByName("CPMModel", diag).setDuration(4);
+	public void changeGantt2CPMModelDuration() {
+		findActivityByName("GanttModel").setDuration(0);
+		findActivityByName("CPMModel").setDuration(4);
 	}
 	
-	public void changeGantt2CPMTestCasesNameDuration(GanttDiagram diag) {
-		findActivityByName("Gantt2CPMTestCases", diag).setName("Tests");
-		findActivityByName("Tests", diag).setDuration(4);
-		List<Dependency> out = findActivityByName("Tests", diag).getOutgoingDependencies();
+	public void changeGantt2CPMTestCasesNameDuration() {
+		findActivityByName("Gantt2CPMTestCases").setName("Tests");
+		findActivityByName("Tests").setDuration(4);
+		List<Dependency> out = findActivityByName("Tests").getOutgoingDependencies();
 		for(Dependency d : out) {
 			if(d.getSuccessor().getName().equals("CPMComparator") || d.getSuccessor().getName().equals("GanttComparator")) {
 				d.setOffset(1);
@@ -122,21 +145,21 @@ public class GanttHelper {
 		}
 	}
 	
-	public void changeGantt2CPMModelToComparatorDependencyTypeDurationTargetAndSource(GanttDiagram diag) {
+	public void changeGantt2CPMModelToComparatorDependencyTypeDurationTargetAndSource() {
 		List<Dependency> out = new ArrayList<Dependency>();
-		out.addAll(findActivityByName("GanttModel", diag).getOutgoingDependencies());
+		out.addAll(findActivityByName("GanttModel").getOutgoingDependencies());
 		for(Dependency d : out) {
 			if(d.getSuccessor().getName().equals("GanttComparator")) {
 				d.setDependencyType(DependencyType.START_START);
-				d.setPredecessor(findActivityByName("CPMModel", diag));
-				d.setSuccessor(findActivityByName("CPMBuilder", diag));
+				d.setPredecessor(findActivityByName("CPMModel"));
+				d.setSuccessor(findActivityByName("CPMBuilder"));
 				d.setOffset(8);
 			}
 		}
 	}
 	
-	public void createSimpleTankRush(GanttDiagram diag) {
-		GanttBuilder builder = new GanttBuilder(diag);
+	public void createSimpleTankRush() {
+		
 		builder.name("ItalyTankRush")
 		
 			.activity("spam tanks", 8)
@@ -145,8 +168,8 @@ public class GanttHelper {
 			.endstart("spam tanks", "win game", 180);
 	}
 	
-	public void createComplexTankRush(GanttDiagram diag) {
-		GanttBuilder builder = new GanttBuilder(diag);
+	public void createComplexTankRush() {
+		
 		builder.name("ItalyTankRush")
 		
 			.activity("build tankbase", 5)
@@ -160,12 +183,12 @@ public class GanttHelper {
 			.endend("spam tanks", "win game", 181);
 	}
 	
-	public void idleDelta(GanttDiagram diag) {
+	public void idleDelta() {
 		
 	}
 	
-	private Activity findActivityByName(String name, GanttDiagram diag) {
-		List<Activity> result = diag.getElements().stream()
+	private Activity findActivityByName(String name) {
+		List<Activity> result = diag.get().getElements().stream()
 				.filter(Activity.class::isInstance)
 				.map(Activity.class::cast)
 				.filter(a -> a.getName().equals(name))
