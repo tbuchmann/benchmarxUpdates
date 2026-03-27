@@ -14,6 +14,8 @@ import org.benchmarx.edit.CreateNode;
 import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
+import org.benchmarx.examples.pdb12pdb2.implementations.bxagent.BXAgentPdb12Pdb2;
+import org.benchmarx.examples.pdb12pdb2.implementations.bxlang.BXLangPdb12Pdb2;
 //import org.benchmarx.examples.pdb12pdb2.implementations.bxagent.BXAgentPdb12Pdb2;
 //import org.benchmarx.examples.pdb12pdb2.implementations.bxlang.BXLangPdb12Pdb2;
 import org.benchmarx.examples.pdb12pdb2.implementations.bxtend.BXtendPdb12Pdb2;
@@ -101,11 +103,11 @@ public abstract class Pdb12Pdb2TestCase {
 	
 	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
 		return Arrays.asList(
-				new BXtendPdb12Pdb2()				
+				new BXtendPdb12Pdb2(),				
 				//new MediniQVTPdb12Pdb2(),
 				//new IBeXTGGPDB1ToPDB2()
-				//new BXAgentPdb12Pdb2(),
-				//new BXLangPdb12Pdb2()
+				new BXAgentPdb12Pdb2(),
+				new BXLangPdb12Pdb2()
 			);
 	}
 	

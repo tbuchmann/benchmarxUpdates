@@ -18,6 +18,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.pdb12pdb2.Pdb12Pdb2Transformation;
+import dev.emtagent.correspondence.CorrespondenceModel;
+import dev.emtagent.correspondence.SyncConflictPolicy;
+import dev.emtagent.correspondence.TransformationContext;
 import pdb1.Database;
 import pdb1.Pdb1Factory;
 
@@ -55,7 +58,10 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 		target.getContents().add(pdb2Root);
 		
 		// perform batch to establish consistent starting state
-		//target = PersonToPersonTransformation.transform(source, target);
+		Pdb12Pdb2Transformation.transform(source, target);
+		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
+				source.getURI(), target.getURI());
+		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 	}
 
 	@Override
@@ -108,7 +114,7 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 	@Override
 	public void performAndPropagateSourceEdit(Supplier<IEdit<Database>> sourceEdit) {
 		sourceEdit.get();
-		Pdb12Pdb2Transformation.transform(source, target);
+		Pdb12Pdb2Transformation.transform(source, target, corr);
 	}
 	
 	@Override
@@ -118,7 +124,7 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 		if (conf.decide(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST)) 			
 			 options = new Pdb12Pdb2Transformation.Options("first");
 		else options = new Pdb12Pdb2Transformation.Options("last");
-		Pdb12Pdb2Transformation.transformBack(target, source, options);
+		Pdb12Pdb2Transformation.transformBack(target, source, corr, options);
 	}
 	
 	@Override
