@@ -20,6 +20,7 @@ import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.familiestopersons.implementations.bxagent.BXAgentF2p;
 import org.benchmarx.examples.familiestopersons.implementations.bxtend.BXtendFamiliesToPersons;
+import org.benchmarx.examples.familiestopersons.implementations.bxtend.WrapperOverBXtendWithMerge;
 import org.benchmarx.examples.familiestopersons.implementations.bxtenddsl.BXtendDSLFamiliesToPersons;
 import org.benchmarx.families.core.FamiliesComparator;
 import org.benchmarx.families.core.FamilyHelper;
@@ -158,7 +159,7 @@ public abstract class FamiliesToPersonsTestCase {
 				 */
 				
 				new BXtendFamiliesToPersons(), // No failures
-//				new WrapperOverBXtendWithMerge() // No Failures
+				new WrapperOverBXtendWithMerge(), // No Failures
 				new BXtendDSLFamiliesToPersons()
 				
 				//new JavaFamilies2Persons(),
