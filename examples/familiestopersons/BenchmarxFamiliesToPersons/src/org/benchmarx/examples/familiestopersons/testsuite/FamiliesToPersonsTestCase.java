@@ -20,10 +20,7 @@ import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.familiestopersons.implementations.bxagent.BXAgentF2p;
 import org.benchmarx.examples.familiestopersons.implementations.bxtend.BXtendFamiliesToPersons;
-import org.benchmarx.examples.familiestopersons.implementations.bxtend.WrapperOverBXtendWithMerge;
 import org.benchmarx.examples.familiestopersons.implementations.bxtenddsl.BXtendDSLFamiliesToPersons;
-//import org.benchmarx.examples.familiestopersons.implementations.eneo.ENeoFamiliesToPersons;
-import org.benchmarx.examples.familiestopersons.implementations.java.JavaFamilies2Persons;
 import org.benchmarx.families.core.FamiliesComparator;
 import org.benchmarx.families.core.FamilyHelper;
 import org.benchmarx.persons.core.PersonHelper;
@@ -160,9 +157,9 @@ public abstract class FamiliesToPersonsTestCase {
 				 * Solutions for CSync
 				 */
 				
-//				new BXtendFamiliesToPersons(), // No failures
+				new BXtendFamiliesToPersons(), // No failures
 //				new WrapperOverBXtendWithMerge() // No Failures
-				new BXtendDSLFamiliesToPersons()//,
+				new BXtendDSLFamiliesToPersons()
 				
 				//new JavaFamilies2Persons(),
 				//new BXAgentF2p()

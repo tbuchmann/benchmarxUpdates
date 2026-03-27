@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import Families.FamiliesFactory;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
-import de.ubt.ai1.m2m.benchmarx.bxtenddsl.families2persons.trafo.Families2Persons;
+import de.tbuchmann.bxtenddsl.f2p.trafo.FamiliesToPersons;
 
 public class BXtendDSLFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonRegister, Decisions> {
 	
@@ -28,7 +28,7 @@ public class BXtendDSLFamiliesToPersons extends BXToolForEMF<FamilyRegister, Per
 	protected Resource source;
 	protected Resource target;
 	protected Resource corr;
-	protected Families2Persons f2p;
+	protected FamiliesToPersons f2p;
 	
 	private Configurator<Decisions> conf;
 	private Configurator<Decisions> defaultConf;
@@ -69,7 +69,7 @@ public class BXtendDSLFamiliesToPersons extends BXToolForEMF<FamilyRegister, Per
 		corr = set.createResource(URI.createURI("corrModel.corr"));
 		FamilyRegister familiesRoot = FamiliesFactory.eINSTANCE.createFamilyRegister();
 		source.getContents().add(familiesRoot);
-		f2p = new Families2Persons(source, target, corr);
+		f2p = new FamiliesToPersons(source, target, corr);
 		// Fix default preferences (which can be overwritten)
 		setConfigurator(new Configurator<Decisions>().makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, true)
 				.makeDecision(Decisions.PREFER_EXISTING_FAMILY_TO_NEW, true));
