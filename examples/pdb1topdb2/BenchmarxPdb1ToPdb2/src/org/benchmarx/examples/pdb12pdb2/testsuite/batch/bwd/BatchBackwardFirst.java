@@ -41,6 +41,9 @@ public class BatchBackwardFirst extends Pdb12Pdb2TestCase {
 	/**
 	 * Analogous to @link {@link #testCreatePerson()}, but now for
 	 * multiple Persons (first three chancellors).<br/>
+	 * Remark: if we assume a current state by transforming the root elements first,
+	 * this is technically not a batch test, since we change the property (database name) of a
+	 * previously transformed element.
 	 * <b>Features:</b>: bwd, runtime
 	 */
 	@ParameterizedTest @MethodSource("tools")
