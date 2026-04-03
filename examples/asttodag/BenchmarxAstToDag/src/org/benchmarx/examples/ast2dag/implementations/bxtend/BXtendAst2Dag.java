@@ -1,9 +1,12 @@
 package org.benchmarx.examples.ast2dag.implementations.bxtend;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import org.benchmarx.Configurator;
+import org.benchmarx.ast.core.AstComparator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.dag.core.DagComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.ast2dag.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -14,9 +17,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import org.benchmarx.ast.core.AstComparator;
+import ast.Model;
 import de.ubt.ai1.m2m.ast2dag.rules.Ast2dagTransformation;
-import org.benchmarx.dag.core.DagComparator;
 
 public class BXtendAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions> {
 
@@ -53,25 +55,25 @@ public class BXtendAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions>
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<ast.Model> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<ast.Model>> edit) {
+		edit.get();
 		ast2dag.sourceToTarget();
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<dag.Model> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<dag.Model>> edit) {
+		edit.get();
 		ast2dag.targetToSource();
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<ast.Model> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<ast.Model>> edit) {
+		edit.get();
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<dag.Model> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<dag.Model>> edit) {
+		edit.get();
 	}
 
 	@Override
@@ -110,6 +112,13 @@ public class BXtendAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions>
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<Model>> sourceEdit, Supplier<IEdit<dag.Model>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 }

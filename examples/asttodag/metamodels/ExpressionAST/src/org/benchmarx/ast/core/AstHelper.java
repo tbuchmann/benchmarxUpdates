@@ -1,21 +1,42 @@
 package org.benchmarx.ast.core;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.benchmarx.ast.core.AstModelBuilder.Direction;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 
 import ast.ArithmeticOperator;
 import ast.Expression;
 import ast.Model;
 
 public class AstHelper {
-	private AstModelBuilder builder = null;
+	private AstModelBuilder builder;
+	private Supplier<Model> rootSupplier;
+	private BiConsumer<EAttribute, List<?>> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
 	
-	public void create42(Model model) {
-		builder = new AstModelBuilder(model);
+	public AstHelper(Supplier<Model> rootSupplier, Consumer<EObject> createSourceNode,
+			BiConsumer<EReference, List<EObject>> createSourceEdge,
+			BiConsumer<EAttribute, List<?>> changeSourceAttribute, Consumer<EObject> deleteSourceNode,
+			BiConsumer<EObject, List<EObject>> moveSourceNode, BiConsumer<EReference, List<EObject>> deleteSourceEdge) {
+		builder = new AstModelBuilder(rootSupplier.get());
+		this.rootSupplier = rootSupplier;
+		this.changeAttribute = changeSourceAttribute;
+		this.deleteEdge = deleteSourceEdge;
+		this.deleteNode = deleteSourceNode;
+	}
+	
+	public void create42() {		
 		builder.number(Direction.UP).setValue(42);
 	}
 	
-	public void createTextSum(Model model) {
-		builder = new AstModelBuilder(model);
+	public void createTextSum() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD);
 		builder.operator(Direction.LEFT).setOp(ArithmeticOperator.ADD);
 		builder.variable(Direction.LEFT).setName("Answer to the Ultimate Question of Life, The Universe, and Everything");
@@ -23,8 +44,7 @@ public class AstHelper {
 		builder.navigateToRoot().variable(Direction.RIGHT).setName("7.5 million years");
 	}
 	
-	public void createComplexNumberExample(Model model) {
-		builder = new AstModelBuilder(model);
+	public void createComplexNumberExample() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD);
 		builder.operator(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT);
 		builder.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY);
@@ -47,8 +67,7 @@ public class AstHelper {
 		builder.number(Direction.RIGHT).setValue(1).navigateToRoot();
 	}
 	
-	public void createMulitpleSubtrees(Model model) {
-		builder = new AstModelBuilder(model);
+	public void createMulitpleSubtrees() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.SUBTRACT)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
 				.operator(Direction.LEFT).setOp(ArithmeticOperator.ADD)
@@ -110,8 +129,7 @@ public class AstHelper {
 					.number(Direction.RIGHT).setValue(1).navigateToRoot();
 	}
 	
-	public void createBestDigit(Model model) {
-		builder = new AstModelBuilder(model);
+	public void createBestDigit() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.SUBTRACT)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
 				.number(Direction.LEFT).setValue(7).navigate(Direction.UP)
@@ -119,8 +137,7 @@ public class AstHelper {
 			.number(Direction.RIGHT).setValue(7).navigateToRoot();
 	}
 	
-	public void insertMoreBestDigits(Model model) { // in BestDigit
-		builder = new AstModelBuilder(model);
+	public void insertMoreBestDigits() { // in BestDigit
 		builder.navigate(Direction.RIGHT).delete().operator(Direction.RIGHT).setOp(ArithmeticOperator.SUBTRACT)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
 				.number(Direction.LEFT).setValue(7).navigate(Direction.UP)
@@ -128,8 +145,7 @@ public class AstHelper {
 			.variable(Direction.RIGHT).setName("zweiundvierzig").navigateToRoot();	
 	}
 	
-	public void createBestDigitRef(Model model) {
-		builder = new AstModelBuilder(model);
+	public void createBestDigitRef() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT)
 				.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
@@ -145,8 +161,7 @@ public class AstHelper {
 					.number(Direction.RIGHT).setValue(2).navigateToRoot();
 	}	
 	
-	public void modifyBestDigitRef(Model model) { // in BestDigitRef
-		builder = new AstModelBuilder(model);
+	public void modifyBestDigitRef() { // in BestDigitRef
 		builder.navigate(Direction.LEFT)
 			.setOp(ArithmeticOperator.MULTIPLY)
 				.navigate(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT)
@@ -158,19 +173,17 @@ public class AstHelper {
 					.navigate(Direction.RIGHT).setValue(14).navigateToRoot();
 	}
 	
-	public void createMoreBestDigits(Model model) {
-		createBestDigit(model);
-		insertMoreBestDigits(model);
+	public void createMoreBestDigits() {
+		createBestDigit();
+		insertMoreBestDigits();
 	}
 	
-	public void removeSomeBestDigits(Model model) { // from MoreBestDigits
-		builder = new AstModelBuilder(model);
+	public void removeSomeBestDigits() { // from MoreBestDigits
 		builder.navigate(Direction.RIGHT).delete().navigateToRoot();
 		builder.number(Direction.RIGHT).setValue(7).navigateToRoot();
 	}
 	
-	public void createSimpleASTRef(Model model) {
-		builder = new AstModelBuilder(model);
+	public void createSimpleASTRef() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.MULTIPLY)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.ADD)
 				.variable(Direction.LEFT).setName("a").navigate(Direction.UP)
@@ -180,13 +193,12 @@ public class AstHelper {
 				.number(Direction.RIGHT).setValue(7).navigateToRoot();
 	}
 	
-	public void modifySimpleASTRef(Model model) {
-		builder = new AstModelBuilder(model);
+	public void modifySimpleASTRef() {
 		builder.navigate(Direction.RIGHT).navigate(Direction.RIGHT).setValue(5).navigateToRoot();
 	}
 	
-	public void changeIncrementalID(Model model) {
-		model.eAllContents().forEachRemaining(e -> {if(e instanceof Expression) ((Expression)e).setIncrementalID("incrTestValue");});
+	public void changeIncrementalID() {
+		rootSupplier.get().eAllContents().forEachRemaining(e -> {if(e instanceof Expression) ((Expression)e).setIncrementalID("incrTestValue");});
 	}
 	
 //	public void createStillBestDigit(Model model) {
@@ -202,6 +214,6 @@ public class AstHelper {
 //			.variable(Direction.RIGHT).setName("zweiundvierzig").navigateToRoot();
 //	}
 	
-	public void idleDelta(Model model) {
+	public void idleDelta() {
 	}
 }

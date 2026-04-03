@@ -17,12 +17,12 @@ public class IncrementalBackward extends Ast2DagTestCase {
 	 */
 	@Test
 	public void testIncrementalInserts() {
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::createBestDigit));
-		tool.performIdleSourceEdit(helperAst::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createBestDigit));
+		tool.performIdleSourceEdit(srcEdit(helperAst::changeIncrementalID));
 		
 		util.assertPrecondition("BestDigitIncrIDAst", "BestDigitDag");
 		//------------
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::insertMoreBestDigits));
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::insertMoreBestDigits));
 		//------------
 		util.assertPostcondition("MoreBestDigitsIncrIDAst", "MoreBestDigitsDag");
 	}
@@ -35,12 +35,12 @@ public class IncrementalBackward extends Ast2DagTestCase {
 	 */
 	@Test
 	public void testIncrementalDeletions() {
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::createMoreBestDigits));
-		tool.performIdleSourceEdit(helperAst::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createMoreBestDigits));
+		tool.performIdleSourceEdit(srcEdit(helperAst::changeIncrementalID));
 		
 		util.assertPrecondition("MoreBestDigitsAllIncrIDAst", "MoreBestDigitsDag");
 		//------------
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::removeSomeBestDigits));
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::removeSomeBestDigits));
 		//------------
 		util.assertPostcondition("BestDigitIncrIDDelAst", "BestDigitDag");
 	}
@@ -53,12 +53,12 @@ public class IncrementalBackward extends Ast2DagTestCase {
 	 */
 	@Test
 	public void testIncrementalModifications() {
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::createBestDigitRef));
-		tool.performIdleSourceEdit(helperAst::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createBestDigitRef));
+		tool.performIdleSourceEdit(srcEdit(helperAst::changeIncrementalID));
 		
 		util.assertPrecondition("BestDigitRefIncrIDAst", "BestDigitRefDag");
 		//------------
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::modifyBestDigitRef));
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::modifyBestDigitRef));
 		//------------
 		util.assertPostcondition("BestDigitRefModifiedIncrIDAst", "BestDigitRefModifiedDag");
 	}
@@ -72,12 +72,12 @@ public class IncrementalBackward extends Ast2DagTestCase {
 	public void testStability() {
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util.execute(helperDag::createBestDigit));
-		tool.performIdleSourceEdit(helperAst::changeIncrementalID);
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createBestDigit));
+		tool.performIdleSourceEdit(srcEdit(helperAst::changeIncrementalID));
 		//------------
 		util.assertPostcondition("BestDigitIncrIDAst", "BestDigitDag");
 		
-		tool.performAndPropagateTargetEdit(helperDag::idleDelta);
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::idleDelta));
 		util.assertPostcondition("BestDigitIncrIDAst", "BestDigitDag");
 	}
 }

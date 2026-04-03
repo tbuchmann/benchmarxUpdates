@@ -1,21 +1,20 @@
 package org.benchmarx.ast.core
 
-import static org.junit.Assert.*
-
-import org.benchmarx.emf.Comparator
-
-import ast.Model
 import ast.Expression
-import ast.Variable
+import ast.Model
 import ast.Number
 import ast.Operator
+import ast.Variable
+import java.util.function.BiConsumer
 
-class AstComparator implements Comparator<Model> {
+import static org.junit.Assert.*
+
+class AstComparator implements BiConsumer<Model, Model> {
 	def static modelToString(Model model) {
 		return "AstModel " + expressionToString(model.expr)
 	}
 	
-	override assertEquals(Model expected, Model actual) {
+	override accept(Model expected, Model actual) {
 		assertTrue(modelToString(expected).startsWith("AstModel"))
 		assertEquals(modelToString(expected), modelToString(actual))
 	}

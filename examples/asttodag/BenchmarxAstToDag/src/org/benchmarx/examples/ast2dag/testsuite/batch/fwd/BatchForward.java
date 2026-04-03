@@ -36,7 +36,7 @@ public class BatchForward extends Ast2DagTestCase {
 	{
 		// No precondition!
 		//------------
-		tool.performAndPropagateSourceEdit(helperAst::create42);
+		tool.performAndPropagateSourceEdit(srcEdit(helperAst::create42));
 		//------------
 		util.assertPostcondition("42Ast", "42Dag");
 	}
@@ -50,8 +50,7 @@ public class BatchForward extends Ast2DagTestCase {
 	public void testCreateMultipleExpressions(){
 		// No precondition!
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperAst::createTextSum));
+		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createTextSum));
 		//------------
 		util.assertPostcondition("HG2GAst", "HG2GDag");
 	}
@@ -65,8 +64,7 @@ public class BatchForward extends Ast2DagTestCase {
 	public void testCreateMultipleExpressionsComplex() {
 		// No precondition!
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperAst::createComplexNumberExample));
+		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createComplexNumberExample));
 		//------------
 		util.assertPostcondition("42ByMultiplyAddSubtractDivideAst", "42ByMultiplyAddSubtractDivideDag");
 	}
@@ -80,7 +78,7 @@ public class BatchForward extends Ast2DagTestCase {
 	public void testCreateMultipleSameSubtrees() {
 		// No precondition!
 		//------------
-		tool.performAndPropagateSourceEdit(helperAst::createMulitpleSubtrees);
+		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createMulitpleSubtrees));
 		//------------
 		util.assertPostcondition("42ByMultipleSubteesAst", "42ByMultipleSubtreesDag");
 	}

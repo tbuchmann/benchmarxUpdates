@@ -23,7 +23,7 @@ public class BatchBackward extends Ast2DagTestCase {
 	{
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(helperDag::create42);
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::create42));
 		//------------
 		util.assertPostcondition("42Ast", "42Dag");
 	}
@@ -37,8 +37,7 @@ public class BatchBackward extends Ast2DagTestCase {
 	public void testCreateMultipleExpressions(){
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperDag::createTextSum));
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createTextSum));
 		//------------
 		util.assertPostcondition("HG2GAst", "HG2GDag");
 	}
@@ -52,8 +51,7 @@ public class BatchBackward extends Ast2DagTestCase {
 	public void testCreateMultipleExpressionsComplex() {
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperDag::createComplexNumberExample));
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createComplexNumberExample));
 		//------------
 		util.assertPostcondition("42ByMultiplyAddSubtractDivideAst", "42ByMultiplyAddSubtractDivideDag");
 	}
@@ -67,8 +65,7 @@ public class BatchBackward extends Ast2DagTestCase {
 	public void testCreateMultipleSameSubtrees() {
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperDag::createMulitpleSubtrees));
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createMulitpleSubtrees));
 		//------------
 		util.assertPostcondition("42ByMultipleSubteesAst", "42ByMultipleSubtreesDag");
 	}

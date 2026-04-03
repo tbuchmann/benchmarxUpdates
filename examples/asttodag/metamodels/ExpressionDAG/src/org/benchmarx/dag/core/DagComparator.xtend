@@ -1,18 +1,16 @@
 package org.benchmarx.dag.core
 
+import dag.Expression
+import dag.Model
+import dag.Number
+import dag.Operator
+import dag.Variable
 import java.util.LinkedHashMap
+import java.util.function.BiConsumer
 
 import static org.junit.Assert.*
 
-import org.benchmarx.emf.Comparator
-
-import dag.Model
-import dag.Expression
-import dag.Number
-import dag.Variable
-import dag.Operator
-
-class DagComparator implements Comparator<Model> {
+class DagComparator implements BiConsumer<Model, Model> {
 	def static modelToString(Model model) {
 		var Expression root;
 		for (Expression expression : model.exprs) {
@@ -37,7 +35,7 @@ class DagComparator implements Comparator<Model> {
 		return result;
 	}
 	
-	override assertEquals(Model expected, Model actual) {
+	override accept(Model expected, Model actual) {
 		assertTrue(modelToString(expected).startsWith("DagModel"))
 		assertEquals(modelToString(expected), modelToString(actual))
 	}

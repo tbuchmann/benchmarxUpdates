@@ -1,21 +1,42 @@
 package org.benchmarx.dag.core;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.benchmarx.dag.core.DagModelBuilder.Direction;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 
 import dag.ArithmeticOperator;
 import dag.Number;
 import dag.Model;
 
 public class DagHelper {
-	private DagModelBuilder builder = null;
+	private DagModelBuilder builder;
+	private Supplier<Model> rootSupplier;
+	private BiConsumer<EAttribute, List<?>> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
 	
-	public void create42(Model model) {
-		builder = new DagModelBuilder(model);
+	public DagHelper(Supplier<Model> rootSupplier, Consumer<EObject> createSourceNode,
+			BiConsumer<EReference, List<EObject>> createSourceEdge,
+			BiConsumer<EAttribute, List<?>> changeSourceAttribute, Consumer<EObject> deleteSourceNode,
+			BiConsumer<EObject, List<EObject>> moveSourceNode, BiConsumer<EReference, List<EObject>> deleteSourceEdge) {
+		builder = new DagModelBuilder(rootSupplier.get());
+		this.rootSupplier = rootSupplier;
+		this.changeAttribute = changeSourceAttribute;
+		this.deleteEdge = deleteSourceEdge;
+		this.deleteNode = deleteSourceNode;
+	}
+	
+	public void create42() {
 		builder.number(Direction.UP).setValue(42);
 	}
 	
-	public void createTextSum(Model model) {
-		builder = new DagModelBuilder(model);
+	public void createTextSum() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD);
 		builder.operator(Direction.LEFT).setOp(ArithmeticOperator.ADD);
 		builder.variable(Direction.LEFT).setName("Answer to the Ultimate Question of Life, The Universe, and Everything");
@@ -23,8 +44,7 @@ public class DagHelper {
 		builder.navigateToRoot().variable(Direction.RIGHT).setName("7.5 million years");
 	}
 	
-	public void createComplexNumberExample(Model model) {
-		builder = new DagModelBuilder(model);
+	public void createComplexNumberExample() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD);
 		builder.operator(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT);
 		builder.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY);
@@ -45,8 +65,7 @@ public class DagHelper {
 		builder.reference(Direction.RIGHT, "1").navigateToRoot();
 	}
 	
-	public void createMulitpleSubtrees(Model model) {
-		builder = new DagModelBuilder(model);
+	public void createMulitpleSubtrees() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.SUBTRACT)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
 				.operator(Direction.LEFT).setOp(ArithmeticOperator.ADD).saveReference("7")
@@ -66,8 +85,7 @@ public class DagHelper {
 				.reference(Direction.RIGHT, "2").navigateToRoot();
 	}
 	
-	public void createBestDigit(Model model) {
-		builder = new DagModelBuilder(model);
+	public void createBestDigit() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.SUBTRACT)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
 				.number(Direction.LEFT).setValue(7).saveReference("7").navigate(Direction.UP)
@@ -75,16 +93,14 @@ public class DagHelper {
 			.reference(Direction.RIGHT, "7").navigateToRoot();
 	}
 	
-	public void insertMoreBestDigits(Model model) { // in BestDigit
-		builder = new DagModelBuilder(model);
+	public void insertMoreBestDigits() { // in BestDigit
 		builder.navigate(Direction.LEFT).saveReference("7*sieben").navigateToRoot();
 		builder.navigate(Direction.RIGHT).delete().operator(Direction.RIGHT).setOp(ArithmeticOperator.SUBTRACT)
 			.reference(Direction.LEFT, "7*sieben").navigate(Direction.UP)
 			.variable(Direction.RIGHT).setName("zweiundvierzig").navigateToRoot();
 	}
 	
-	public void createBestDigitRef(Model model) {
-		builder = new DagModelBuilder(model);
+	public void createBestDigitRef() {
 		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD)
 			.operator(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT)
 				.operator(Direction.LEFT).setOp(ArithmeticOperator.MULTIPLY)
@@ -100,8 +116,7 @@ public class DagHelper {
 					.number(Direction.RIGHT).setValue(2).navigateToRoot();
 	}
 	
-	public void modifyBestDigitRef(Model model) { // in BestDigitRef
-		builder = new DagModelBuilder(model);
+	public void modifyBestDigitRef() { // in BestDigitRef
 		builder.navigate(Direction.LEFT)
 			.setOp(ArithmeticOperator.MULTIPLY)
 				.navigate(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT)
@@ -115,27 +130,26 @@ public class DagHelper {
 					.navigate(Direction.RIGHT).delete().reference(Direction.RIGHT, "14").navigateToRoot();
 	}
 	
-	public void createMoreBestDigits(Model model) {
-		createBestDigit(model);
-		insertMoreBestDigits(model);
+	public void createMoreBestDigits() {
+		createBestDigit();
+		insertMoreBestDigits();
 	}
 	
-	public void removeSomeBestDigits(Model model) { // in MoreBestDigits
-		builder = new DagModelBuilder(model);
+	public void removeSomeBestDigits() { // in MoreBestDigits
 		builder.navigate(Direction.LEFT).navigate(Direction.LEFT).saveReference("7").navigateToRoot();
 		builder.navigate(Direction.RIGHT).delete().navigateToRoot();
 		builder.reference(Direction.RIGHT, "7").navigateToRoot();
 	}
 	
-	public void changeIncrementalID(Model model) {
-		model.getExprs().stream().forEach(e -> e.setIncrementalID("incrTestValue"));
+	public void changeIncrementalID() {
+		rootSupplier.get().getExprs().stream().forEach(e -> e.setIncrementalID("incrTestValue"));
 	}
 	
-	public void changeIncrementalIDOf8(Model model) {
-		model.getExprs().stream().filter(Number.class::isInstance).map(Number.class::cast).filter(n -> n.getValue() == 8).forEach(n -> n.setIncrementalID("incrTestValue8"));
+	public void changeIncrementalIDOf8() {
+		rootSupplier.get().getExprs().stream().filter(Number.class::isInstance).map(Number.class::cast).filter(n -> n.getValue() == 8).forEach(n -> n.setIncrementalID("incrTestValue8"));
 	}
 	
-//	public void createStillBestDigit(Model model) {
+//	public void createStillBestDigit() {
 //		builder = new DagModelBuilder(model);
 //		builder.operator(Direction.UP).setOp(ArithmeticOperator.ADD)
 //			.operator(Direction.LEFT).setOp(ArithmeticOperator.SUBTRACT)
@@ -146,6 +160,6 @@ public class DagHelper {
 //			.variable(Direction.RIGHT).setName("zweiundvierzig").navigateToRoot();
 //	}
 	
-	public void idleDelta(Model model) {	
+	public void idleDelta() {	
 	}
 }

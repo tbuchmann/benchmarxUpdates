@@ -114,7 +114,7 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 	@Override
 	public void performAndPropagateSourceEdit(Supplier<IEdit<Database>> sourceEdit) {
 		sourceEdit.get();
-		Pdb12Pdb2Transformation.transform(source, target, corr);
+		Pdb12Pdb2Transformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
 	}
 	
 	@Override
@@ -124,7 +124,7 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 		if (conf.decide(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST)) 			
 			 options = new Pdb12Pdb2Transformation.Options("first");
 		else options = new Pdb12Pdb2Transformation.Options("last");
-		Pdb12Pdb2Transformation.transformBack(target, source, corr, options);
+		Pdb12Pdb2Transformation.transformBack(target, source, corr, TransformationContext.DeletionPolicy.CASCADE, options);
 	}
 	
 	@Override

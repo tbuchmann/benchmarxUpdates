@@ -54,7 +54,7 @@ class CPMComparator implements BiConsumer<CPMNetwork, CPMNetwork> {
 	
 	def dispatch private static String elementToString(
 			Activity activity, HashMap<Integer, Integer> normalizedEventNumbers) {	
-		if (!normalizedEventNumbers.containsKey(activity.sourceEvent.number)) {
+		if (!normalizedEventNumbers.containsKey(activity?.sourceEvent.number)) {
 			throw new IllegalArgumentException(
 					"The referenced event " + activity.sourceEvent.number + " doesn't exist.")
 		}

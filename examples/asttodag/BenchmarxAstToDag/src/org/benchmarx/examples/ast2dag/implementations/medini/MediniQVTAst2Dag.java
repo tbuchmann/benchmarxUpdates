@@ -9,10 +9,13 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.ast.core.AstComparator;
+import org.benchmarx.config.Configurator;
+import org.benchmarx.dag.core.DagComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.ast2dag.testsuite.Decisions;
 import org.eclipse.emf.common.util.URI;
@@ -23,10 +26,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
+import ast.Model;
 import de.ikv.emf.qvt.EMFQvtProcessorImpl;
 import de.ikv.medini.qvt.QVTProcessorConsts;
-import org.benchmarx.ast.core.AstComparator;
-import org.benchmarx.dag.core.DagComparator;
 import uk.ac.kent.cs.kmf.util.ILog;
 import uk.ac.kent.cs.kmf.util.OutputStreamLog;
 
@@ -185,9 +188,9 @@ public class MediniQVTAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisio
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<dag.Model> edit) {
+	public void performAndPropagateTargetEdit(Supplier<IEdit<dag.Model>> edit) {
 		target.getContents().add(dag.DagFactory.eINSTANCE.createModel());
-		edit.accept(getTargetModel());
+		edit.get();
 		launchBWD();
 	}
 
@@ -197,9 +200,9 @@ public class MediniQVTAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisio
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<ast.Model> edit) {
+	public void performAndPropagateSourceEdit(Supplier<IEdit<ast.Model>> edit) {
 		source.getContents().add(ast.AstFactory.eINSTANCE.createModel());
-		edit.accept(getSourceModel());
+		edit.get();
 		launchFWD();
 	}
 
@@ -312,8 +315,8 @@ public class MediniQVTAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisio
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<dag.Model> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<dag.Model>> edit) {
+		edit.get();
 	}
 
 	/**
@@ -322,7 +325,14 @@ public class MediniQVTAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisio
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<ast.Model> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<ast.Model>> edit) {
+		edit.get();
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<Model>> sourceEdit, Supplier<IEdit<dag.Model>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 }

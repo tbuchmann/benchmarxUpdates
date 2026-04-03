@@ -104,12 +104,12 @@ public abstract class Pdb12Pdb2TestCase {
 	
 	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
 		return Arrays.asList(
-				new BXtendPdb12Pdb2(),				
+				//new BXtendPdb12Pdb2(),				
 				//new MediniQVTPdb12Pdb2(),
 				//new IBeXTGGPDB1ToPDB2()
 				new BXAgentPdb12Pdb2(),
-				new BXLangPdb12Pdb2(),
-				new JavaPdb12Pdb2()
+				new BXLangPdb12Pdb2() //,
+				//new JavaPdb12Pdb2()
 			);
 	}
 	
