@@ -55,8 +55,8 @@ public class BXAgentGantt2Cpm extends BXToolForEMF<gantt.GanttDiagram, cpm.CPMNe
 				
 		set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());		
 				
-		source = set.createResource(URI.createURI("pdb1.xmi"));
-		target = set.createResource(URI.createURI("pdb2.xmi"));
+		source = set.createResource(URI.createURI("gantt.xmi"));
+		target = set.createResource(URI.createURI("cpm.xmi"));
 		corr = set.createResource(URI.createURI("corr.xmi"));
 		gantt.GanttDiagram ganttRoot = GanttFactory.eINSTANCE.createGanttDiagram();
 		cpm.CPMNetwork cpmRoot = CpmFactory.eINSTANCE.createCPMNetwork();

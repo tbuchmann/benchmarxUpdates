@@ -13,10 +13,10 @@
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
 	<classpathentry kind="lib" path="lib/BXtend-Gantt2CPM.jar"/>
 	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/bxagent-gantt2cpm-1.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Gantt"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CPM"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.gantt2cpm"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-16">
 		<attributes>
 			<attribute name="module" value="true"/>
