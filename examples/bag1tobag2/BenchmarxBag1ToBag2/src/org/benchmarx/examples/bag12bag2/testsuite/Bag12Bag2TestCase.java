@@ -18,9 +18,8 @@ import org.benchmarx.edit.CreateNode;
 import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
+import org.benchmarx.examples.bag12bag2.implementations.bxagent.BXAgentBags2Bags;
 import org.benchmarx.examples.bag12bag2.implementations.bxlang.BXLangBag12Bag2;
-import org.benchmarx.examples.bag12bag2.implementations.bxtend.BXtendBag12Bag2;
-import org.benchmarx.examples.bag12bag2.implementations.medini.MediniQVTBag12Bag2;
 import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -97,7 +96,8 @@ public abstract class Bag12Bag2TestCase {
 				//new BXtendBag12Bag2(),
 				//new PlainJavaUbtBag12Bag2(),
 				//new MediniQVTBag12Bag2()
-				new BXLangBag12Bag2()
+				new BXLangBag12Bag2(),
+				new BXAgentBags2Bags()
 			);
 	}
 	

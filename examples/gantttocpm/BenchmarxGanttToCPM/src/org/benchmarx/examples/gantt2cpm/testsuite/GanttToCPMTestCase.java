@@ -18,8 +18,8 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.gantt2cpm.implementations.bxagent.BXAgentGantt2Cpm;
+import org.benchmarx.examples.gantt2cpm.implementations.bxlang.BXLangGantt2Cpm;
 import org.benchmarx.examples.gantt2cpm.implementations.bxtend.BXtendGantt2CPM;
-import org.benchmarx.examples.gantt2cpm.implementations.medini.MediniQVTGantt2CPM;
 import org.benchmarx.gantt.core.GanttComparator;
 import org.benchmarx.gantt.core.GanttHelper;
 import org.benchmarx.util.BenchmarxUtil;
@@ -105,9 +105,10 @@ public abstract class GanttToCPMTestCase {
 	@Parameters(name = "{0}")
 	public static Collection<BXTool<GanttDiagram, CPMNetwork, Decisions>> tools() {
 		return Arrays.asList(
-				new BXtendGantt2CPM(),  // Currently 0 failures
+				//new BXtendGantt2CPM(),  // Currently 0 failures
 				//new PlainJavaUbtGantt2Cpm(),
 				//new MediniQVTGantt2CPM(),
+				new BXLangGantt2Cpm() ,
 				new BXAgentGantt2Cpm()
 			);
 	}

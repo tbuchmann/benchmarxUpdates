@@ -1,4 +1,4 @@
-package org.benchmarx.examples.bag12bag2.implementations.bxlang;
+package org.benchmarx.examples.bag12bag2.implementations.bxagent;
 
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -18,27 +18,27 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import bags1.MyBag;
-import dev.bxlang.generated.bags1tobags2.Bags1ToBags2Transformation;
+import de.tbuchmann.bxagent.bags2bags.Bags12Bags2Transformation;
+import dev.emtagent.correspondence.CorrespondenceModel;
+import dev.emtagent.correspondence.TransformationContext;
 
 
-public class BXLangBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Decisions> {
+public class BXAgentBags2Bags  extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Decisions> {
 
 	private ResourceSet set = new ResourceSetImpl();
 	private Resource source;
 	private Resource target;
-	private Resource corr;	
+	private Resource corr;		
 	
-	private Bags1ToBags2Transformation bags2bags;
+	private static final String RESULTPATH = "results/bxagent";
 	
-	private static final String RESULTPATH = "results/bxlang";
-	
-	public BXLangBag12Bag2() {
+	public BXAgentBags2Bags() {
 		super(new Bag1Comparator(), new Bag2Comparator());
 	}
 	
 	@Override
 	public String getName() {
-		return "BXLang";
+		return "BXAgent";
 	}
 	
 	@Override
@@ -55,22 +55,26 @@ public class BXLangBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Deci
 		corr = set.createResource(URI.createURI("corr.xmi"));
 		bags1.MyBag root = bags1.Bags1Factory.eINSTANCE.createMyBag();
 		source.getContents().add(root);
-		bags2bags = new Bags1ToBags2Transformation();
+		bags2.MyBag targetRoot = bags2.Bags2Factory.eINSTANCE.createMyBag();
+		target.getContents().add(targetRoot);
 				
 		// perform batch to establish consistent starting state
-		bags2bags.transformForward(source, target);
+		Bags12Bags2Transformation.transform(source, target);
+		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
+				source.getURI(), target.getURI());
+		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 	}
-
+	
 	@Override
 	public void performAndPropagateSourceEdit(Supplier<IEdit<bags1.MyBag>> edit) {
 		edit.get();
-		bags2bags.transformForward(source, target);
+		Bags12Bags2Transformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
 	}
 
 	@Override
 	public void performAndPropagateTargetEdit(Supplier<IEdit<bags2.MyBag>> edit) {
 		edit.get();
-		bags2bags.transformBackward(target, source);
+		Bags12Bags2Transformation.transformBack(target, source, corr, TransformationContext.DeletionPolicy.CASCADE);
 	}
 
 	@Override
@@ -127,6 +131,5 @@ public class BXLangBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Deci
 		sourceEdit.get();
 		targetEdit.get();
 	}
-
 
 }

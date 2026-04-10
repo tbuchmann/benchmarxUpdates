@@ -3,6 +3,7 @@ package org.benchmarx.examples.pn2pnw.testsuite.batch.fwd;
 import java.util.Collection;
 
 import org.benchmarx.BXTool;
+import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.pn2pnw.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.pn2pnw.testsuite.Decisions;
 import org.benchmarx.examples.pn2pnw.testsuite.Pn2PnwTestCase;
@@ -75,6 +76,7 @@ public class BatchForward extends Pn2PnwTestCase {
 		// No precondition!
 		//------------
 		tool.performAndPropagateSourceEdit(srcEdit(helperPn::createSimpleLettersDigits));
+		//((BXToolForEMF)tool).saveModels("SimpleLettersDigits");
 		//------------
 		util.assertPostcondition("SimpleLettersDigitsPn", "SimpleLettersDigitsPnw");
 		terminate();

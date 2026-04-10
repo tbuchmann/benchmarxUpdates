@@ -234,8 +234,8 @@ public class BXAgentGantt2Cpm extends BXToolForEMF<gantt.GanttDiagram, cpm.CPMNe
 	public void saveModels(String name) {
 		ResourceSet set = new ResourceSetImpl();
 		set.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-		URI srcURI = URI.createFileURI(RESULTPATH + "/" + name + "pdb1.xmi");
-		URI trgURI = URI.createFileURI(RESULTPATH + "/" + name + "pdb2.xmi");
+		URI srcURI = URI.createFileURI(RESULTPATH + "/" + name + "gantt.xmi");
+		URI trgURI = URI.createFileURI(RESULTPATH + "/" + name + "cpm.xmi");
 		Resource resSource = set.createResource(srcURI);
 		Resource resTarget = set.createResource(trgURI);
 		
