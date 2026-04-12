@@ -18,9 +18,8 @@ import org.benchmarx.edit.CreateNode;
 import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
+import org.benchmarx.examples.ast2dag.implementations.bxagent.BXAgentAst2Dag;
 import org.benchmarx.examples.ast2dag.implementations.bxlang.BXLangAst2Dag;
-import org.benchmarx.examples.ast2dag.implementations.bxtend.BXtendAst2Dag;
-import org.benchmarx.examples.ast2dag.implementations.medini.MediniQVTAst2Dag;
 import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -103,7 +102,8 @@ public abstract class Ast2DagTestCase {
 		return Arrays.asList(
 //				new BXtendAst2Dag()				
 //				, new MediniQVTAst2Dag(),
-				new BXLangAst2Dag()
+				new BXLangAst2Dag(),
+				new BXAgentAst2Dag()
 			);
 	}
 	

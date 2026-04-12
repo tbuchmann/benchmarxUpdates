@@ -7,14 +7,16 @@
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
 	<classpathentry kind="lib" path="lib/BXtend-AST2DAG.jar"/>
+	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ExpressionDAG"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ExpressionAST"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Ast2Dag-bxlang"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ExpressionAST"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ExpressionDAG"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.ast2dag"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
