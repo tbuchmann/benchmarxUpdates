@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import ast.Model;
-import de.ubt.ai1.m2m.ast2dag.rules.Ast2dagTransformation;
+import de.tbuchmann.bxtend.ast2dag.rules.Ast2dagTransformation;
 
 public class BXtendAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions> {
 

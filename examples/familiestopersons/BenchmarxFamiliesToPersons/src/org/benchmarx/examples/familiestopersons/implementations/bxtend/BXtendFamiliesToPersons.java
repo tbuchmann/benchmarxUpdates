@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import Families.FamiliesFactory;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
-import de.tbuchmann.m2m.families2persons.rules.Families2personsTransformation;
-import de.tbuchmann.m2m.families2persons.rules.decisions.ConfigurableTargetToSourceDecision;
+import de.tbuchmann.bxtend.f2p.rules.Families2personsTransformation;
+import de.tbuchmann.bxtend.f2p.rules.decisions.ConfigurableTargetToSourceDecision;
 
 
 public class BXtendFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonRegister, Decisions> {

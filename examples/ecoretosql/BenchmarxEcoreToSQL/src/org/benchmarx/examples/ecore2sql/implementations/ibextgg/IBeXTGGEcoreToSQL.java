@@ -1,8 +1,10 @@
 package org.benchmarx.examples.ecore2sql.implementations.ibextgg;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 import org.benchmarx.ecore.core.EcoreComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.examples.ecore2sql.testsuite.Decisions;
 import org.benchmarx.sql.core.SQLComparator;
 import org.eclipse.emf.ecore.EPackage;
@@ -30,6 +32,12 @@ public class IBeXTGGEcoreToSQL extends IBeXTGGAdapter<EPackage, Schema, Decision
 		pack.setNsPrefix("");
 		pack.setNsURI("");
  		return pack;
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<EPackage>> sourceEdit, Supplier<IEdit<Schema>> targetEdit) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

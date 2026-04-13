@@ -1,5 +1,6 @@
 package org.benchmarx.osets.core;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -154,7 +155,8 @@ public class OsetHelper {
 	}
 	
 	private Element findFirst() {
-		assertTrue(OsetComparator.isConnected(set.get()) && !OsetComparator.isCycle(set.get()));
+		assertTrue(OsetComparator.isConnected(set.get()));
+		assertFalse(OsetComparator.isCycle(set.get()));
 		
 		Element first = set.get().getElements().get(0);
 		while (first.getPrevious() != null) {

@@ -2,19 +2,19 @@ package org.benchmarx.ecore.core
 
 import java.util.ArrayList
 import java.util.List
-import org.benchmarx.emf.Comparator
+import java.util.function.BiConsumer
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EClass
+import org.eclipse.emf.ecore.EClassifier
 import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
+import org.eclipse.emf.ecore.EReference
 
 import static org.junit.Assert.*
-import org.eclipse.emf.ecore.EReference
-import org.eclipse.emf.ecore.EClassifier
 
-class EcoreComparator implements Comparator<EPackage>{
+class EcoreComparator implements BiConsumer<EPackage, EPackage>{
 		
-	override assertEquals(EPackage expected, EPackage actual) {
+	override accept(EPackage expected, EPackage actual) {
 		assertTrue(ePackageToString(expected).startsWith("EcorePackage"))
 		assertEquals(ePackageToString(expected), ePackageToString(actual))
 	}

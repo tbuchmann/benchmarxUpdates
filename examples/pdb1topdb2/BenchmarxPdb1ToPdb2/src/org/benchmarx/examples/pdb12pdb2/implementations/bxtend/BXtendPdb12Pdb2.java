@@ -1,14 +1,14 @@
 package org.benchmarx.examples.pdb12pdb2.implementations.bxtend;
 
 import java.io.IOException;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
+import org.benchmarx.pdb1.core.Pdb1Comparator;
+import org.benchmarx.pdb2.core.Pdb2Comparator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -17,10 +17,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import org.benchmarx.pdb1.core.Pdb1Comparator;
-import org.benchmarx.pdb2.core.Pdb2Comparator;
-import de.ubt.ai1.m2m.pdb12pdb2.rules.Pdb12pdb2Transformation;
-import de.ubt.ai1.m2m.pdb12pdb2.rules.decisions.ConfigurableTargetToSourceDecision;
+import de.tbuchmann.bxtend.pdb12pdb2.rules.Pdb12pdb2Transformation;
+import de.tbuchmann.bxtend.pdb12pdb2.rules.decisions.ConfigurableTargetToSourceDecision;
 import pdb1.Database;
 import pdb1.Pdb1Factory;
 

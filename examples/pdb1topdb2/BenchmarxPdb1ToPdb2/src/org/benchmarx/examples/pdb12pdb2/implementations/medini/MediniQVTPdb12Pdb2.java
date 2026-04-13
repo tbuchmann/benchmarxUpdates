@@ -9,7 +9,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
@@ -17,6 +16,8 @@ import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
+import org.benchmarx.pdb1.core.Pdb1Comparator;
+import org.benchmarx.pdb2.core.Pdb2Comparator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -25,11 +26,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
 import de.ikv.emf.qvt.EMFQvtProcessorImpl;
 import de.ikv.medini.qvt.QVTProcessorConsts;
-import org.benchmarx.pdb1.core.Pdb1Comparator;
-import org.benchmarx.pdb2.core.Pdb2Comparator;
-
 import pdb1.Database;
 import pdb1.Pdb1Factory;
 import uk.ac.kent.cs.kmf.util.ILog;

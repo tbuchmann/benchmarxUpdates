@@ -1,9 +1,10 @@
 package org.benchmarx.examples.bag12bag2.implementations.bxtend;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.benchmarx.bags1.core.Bag1Comparator;
+import org.benchmarx.bags2.core.Bag2Comparator;
 import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
@@ -17,10 +18,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import bags1.MyBag;
-import de.ubt.ai1.m2m.bag12bag2.rules.Bag12bag2Transformation;
-
-import org.benchmarx.bags1.core.Bag1Comparator;
-import org.benchmarx.bags2.core.Bag2Comparator;
+import de.tbuchmann.bxtend.bag12bag2.rules.Bag12bag2Transformation;
 
 public class BXtendBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Decisions> {
 

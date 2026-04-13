@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.pdb12pdb2.Pdb12Pdb2Transformation;
 import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.SyncConflictPolicy;
 import dev.emtagent.correspondence.TransformationContext;
 import pdb1.Database;
 import pdb1.Pdb1Factory;
@@ -30,7 +29,6 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 	private Resource source;
 	private Resource target;
 	private Resource corr;
-	//private PersonToPersonTransformation p2pt;
 	
 	private Configurator<Decisions> conf;
 	private Configurator<Decisions> defaultConf;

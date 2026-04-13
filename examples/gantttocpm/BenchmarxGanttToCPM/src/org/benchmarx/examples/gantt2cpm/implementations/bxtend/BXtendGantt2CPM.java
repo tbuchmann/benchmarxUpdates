@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import cpm.CPMNetwork;
-import de.ubt.ai1.m2m.gantt2cpm.rules.Gantt2cpmTransformation;
+import de.tbuchmann.bxtend.gantt2cpm.rules.Gantt2cpmTransformation;
 import gantt.GanttDiagram;
 
 public class BXtendGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Decisions> {

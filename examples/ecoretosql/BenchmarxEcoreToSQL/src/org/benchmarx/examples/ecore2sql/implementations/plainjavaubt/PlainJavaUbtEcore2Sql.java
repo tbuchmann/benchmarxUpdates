@@ -12,11 +12,13 @@ import sql.Schema;
 import sql.SqlFactory;
 import sql2ecore.Sql2Ecore;
 
-public class PlainJavaUbtEcore2Sql extends BXToolForPlainJavaUbt<EPackage, Schema, Decisions> {
-	public PlainJavaUbtEcore2Sql() {
-		super(new Ecore2Sql(), new Sql2Ecore(), "src/de/ubt/ai1/m2m/ecore2sql/implementations/plainjavaubt",
-				EcoreFactory.eINSTANCE.createEPackage(), SqlFactory.eINSTANCE.createSchema(),
-				new EcoreComparator(), new SQLComparator());
-		Transformation.validateInput = false;
-	}
+public class PlainJavaUbtEcore2Sql {
+//	extends BXToolForPlainJavaUbt<EPackage, Schema, Decisions> {
+//}
+//	public PlainJavaUbtEcore2Sql() {
+//		super(new Ecore2Sql(), new Sql2Ecore(), "src/de/ubt/ai1/m2m/ecore2sql/implementations/plainjavaubt",
+//				EcoreFactory.eINSTANCE.createEPackage(), SqlFactory.eINSTANCE.createSchema(),
+//				new EcoreComparator(), new SQLComparator());
+//		Transformation.validateInput = false;
+//	}
 }

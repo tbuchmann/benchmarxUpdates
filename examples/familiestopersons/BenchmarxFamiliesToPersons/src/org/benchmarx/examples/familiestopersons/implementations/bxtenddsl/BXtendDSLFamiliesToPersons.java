@@ -21,7 +21,6 @@ import Families.FamiliesFactory;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 import de.tbuchmann.bxtenddsl.f2p.trafo.FamiliesToPersons;
-import de.tbuchmann.m2m.families2persons.rules.decisions.ConfigurableTargetToSourceDecision;
 
 public class BXtendDSLFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonRegister, Decisions> {
 	

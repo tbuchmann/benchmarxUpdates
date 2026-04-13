@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.output.NullOutputStream;
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
 import org.benchmarx.ecore.core.EcoreComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.ecore2sql.testsuite.Decisions;
 import org.benchmarx.sql.core.SQLComparator;
@@ -142,8 +144,8 @@ public class MediniQVTEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<Schema> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<Schema>> edit) {
+		edit.get();
 		launchBWD();
 	}
 
@@ -153,8 +155,8 @@ public class MediniQVTEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions
 	 * @param edit : the source edit delta
 	 */
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<EPackage> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<EPackage>> edit) {
+		edit.get();
 		launchFWD();
 	}
 
@@ -287,8 +289,8 @@ public class MediniQVTEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleTargetEdit(Consumer<Schema> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<Schema>> edit) {
+		edit.get();
 	}
 
 	/**
@@ -297,7 +299,14 @@ public class MediniQVTEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions
 	 * @param edit : the edit delta
 	 */
 	@Override
-	public void performIdleSourceEdit(Consumer<EPackage> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<EPackage>> edit) {
+		edit.get();
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<EPackage>> sourceEdit, Supplier<IEdit<Schema>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 }

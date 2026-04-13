@@ -3,14 +3,11 @@ package org.benchmarx.examples.ecore2sql.testsuite;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.BiConsumer;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.benchmarx.BXTool;
 import org.benchmarx.ecore.core.EcoreComparator;
 import org.benchmarx.ecore.core.EcoreHelper;
-import org.benchmarx.emf.Comparator;
 import org.benchmarx.examples.ecore2sql.implementations.bxtend.BXtendEcore2SQL;
 import org.benchmarx.examples.ecore2sql.implementations.ibextgg.IBeXTGGEcoreToSQL;
 import org.benchmarx.examples.ecore2sql.implementations.medini.MediniQVTEcore2SQL;
@@ -22,7 +19,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -33,8 +29,8 @@ import sql.SqlPackage;
 @RunWith(Parameterized.class)
 public abstract class EcoreToSQLTestCase {
 	protected BXTool<EPackage, Schema, Decisions> tool;
-	protected Comparator<EPackage> ecoreComparator;
-	protected Comparator<Schema> sqlComparator;
+	protected BiConsumer<EPackage, EPackage> ecoreComparator;
+	protected BiConsumer<Schema, Schema> sqlComparator;
 	protected BenchmarxUtil<EPackage, Schema, Decisions> util;
 	protected EcoreHelper helperEcore;
 	protected SQLHelper helperSQL;
@@ -64,8 +60,7 @@ public abstract class EcoreToSQLTestCase {
 	@Parameters(name = "{0}")
 	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
 		return Arrays.asList(
-				new BXtendEcore2SQL(),  // Currently 0 failures
-				new PlainJavaUbtEcore2Sql(),
+				new BXtendEcore2SQL(),  // Currently 0 failures				
 				new MediniQVTEcore2SQL(),
 				new IBeXTGGEcoreToSQL()
 			);

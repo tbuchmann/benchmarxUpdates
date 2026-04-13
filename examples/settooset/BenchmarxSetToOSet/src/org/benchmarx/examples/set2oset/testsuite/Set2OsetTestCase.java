@@ -113,7 +113,7 @@ public class Set2OsetTestCase {
 	
 	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
 		return Arrays.asList(
-				new BXtendSet2Oset(),
+				new BXtendSet2Oset() ,
 				//new PlainJavaUbtSet2Oset(),
 				new MediniQVTSetToOSet(),
 				//new IBeXTGGSetToOSet()

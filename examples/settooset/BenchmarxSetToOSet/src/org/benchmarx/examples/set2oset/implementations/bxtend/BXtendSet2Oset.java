@@ -1,13 +1,14 @@
 package org.benchmarx.examples.set2oset.implementations.bxtend;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
+import org.benchmarx.osets.core.OsetComparator;
+import org.benchmarx.sets.core.SetComparator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -16,9 +17,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import org.benchmarx.osets.core.OsetComparator;
-import de.ubt.ai1.m2m.set2oset.rules.Set2osetTransformation;
-import org.benchmarx.sets.core.SetComparator;
+import de.tbuchmann.bxtend.set2oset.rules.Set2osetTransformation;
 import sets.SetsFactory;
 
 public class BXtendSet2Oset extends BXToolForEMF<sets.MySet, osets.MyOrderedSet, Decisions> {

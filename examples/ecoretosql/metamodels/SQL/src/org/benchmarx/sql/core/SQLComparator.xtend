@@ -1,21 +1,21 @@
 package org.benchmarx.sql.core
 
-import org.benchmarx.emf.Comparator
+import java.util.ArrayList
+import java.util.List
+import java.util.function.BiConsumer
+import sql.Annotation
+import sql.Column
+import sql.Event
+import sql.ForeignKey
+import sql.Property
 import sql.Schema
+import sql.Table
 
 import static org.junit.Assert.*
-import java.util.List
-import java.util.ArrayList
-import sql.Table
-import sql.Column
-import sql.Property
-import sql.ForeignKey
-import sql.Annotation
-import sql.Event
 
-class SQLComparator implements Comparator<Schema>{
+class SQLComparator implements BiConsumer<Schema, Schema>{
 	
-	override assertEquals(Schema expected, Schema actual) {
+	override accept(Schema expected, Schema actual) {
 		assertTrue(schemaToString(expected).startsWith("SQLSchema"))
 		assertEquals(schemaToString(expected), schemaToString(actual))
 	}

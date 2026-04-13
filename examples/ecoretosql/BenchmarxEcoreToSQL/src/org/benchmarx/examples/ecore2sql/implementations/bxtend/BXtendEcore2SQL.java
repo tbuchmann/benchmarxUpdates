@@ -2,9 +2,11 @@ package org.benchmarx.examples.ecore2sql.implementations.bxtend;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import org.benchmarx.Configurator;
+import org.benchmarx.config.Configurator;
 import org.benchmarx.ecore.core.EcoreComparator;
+import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
 import org.benchmarx.examples.ecore2sql.testsuite.Decisions;
 import org.benchmarx.sql.core.SQLComparator;
@@ -58,25 +60,25 @@ public class BXtendEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions> {
 	}
 
 	@Override
-	public void performAndPropagateSourceEdit(Consumer<EPackage> edit) {
-		edit.accept(getSourceModel());
+	public void performAndPropagateSourceEdit(Supplier<IEdit<EPackage>> edit) {
+		edit.get();
 		ecore2sql.sourceToTarget();
 	}
 
 	@Override
-	public void performAndPropagateTargetEdit(Consumer<Schema> edit) {
-		edit.accept(getTargetModel());
+	public void performAndPropagateTargetEdit(Supplier<IEdit<Schema>> edit) {
+		edit.get();
 		ecore2sql.targetToSource();
 	}
 
 	@Override
-	public void performIdleSourceEdit(Consumer<EPackage> edit) {
-		edit.accept(getSourceModel());
+	public void performIdleSourceEdit(Supplier<IEdit<EPackage>> edit) {
+		edit.get();
 	}
 
 	@Override
-	public void performIdleTargetEdit(Consumer<Schema> edit) {
-		edit.accept(getTargetModel());
+	public void performIdleTargetEdit(Supplier<IEdit<Schema>> edit) {
+		edit.get();
 	}
 
 	@Override
@@ -116,6 +118,13 @@ public class BXtendEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void performAndPropagateEdit(Supplier<IEdit<EPackage>> sourceEdit, Supplier<IEdit<Schema>> targetEdit) {
+		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
 	}
 
 }

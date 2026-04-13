@@ -1,10 +1,11 @@
 package org.benchmarx.examples.pdb12pdb2.testsuite.alignment_based.fwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.pdb12pdb2.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Decisions;
 import org.benchmarx.examples.pdb12pdb2.testsuite.Pdb12Pdb2TestCase;
-import java.util.Collection;
-import org.benchmarx.examples.pdb12pdb2.testsuite.BXToolParameterResolver;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;

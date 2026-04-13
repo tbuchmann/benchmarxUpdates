@@ -3,9 +3,9 @@ package org.benchmarx.examples.pn2pnw.implementations.bxtend;
 import java.io.IOException;
 import java.util.function.Supplier;
 
+import org.benchmarx.config.Configurator;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.emf.BXToolForEMF;
-import org.benchmarx.config.Configurator;
 import org.benchmarx.examples.pn2pnw.testsuite.Decisions;
 import org.benchmarx.petrinet.core.PNComparator;
 import org.benchmarx.petrinetweighted.core.PNWComparator;
@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import de.ubt.ai1.m2m.pn2pnw.rules.Pn2pnwTransformation;
+import de.tbuchmann.bxtend.pn2pnw.rules.Pn2pnwTransformation;
 import pn.Net;
 
 public class BXtendPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
