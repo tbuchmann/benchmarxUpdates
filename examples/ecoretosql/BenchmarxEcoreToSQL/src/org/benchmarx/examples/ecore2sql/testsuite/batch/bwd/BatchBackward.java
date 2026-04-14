@@ -1,16 +1,26 @@
 package org.benchmarx.examples.ecore2sql.testsuite.batch.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.ecore2sql.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.ecore2sql.testsuite.Decisions;
 import org.benchmarx.examples.ecore2sql.testsuite.EcoreToSQLTestCase;
 import org.eclipse.emf.ecore.EPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import sql.Schema;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackward extends EcoreToSQLTestCase {
-	public BatchBackward(BXTool<EPackage, Schema, Decisions> tool) {
-		super(tool);
+	public BatchBackward() {
+		super();
+	}
+	
+	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
+		return EcoreToSQLTestCase.tools();
 	}
 	
 	/**
@@ -18,14 +28,18 @@ public class BatchBackward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> name, uri and prefix in the EPackage is also changed.<br/>
 	 * <b>Features</b>: fwd, fixed
 	 */
-	@Test
-	public void testSQLNameChangeOfEmpty()
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testSQLNameChangeOfEmpty(BXTool<EPackage, Schema, Decisions> tool)
 	{
+		this.tool = tool;
+		initialise();
 		util.assertPrecondition("RootElementEcore", "RootElementSQL");
 		//------------
-		tool.performAndPropagateTargetEdit(helperSQL::changePackageName);
+		tool.performAndPropagateTargetEdit(trgEdit(helperSQL::changePackageName));
 		//------------
 		util.assertPostcondition("CompositeListPackageEcore", "CompositeListPackageSQL");
+		terminate();
 	}
 	
 	/**
@@ -35,45 +49,53 @@ public class BatchBackward extends EcoreToSQLTestCase {
 	 * <br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testCreateSimpleCompositeList()
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testCreateSimpleCompositeList(BXTool<EPackage, Schema, Decisions> tool)
 	{
+		this.tool = tool;
+		initialise();
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable));
 		//------------
 		util.assertPostcondition("CompositeListSimple-OperationsEcore", "CompositeListSimpleSQL");
+		terminate();
 	}
 
 	/**
 	 * Analogous to @link {@link #testCreateSimpleCompositeList()}, now with all possible reference types.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test 
-	public void testCreateComplexCompositeList(){
+	@ParameterizedTest
+	@MethodSource("tools") 
+	public void testCreateComplexCompositeList(BXTool<EPackage, Schema, Decisions> tool){
+		this.tool = tool;
+		initialise();
 		// No precondition!
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable)
-				.andThen(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable)
-				.andThen(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable,
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable,
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
 		//------------
 		util.assertPostcondition("CompositeListData-OperationsEcore", "CompositeListDataSQL");
+		terminate();
 	}
 }

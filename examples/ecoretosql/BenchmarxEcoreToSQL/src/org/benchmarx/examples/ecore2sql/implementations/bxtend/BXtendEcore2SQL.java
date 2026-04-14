@@ -1,7 +1,6 @@
 package org.benchmarx.examples.ecore2sql.implementations.bxtend;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.benchmarx.config.Configurator;
@@ -21,7 +20,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import de.ubt.ai1.m2m.ecore2sql.rules.Ecore2sqlTransformation;
+import de.tbuchmann.bxtend.ecore2sql.rules.Ecore2sqlTransformation;
 import sql.Schema;
 
 public class BXtendEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions> {

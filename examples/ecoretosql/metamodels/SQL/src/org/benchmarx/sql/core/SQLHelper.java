@@ -3,7 +3,13 @@ package org.benchmarx.sql.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import sql.Action;
@@ -16,10 +22,26 @@ import sql.Schema;
 import sql.Table;
 
 public class SQLHelper {
+	
+	private SchemaBuilder builder;
+	private Supplier<Schema> schemaSupplier;
+	private BiConsumer<EAttribute, List<?>> changeAttribute;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
+	
+	public SQLHelper(Supplier<Schema> schemaSupplier, Consumer<EObject> createNode,
+			BiConsumer<EReference, List<EObject>> createEdge,
+			BiConsumer<EAttribute, List<?>> changeAttribute, Consumer<EObject> deleteNode,
+			BiConsumer<EObject, List<EObject>> moveTargetNode, BiConsumer<EReference, List<EObject>> deleteEdge) {
+		builder = new SchemaBuilder(schemaSupplier, createNode, createEdge);
+		this.schemaSupplier = schemaSupplier;
+		this.changeAttribute = changeAttribute;
+		this.deleteEdge = deleteEdge;
+		this.deleteNode = deleteNode;
+	}
 
-	public void createListTable(Schema s) {
-		//Precondition: Table Node must exist.
-		SchemaBuilder builder = new SchemaBuilder(s);
+	public void createListTable() {
+		//Precondition: Table Node must exist.		
 		//Create table List
 		builder.table().name("List")
 			.annotation().name("class").end(TableBuilder.class)
@@ -45,7 +67,7 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 		
 		//Add List column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("List").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -53,8 +75,7 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createNodeTable(Schema s) {
-		SchemaBuilder builder = new SchemaBuilder(s);
+	public void createNodeTable() {		
 		//Create table Node
 		builder.table().name("Node")
 			.annotation().name("class").end(TableBuilder.class)
@@ -66,7 +87,7 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 		
 		//Add Node column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("Node").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -74,9 +95,9 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createLeafTable(Schema s) {
+	public void createLeafTable() {
 		//Precondition: Table Node must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table Leaf
 		builder.table().name("Leaf")
 			.annotation().name("class").end(TableBuilder.class)
@@ -88,7 +109,7 @@ public class SQLHelper {
 				.annotation().name("superType");
 		
 		//Add Leaf column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("Leaf").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -96,9 +117,9 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createDataNodeTable(Schema s) {
+	public void createDataNodeTable() {
 		//Precondition: Table Node must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table DataNode
 		builder.table().name("DataNode")
 			.annotation().name("class").end(TableBuilder.class)
@@ -122,7 +143,7 @@ public class SQLHelper {
 				.annotation().name("cross").end(ForeignKeyBuilder.class);
 		
 		//Add DataNode column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("DataNode").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -130,8 +151,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createDataElementTable(Schema s) {
-		SchemaBuilder builder = new SchemaBuilder(s);
+	public void createDataElementTable() {
+		
 		//Create table DataElement
 		builder.table().name("DataElement")
 			.annotation().name("class").end(TableBuilder.class)
@@ -143,7 +164,7 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 		
 		//Add DataElement column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("DataElement").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -151,9 +172,9 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createPairTable(Schema s) {
+	public void createPairTable() {
 		//Precondition: Table DataElement must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table Pair
 		builder.table().name("Pair")
 			.annotation().name("class").end(TableBuilder.class)
@@ -165,7 +186,7 @@ public class SQLHelper {
 				.annotation().name("superType").end(ForeignKeyBuilder.class);
 		
 		//Add Pair column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("Pair").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -173,9 +194,9 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createValueTable(Schema s) {
+	public void createValueTable() {
 		//Precondition: Table Pair must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table Value
 		builder.table().name("Value")
 			.annotation().name("class").end(TableBuilder.class)
@@ -197,7 +218,7 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 		
 		//Add Value column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("Value").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -205,9 +226,9 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createKeyTable(Schema s) {
+	public void createKeyTable() {
 		//Precondition: Table Pair must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table Key
 		builder.table().name("Key")
 			.annotation().name("class").end(TableBuilder.class)
@@ -228,7 +249,7 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 		
 		//Add Key column to EObject table
-		Optional<Table> t = s.getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
+		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
 			TableBuilder b = new TableBuilder(t.get(), builder);
 			b.column().name("Key").property(Property.UNIQUE).type("int").end(TableBuilder.class)
@@ -236,9 +257,9 @@ public class SQLHelper {
 		}
 	}
 	
-	public void createList_start_inverse_Node_startOfTable(Schema s) {
+	public void createList_start_inverse_Node_startOfTable() {
 		//Precondition: Tables Node and List must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table List_start_inverse_Node_startOf
 		builder.table().name("List_start_inverse_Node_startOf")
 			.annotation().name("backwardSingle").end(TableBuilder.class)
@@ -253,9 +274,9 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 	}
 	
-	public void createKey_keyValuesTable(Schema s) {
+	public void createKey_keyValuesTable() {
 		//Precondition: Table Key must exist
-		SchemaBuilder builder = new SchemaBuilder(s);
+		
 		//Create table Key_keyValues
 		builder.table().name("Key_keyValues")
 			.annotation().name("attribute").end(TableBuilder.class)
@@ -266,12 +287,12 @@ public class SQLHelper {
 				.event().condition(Condition.DELETE).action(Action.CASCADE);
 	}
 	
-	public void changePackageName(Schema s) {
-		s.setName("CompositeList");
+	public void changePackageName() {
+		schemaSupplier.get().setName("CompositeList");
 	}
 	
-	public void changeDataNodeTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
+	public void changeDataNodeTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("data")).findAny();
@@ -294,8 +315,8 @@ public class SQLHelper {
 			.annotation().name("cross");
 	}
 	
-	public void changeListTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
+	public void changeListTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("start")).findAny();
@@ -305,8 +326,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void changePair_KeyValueReferences(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Key")).findAny();
+	public void changePair_KeyValueReferences() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Key")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("key_inverse")).findAny();
@@ -319,7 +340,7 @@ public class SQLHelper {
 				if(a.getAnnotation().equals("unidirectional")) a.setAnnotation("bidirectional");
 			});
 		}
-		ot = s.getOwnedTables().stream().filter(tab -> tab.getName().equals("Value")).findAny();
+		ot = schemaSupplier.get().getOwnedTables().stream().filter(tab -> tab.getName().equals("Value")).findAny();
 		if(!ot.isPresent()) return;
 		t = ot.get();
 		oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("pair_inverse_values")).findAny();
@@ -334,8 +355,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void changeDataNodeData(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
+	public void changeDataNodeData() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("data")).findAny();
@@ -343,13 +364,13 @@ public class SQLHelper {
 		Column c = oc.get();
 		EcoreUtil.delete(c.getOwnedAnnotations().stream().filter(a -> a.getAnnotation().equals("unidirectional")).findAny().get(), true);
 		c.getOwnedAnnotations().stream().filter(a -> a.getAnnotation().equals("cross")).findAny().get().setAnnotation("attribute");
-		c.setOwningTable(s.getOwnedTables().stream().filter(tab -> tab.getName().equals("Node")).findAny().get());
+		c.setOwningTable(schemaSupplier.get().getOwnedTables().stream().filter(tab -> tab.getName().equals("Node")).findAny().get());
 		c.setName("number");
 		EcoreUtil.delete(c.getKeys().get(0),true);
 	}
 	
-	public void changeListLength(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
+	public void changeListLength() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("length")).findAny();
@@ -370,11 +391,11 @@ public class SQLHelper {
 			.annotation().name("single");
 	}
 	
-	public void changeForeignKeyPair_Key(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny();
+	public void changeForeignKeyPair_Key() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny();
 		if(!ot.isPresent()) return;
 		Table value = ot.get();
-		ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Pair")).findAny();
+		ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Pair")).findAny();
 		if(!ot.isPresent()) return;
 		Table pair = ot.get();
 		ForeignKey dataElement = pair.getOwnedForeignKeys().get(0);
@@ -386,8 +407,8 @@ public class SQLHelper {
 		eObject.setOwningTable(pair);
 	}
 	
-	public void addAnnotationToDataNodeData(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
+	public void addAnnotationToDataNodeData() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("data")).findAny();
@@ -397,16 +418,16 @@ public class SQLHelper {
 		}
 	}
 	
-	public void addAnnotationToDataNode(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
+	public void addAnnotationToDataNode() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		TableBuilder builder = new TableBuilder(t, null);
 		builder.annotation().name("saves the data");
 	}
 	
-	public void deleteListLengthColumn(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
+	public void deleteListLengthColumn() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("length")).findAny();
@@ -415,8 +436,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deleteDataNodeDataColumn(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
+	public void deleteDataNodeDataColumn() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("data")).findAny();
@@ -426,8 +447,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deleteKeyKeyinverseColumn(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Key")).findAny();
+	public void deleteKeyKeyinverseColumn() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Key")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("key_inverse")).findAny();
@@ -437,8 +458,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deleteValuePairinverseValueColumn(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny();
+	public void deleteValuePairinverseValueColumn() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("pair_inverse_values")).findAny();
@@ -448,18 +469,18 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deleteKey_keyValuesTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Key_keyValues")).findAny();
+	public void deleteKey_keyValuesTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Key_keyValues")).findAny();
 		if(ot.isPresent()) EcoreUtil.delete(ot.get(), true);
 	}
 	
-	public void deleteList_start_inverse_Node_startOfTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("List_start_inverse_Node_startOf")).findAny();
+	public void deleteList_start_inverse_Node_startOfTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List_start_inverse_Node_startOf")).findAny();
 		if(ot.isPresent()) EcoreUtil.delete(ot.get(), true);
 	}
 	
-	public void deleteDataElementTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataElement")).findAny();
+	public void deleteDataElementTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataElement")).findAny();
 		if(ot.isPresent()) {
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0).getColumn(), true);
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0), true);
@@ -467,8 +488,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deleteKeyTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Key")).findAny();
+	public void deleteKeyTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Key")).findAny();
 		if(ot.isPresent()) {
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0).getColumn(), true);
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0), true);
@@ -476,8 +497,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deleteValueTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny();
+	public void deleteValueTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny();
 		if(ot.isPresent()) {
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0).getColumn(), true);
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0), true);
@@ -485,8 +506,8 @@ public class SQLHelper {
 		}
 	}
 	
-	public void deletePairTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Pair")).findAny();
+	public void deletePairTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Pair")).findAny();
 		if(ot.isPresent()) {
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0).getColumn(), true);
 			EcoreUtil.delete(ot.get().getReferencingForeignKeys().get(0), true);
@@ -494,12 +515,12 @@ public class SQLHelper {
 		}
 	}
 	
-	public void renameSchema(Schema s) {
-		s.setName("CompositeQueue");
+	public void renameSchema() {
+		schemaSupplier.get().setName("CompositeQueue");
 	}
 	
-	public void renameListTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
+	public void renameListTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
 		if(!ot.isPresent()) return;
 		Table list = ot.get();
 		list.setName("Queue");
@@ -508,21 +529,21 @@ public class SQLHelper {
 		
 		
 		
-		ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("List_start_inverse_Node_startOf")).findAny();
+		ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List_start_inverse_Node_startOf")).findAny();
 		if(!ot.isPresent()) return;
 		Table lsins = ot.get();
 		lsins.setName("Node_startOf_inverse_Queue_start");
 		Optional<ForeignKey> oc = lsins.getOwnedForeignKeys().stream().filter(c -> c.getColumn().getName().equals("source")).findAny();
 		if(oc.isPresent()) {
-			ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Node")).findAny();
+			ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Node")).findAny();
 			if(ot.isPresent()) oc.get().setReferencedTable(ot.get());
 		}
 		oc = lsins.getOwnedForeignKeys().stream().filter(c -> c.getColumn().getName().equals("target")).findAny();
 		if(oc.isPresent()) oc.get().setReferencedTable(list);
 	}
 	
-	public void renameDataNodeDataColumn(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
+	public void renameDataNodeDataColumn() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("data")).findAny();
@@ -531,20 +552,20 @@ public class SQLHelper {
 		}
 	}
 	
-	public void renameKey_keyValuesTable(Schema s) {
-		Optional<Table> ot = s.getOwnedTables().stream().filter(t -> t.getName().equals("Key_keyValues")).findAny();
+	public void renameKey_keyValuesTable() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Key_keyValues")).findAny();
 		if(ot.isPresent()) {
 			ot.get().setName("Value_vals");
-			ot.get().getOwnedForeignKeys().get(0).setReferencedTable(s.getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny().get());
+			ot.get().getOwnedForeignKeys().get(0).setReferencedTable(schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("Value")).findAny().get());
 		}
 	}
 	
-	public void idleDelta(Schema s) {
+	public void idleDelta() {
 		
 	}
 	
-	public void hippocraticDelta(Schema s) {
-		addAnnotationToDataNode(s);
-		addAnnotationToDataNodeData(s);
+	public void hippocraticDelta() {
+		addAnnotationToDataNode();
+		addAnnotationToDataNodeData();
 	}
 }

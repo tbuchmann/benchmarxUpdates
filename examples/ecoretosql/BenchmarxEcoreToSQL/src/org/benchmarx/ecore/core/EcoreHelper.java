@@ -1,10 +1,15 @@
 package org.benchmarx.ecore.core;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
@@ -13,14 +18,46 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class EcoreHelper {
+	
+	private EcoreBuilder builder;
+	private Supplier<EPackage> packageSupplier;
+	private BiConsumer<EAttribute, List<?>> changeAttribute;
+	private Consumer<EObject> createNode;
+	private BiConsumer<EReference, List<EObject>> createEdge;
+	private BiConsumer<EObject, List<EObject>> moveNode;
+	private Consumer<EObject> deleteNode;
+	private BiConsumer<EReference, List<EObject>> deleteEdge;
+	
+	public EcoreHelper(Supplier<EPackage> packageSupplier, Consumer<EObject> deleteNode,
+			BiConsumer<EReference, List<EObject>> deleteEdge, BiConsumer<EAttribute, List<?>> changeAttribute) {
+		this.packageSupplier = packageSupplier;
+		this.deleteNode = deleteNode;
+		this.deleteEdge = deleteEdge;
+		this.changeAttribute = changeAttribute;
+		this.builder = new EcoreBuilder(packageSupplier, deleteNode, deleteEdge);
+	}
 
-	public void idleDelta(EPackage p) {
+	public EcoreHelper(Supplier<EPackage> rootSupplier, Consumer<EObject> createSourceNode,
+			BiConsumer<EReference, List<EObject>> createSourceEdge,
+			BiConsumer<EAttribute, List<?>> changeSourceAttribute, Consumer<EObject> deleteSourceNode,
+			BiConsumer<EObject, List<EObject>> moveSourceNode, BiConsumer<EReference, List<EObject>> deleteSourceEdge) {
+		this.packageSupplier = rootSupplier;
+		this.deleteNode = deleteSourceNode;
+		this.deleteEdge = deleteSourceEdge;
+		this.changeAttribute = changeSourceAttribute;
+		this.createNode = createSourceNode;
+		this.createEdge = createSourceEdge;
+		this.moveNode = moveSourceNode;
+		this.builder = new EcoreBuilder(packageSupplier, deleteNode, deleteEdge);
+	}
+
+	public void idleDelta() {
 		
 	}
 	
-	public void hippocraticDelta(EPackage p) {
+	public void hippocraticDelta() {
 		//Delete method in List
-		EClass c = (EClass) p.getEClassifier("List");
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		EcoreUtil.delete(c.getEOperations().get(0), true);
 		
 		//Change some attributes from List length
@@ -32,13 +69,13 @@ public class EcoreHelper {
 			a.setDerived(false);
 			a.setTransient(false);
 		}
-		EcoreBuilder builder = new EcoreBuilder(p);
+		
 		builder.operation("Leaf", "isLeaf", "boolean");
 		
 	}
 	
-	public void createSimpleCompositeList(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void createSimpleCompositeList() {
+		
 		builder
 		.abstractClass("Node")
 		.clazz("Leaf", "Node")
@@ -57,7 +94,7 @@ public class EcoreHelper {
 			.field("List", "length", "int")
 			.operation("List", "add", "boolean")
 				.param("newNode","DataNode");
-		EClass l = (EClass) p.getEClassifier("List");
+		EClass l = (EClass) packageSupplier.get().getEClassifier("List");
 		EAttribute length = (EAttribute) l.getEStructuralFeature("length");
 		length.setVolatile(true);
 		length.setChangeable(false);
@@ -65,36 +102,36 @@ public class EcoreHelper {
 		length.setTransient(true);
 	}
 	
-	public void createDataAttribute(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void createDataAttribute() {
+		
 		builder.field("DataNode", "data", "int");
 	}
 	
-	public void createDataNode(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void createDataNode() {
+		
 		builder.clazz("DataNode", "Node")
 			.field("DataNode", "data", "int")
 			.reference("DataNode", "follower", "Node")
 			.operation("DataNode", "addLast", "Node")
 				.param("newNode", "DataNode");
-		EClass l = (EClass) p.getEClassifier("List");
+		EClass l = (EClass) packageSupplier.get().getEClassifier("List");
 		EOperation o = l.getEOperations().get(0);
 		EParameter param = o.getEParameters().get(0);
-		param.setEType(p.getEClassifier("DataNode"));
+		param.setEType(packageSupplier.get().getEClassifier("DataNode"));
 		
-		l = (EClass) p.getEClassifier("Node");
+		l = (EClass) packageSupplier.get().getEClassifier("Node");
 		o = l.getEOperations().get(0);
 		param = o.getEParameters().get(0);
-		param.setEType(p.getEClassifier("DataNode"));
+		param.setEType(packageSupplier.get().getEClassifier("DataNode"));
 		
-		l = (EClass) p.getEClassifier("Leaf");
+		l = (EClass) packageSupplier.get().getEClassifier("Leaf");
 		o = l.getEOperations().get(0);
 		param = o.getEParameters().get(0);
-		param.setEType(p.getEClassifier("DataNode"));
+		param.setEType(packageSupplier.get().getEClassifier("DataNode"));
 	}
 	
-	public void createMethods(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void createMethods() {
+		
 		builder
 		.operation("Node", "addLast", "Node")
 			.param("newNode", "DataNode")
@@ -106,8 +143,8 @@ public class EcoreHelper {
 			.param("newNode","DataElement");
 	}
 	
-	public void createMethodsSimple(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void createMethodsSimple() {
+		
 		builder
 		.operation("Node", "addLast", "Node")
 			.param("newNode", "DataNode")
@@ -119,14 +156,14 @@ public class EcoreHelper {
 			.param("newNode","DataNode");
 	}
 	
-	public void addDataElementFeature(EPackage p) {
+	public void addDataElementFeature() {
 		//Precondition: createSimpleCompositeList
-		EcoreBuilder builder = new EcoreBuilder(p);
-		EClass l = (EClass) p.getEClassifier("DataNode");
+		
+		EClass l = (EClass) packageSupplier.get().getEClassifier("DataNode");
 		EcoreUtil.delete(l.getEStructuralFeature("data"), true);
 		builder.reference("Node", "startOf", "List");
-		l = (EClass) p.getEClassifier("Node");
-		EClass c = (EClass) p.getEClassifier("List");
+		l = (EClass) packageSupplier.get().getEClassifier("Node");
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		EReference r = (EReference) l.getEStructuralFeature("startOf");
 		r.setEOpposite((EReference) c.getEStructuralFeature("start"));
 		((EReference) c.getEStructuralFeature("start")).setEOpposite(r);
@@ -141,8 +178,8 @@ public class EcoreHelper {
 		builder.reference("DataNode", "data", "DataElement");
 		
 		
-		c = (EClass) p.getEClassifier("Pair");
-		l = (EClass) p.getEClassifier("Value");
+		c = (EClass) packageSupplier.get().getEClassifier("Pair");
+		l = (EClass) packageSupplier.get().getEClassifier("Value");
 		
 		//Set Pair-Values references as containment and opposite.
 		r = (EReference) l.getEStructuralFeature("pair");
@@ -156,42 +193,42 @@ public class EcoreHelper {
 		r.setContainment(true);
 	}
 	
-	public void changeListAddParameter(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("List");
+	public void changeListAddParameter() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		EOperation o = c.getEOperations().get(0);
 		o.getEParameters().clear();
-		EClassifier t = p.getEClassifier("DataElement");
+		EClassifier t = packageSupplier.get().getEClassifier("DataElement");
 		EParameter e = EcoreFactory.eINSTANCE.createEParameter();
 		e.setName("newElement");
 		e.setEType(t);
 		o.getEParameters().add(e);
 	}
 	
-	public void changeBackListAddParameter(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("List");
+	public void changeBackListAddParameter() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		EOperation o = c.getEOperations().get(0);
 		o.getEParameters().clear();
-		EClassifier t = p.getEClassifier("DataNode");
+		EClassifier t = packageSupplier.get().getEClassifier("DataNode");
 		EParameter e = EcoreFactory.eINSTANCE.createEParameter();
 		e.setName("newNode");
 		e.setEType(t);
 		o.getEParameters().add(e);
 	}
 	
-	public void changePackageName(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void changePackageName() {
+		
 		builder.name("CompositeList");
 	}
 	
-	public void changeGeneralizationDataElement(EPackage p) {
-		EClass pair = (EClass) p.getEClassifier("Pair");
-		EClass key = (EClass) p.getEClassifier("Key");
+	public void changeGeneralizationDataElement() {
+		EClass pair = (EClass) packageSupplier.get().getEClassifier("Pair");
+		EClass key = (EClass) packageSupplier.get().getEClassifier("Key");
 		key.getESuperTypes().addAll(pair.getESuperTypes());
 		pair.getESuperTypes().clear();
 	}
 	
-	public void changeListLengthAttribute(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("List");
+	public void changeListLengthAttribute() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("length")).findAny();
 		if(ea.isPresent()) {
 			EAttribute length = ea.get();
@@ -202,32 +239,32 @@ public class EcoreHelper {
 		}
 	}
 	
-	public void deleteListLengthAttribute(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("List");
+	public void deleteListLengthAttribute() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("length")).findAny();
 		if(ea.isPresent()) {
 			EcoreUtil.delete(ea.get(), true);
 		}
 	}
 	
-	public void deleteKeyKeyValuesAttribute(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("Key");
+	public void deleteKeyKeyValuesAttribute() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("Key");
 		Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("keyValues")).findAny();
 		if(ea.isPresent()) {
 			EcoreUtil.delete(ea.get(), true);
 		}
 	}
 	
-	public void deleteNodeStartOfReference(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("Node");
+	public void deleteNodeStartOfReference() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("Node");
 		Optional<EReference> ea = c.getEReferences().stream().filter(a -> a.getName().equals("startOf")).findAny();
 		if(ea.isPresent()) {
 			EcoreUtil.delete(ea.get(), true);
 		}
 	}
 	
-	public void deletePairReferences(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("Pair");
+	public void deletePairReferences() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("Pair");
 		Optional<EReference> ea = c.getEReferences().stream().filter(a -> a.getName().equals("key")).findAny();
 		if(ea.isPresent()) {
 			EcoreUtil.delete(ea.get(), true);
@@ -239,37 +276,37 @@ public class EcoreHelper {
 		}
 	}
 	
-	public void deleteDataNodeDataReference(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("DataNode");
+	public void deleteDataNodeDataReference() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("DataNode");
 		Optional<EReference> ea = c.getEReferences().stream().filter(a -> a.getName().equals("data")).findAny();
 		if(ea.isPresent()) {
 			EcoreUtil.delete(ea.get(), true);
 		}
 	}
 	
-	public void deleteDataElementFeature(EPackage p) {
-		EcoreUtil.delete(p.getEClassifier("Key"), true);
-		EcoreUtil.delete(p.getEClassifier("Value"), true);
-		EcoreUtil.delete(p.getEClassifier("Pair"), true);
-		EcoreUtil.delete(p.getEClassifier("DataElement"), true);
+	public void deleteDataElementFeature() {
+		EcoreUtil.delete(packageSupplier.get().getEClassifier("Key"), true);
+		EcoreUtil.delete(packageSupplier.get().getEClassifier("Value"), true);
+		EcoreUtil.delete(packageSupplier.get().getEClassifier("Pair"), true);
+		EcoreUtil.delete(packageSupplier.get().getEClassifier("DataElement"), true);
 	}
 	
-	public void deleteDataAttribute(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("DataNode");
+	public void deleteDataAttribute() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("DataNode");
 		Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("data")).findAny();
 		if(ea.isPresent()) {
 			EcoreUtil.delete(ea.get(), true);
 		}
 	}
 	
-	public void deleteDataNode(EPackage p) {
-		EcoreUtil.delete(p.getEClassifier("DataNode"), true);
+	public void deleteDataNode() {
+		EcoreUtil.delete(packageSupplier.get().getEClassifier("DataNode"), true);
 	}
 	
-	public void moveReferencePair(EPackage p) {
-		EClass pair = (EClass) p.getEClassifier("Pair");
-		EClass value = (EClass) p.getEClassifier("Value");
-		EClass key = (EClass) p.getEClassifier("Key");
+	public void moveReferencePair() {
+		EClass pair = (EClass) packageSupplier.get().getEClassifier("Pair");
+		EClass value = (EClass) packageSupplier.get().getEClassifier("Value");
+		EClass key = (EClass)packageSupplier.get().getEClassifier("Key");
 		EReference r = value.getEReferences().get(0);
 		r.getEOpposite().setEOpposite(null);
 		key.getEStructuralFeatures().add(r);
@@ -278,41 +315,41 @@ public class EcoreHelper {
 		newOp.setEOpposite(r);
 	}
 	
-	public void moveAttributeLengthAndRename(EPackage p) {
-		EClass value = (EClass) p.getEClassifier("Value");
-		EClass list = (EClass) p.getEClassifier("List");
+	public void moveAttributeLengthAndRename() {
+		EClass value = (EClass) packageSupplier.get().getEClassifier("Value");
+		EClass list = (EClass) packageSupplier.get().getEClassifier("List");
 		EAttribute att = list.getEAttributes().get(0);
 		att.setName("value");
 		value.getEStructuralFeatures().add(att);
 	}
 	
-	public void renameListClass(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("List");
+	public void renameListClass() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		c.setName("Queue");
 	}
 	
-	public void renamePackage(EPackage p) {
-		EcoreBuilder builder = new EcoreBuilder(p);
+	public void renamePackage() {
+		
 		builder.name("CompositeQueue");
 	}
 	
-	public void renameDataNodeDataReference(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("DataNode");
+	public void renameDataNodeDataReference() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("DataNode");
 		Optional<EReference> ea = c.getEReferences().stream().filter(a -> a.getName().equals("data")).findAny();
 		if(ea.isPresent()) 
 			ea.get().setName("savedInformation");
 	}
 	
-	public void renameValuesAttribute(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("Key");
+	public void renameValuesAttribute() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("Key");
 		Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("keyValues")).findAny();
 		if(ea.isPresent()) {
 			ea.get().setName("keys");
 		}
 	}
 	
-	public void setDataElementAsInterface(EPackage p) {
-		EClass c = (EClass) p.getEClassifier("DataElement");
+	public void setDataElementAsInterface() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("DataElement");
 		c.setInterface(true);
 	}
 }

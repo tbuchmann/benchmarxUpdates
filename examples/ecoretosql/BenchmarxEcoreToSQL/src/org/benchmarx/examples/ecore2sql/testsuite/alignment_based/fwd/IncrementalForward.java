@@ -1,17 +1,27 @@
 package org.benchmarx.examples.ecore2sql.testsuite.alignment_based.fwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.ecore2sql.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.ecore2sql.testsuite.Decisions;
 import org.benchmarx.examples.ecore2sql.testsuite.EcoreToSQLTestCase;
 import org.eclipse.emf.ecore.EPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import sql.Schema;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalForward extends EcoreToSQLTestCase {
 	
-	public IncrementalForward(BXTool<EPackage, Schema, Decisions> tool) {
-		super(tool);
+	public IncrementalForward() {
+		super();
+	}
+	
+	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
+		return EcoreToSQLTestCase.tools();
 	}
 	
 	/**
@@ -21,22 +31,26 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * remain nearly unchanged. <br/>
 	 * <b>Features</b>: fwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::changePackageName));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNodeData);
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalInserts(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::createSimpleCompositeList,
+				helperEcore::changePackageName));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNodeData));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 		
 		util.assertPrecondition("CompositeListSimpleEcore", "CompositeListSimpleWithDataAnnotationSQL");
 
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::addDataElementFeature)
-				.andThen(helperEcore::changeListAddParameter));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::addDataElementFeature,
+				helperEcore::changeListAddParameter));
 		//------------
 		util.assertPostcondition("CompositeListDataEcore", "CompositeListDataWithDataAnnotationSQL");
+		terminate();
 	}
 	
 	/**
@@ -44,35 +58,39 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * <b>Expect</b>: Delete the correct tables in the sql schema
 	 * <b>Features</b>: fwd, del, corr-based, structural
 	 */
-	@Test
-	public void testIncrementalDeletions() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::changePackageName)
-				.andThen(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::addDataElementFeature)
-				.andThen(helperEcore::changeListAddParameter));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::changePackageName,
+				helperEcore::createSimpleCompositeList,
+				helperEcore::addDataElementFeature,
+				helperEcore::changeListAddParameter));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::deleteListLengthAttribute)
-				.andThen(helperEcore::deleteKeyKeyValuesAttribute));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::deleteListLengthAttribute,
+				helperEcore::deleteKeyKeyValuesAttribute));
 		//------------
 		util.assertPostcondition("CompositeListDataAttributeDeletionEcore", "CompositeListDataAttributeDeletionWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::deleteNodeStartOfReference)
-				.andThen(helperEcore::deletePairReferences)
-				.andThen(helperEcore::deleteDataNodeDataReference));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::deleteNodeStartOfReference,
+				helperEcore::deletePairReferences,
+				helperEcore::deleteDataNodeDataReference));
 		//------------
 		util.assertPostcondition("CompositeListDataAttributeReferenceDeletionEcore", "CompositeListDataAttributeReferenceDeletionWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::deleteDataElementFeature)
-				.andThen(helperEcore::changeBackListAddParameter));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::deleteDataElementFeature,
+				helperEcore::changeBackListAddParameter));
 		//------------
 		util.assertPostcondition("CompositeListSimple-DataEcore", "CompositeListSimple-DataWithDataAnnotationSQL");
+		terminate();
 				
 	}
 	
@@ -81,24 +99,28 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * <b>Expect</b>: Change the name of the affected tables and columns in the SQL schema
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalRename() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::changePackageName)
-				.andThen(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::addDataElementFeature)
-				.andThen(helperEcore::changeListAddParameter));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalRename(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::changePackageName,
+				helperEcore::createSimpleCompositeList,
+				helperEcore::addDataElementFeature,
+				helperEcore::changeListAddParameter));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::renameListClass)
-				.andThen(helperEcore::renamePackage)
-				.andThen(helperEcore::renameDataNodeDataReference)
-				.andThen(helperEcore::renameValuesAttribute));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::renameListClass,
+				helperEcore::renamePackage,
+				helperEcore::renameDataNodeDataReference,
+				helperEcore::renameValuesAttribute));
 		//------------
 		util.assertPostcondition("CompositeListDataAfterRenameEcore", "CompositeListDataAfterRenameWithDataAnnotationSQL");
+		terminate();
 	}
 	
 	/**
@@ -106,23 +128,27 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * <b>Expect</b>: Changes should be propagated to the SQL Schema
 	 * <b>Features</b>: fwd, del+add, fixed, structural
 	 */
-	@Test
-	public void testIncrementalMove() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::changePackageName)
-				.andThen(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::addDataElementFeature)
-				.andThen(helperEcore::changeListAddParameter));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalMove(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::changePackageName,
+				helperEcore::createSimpleCompositeList,
+				helperEcore::addDataElementFeature,
+				helperEcore::changeListAddParameter));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::changeGeneralizationDataElement)
-				.andThen(helperEcore::moveReferencePair)
-				.andThen(helperEcore::moveAttributeLengthAndRename));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::changeGeneralizationDataElement,
+				helperEcore::moveReferencePair,
+				helperEcore::moveAttributeLengthAndRename));
 		//------------
 		util.assertPostcondition("CompositeListDataAfterMoveEcore", "CompositeListDataAfterMoveWithDataAnnotationSQL");
+		terminate();
 	}
 	
 	/**
@@ -132,27 +158,31 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * should be re-created without the additional annotation.
 	 * <b>Features</b>: fwd, structural, add+del, fixed 
 	 */
-	@Test
-	public void testIncrementalMixed() {
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::changePackageName));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNodeData);
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalMixed(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::createSimpleCompositeList,
+				helperEcore::changePackageName));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNodeData));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 		
 		util.assertPrecondition("CompositeListSimpleEcore", "CompositeListSimpleWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::deleteDataAttribute)
-				.andThen(helperEcore::createDataAttribute));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::deleteDataAttribute,
+				helperEcore::createDataAttribute));
 		//------------
 		util.assertPostcondition("CompositeListSimpleEcore", "CompositeListSimpleWithDataNodeAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::deleteDataNode)
-				.andThen(helperEcore::createDataNode));
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::deleteDataNode,
+				helperEcore::createDataNode));
 		//------------
 		util.assertPostcondition("CompositeListSimpleEcore", "CompositeListSimpleSQL");
+		terminate();
 	}
 	
 	/**
@@ -160,20 +190,24 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> re-running the transformation after an idle source delta does not change the target model.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testStability() {
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testStability(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::changePackageName));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNodeData);
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::createSimpleCompositeList,
+				helperEcore::changePackageName));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNodeData));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 		
 		util.assertPrecondition("CompositeListSimpleEcore", "CompositeListSimpleWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(helperEcore::idleDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperEcore::idleDelta));
 		//------------
 		util.assertPostcondition("CompositeListSimpleEcore", "CompositeListSimpleWithDataAnnotationSQL");
+		terminate();
 	}
 	
 	/**
@@ -182,20 +216,24 @@ public class IncrementalForward extends EcoreToSQLTestCase {
 	 * does not change the SQL schema.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testHippocraticness() {
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testHippocraticness(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
 		//------------
-		tool.performAndPropagateSourceEdit(util
-				.execute(helperEcore::createSimpleCompositeList)
-				.andThen(helperEcore::changePackageName));
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNodeData);
-		tool.performIdleTargetEdit(helperSQL::addAnnotationToDataNode);
+		tool.performAndPropagateSourceEdit(srcEdit(
+				helperEcore::createSimpleCompositeList,
+				helperEcore::changePackageName));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNodeData));
+		tool.performIdleTargetEdit(trgEdit(helperSQL::addAnnotationToDataNode));
 				
 		util.assertPrecondition("CompositeListSimpleEcore", "CompositeListSimpleWithDataAnnotationSQL");
 		//------------
-		tool.performAndPropagateSourceEdit(helperEcore::hippocraticDelta);
+		tool.performAndPropagateSourceEdit(srcEdit(helperEcore::hippocraticDelta));
 		//------------
 		util.assertPostcondition("CompositeListSimpleHippocraticEcore", "CompositeListSimpleWithDataAnnotationSQL");
+		terminate();
 	}
 
 }

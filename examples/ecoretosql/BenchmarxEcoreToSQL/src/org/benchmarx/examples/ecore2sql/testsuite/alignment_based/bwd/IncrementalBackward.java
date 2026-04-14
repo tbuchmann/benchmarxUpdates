@@ -1,17 +1,27 @@
 package org.benchmarx.examples.ecore2sql.testsuite.alignment_based.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.ecore2sql.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.ecore2sql.testsuite.Decisions;
 import org.benchmarx.examples.ecore2sql.testsuite.EcoreToSQLTestCase;
 import org.eclipse.emf.ecore.EPackage;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import sql.Schema;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalBackward extends EcoreToSQLTestCase {
 
-	public IncrementalBackward(BXTool<EPackage, Schema, Decisions> tool) {
-		super(tool);
+	public IncrementalBackward() {
+		super();
+	}
+	
+	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
+		return EcoreToSQLTestCase.tools();
 	}
 	
 	/**
@@ -20,37 +30,41 @@ public class IncrementalBackward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> : New classes, attributes and references should be added to the EPackage.<br/>
 	 * <b>Features</b>: bwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable));
-		tool.performIdleSourceEdit(helperEcore::createMethodsSimple);
-		tool.performIdleSourceEdit(helperEcore::changeListLengthAttribute);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalInserts(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::createMethodsSimple));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListLengthAttribute));
 		
 		util.assertPrecondition("CompositeListSimpleEcore", "CompositeListSimpleSQL");
 		//------------		
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
-		tool.performIdleSourceEdit(helperEcore::changeListAddParameter);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListAddParameter));
 		//------------	
 		util.assertPostcondition("CompositeListSimpleDataEcore", "CompositeListSimpleDataSQL");
 		
 		//------------	
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
 		//------------	
 		util.assertPostcondition("CompositeListDataEcore", "CompositeListDataSQL");
+		terminate();
 	}
 	
 	/**
@@ -59,51 +73,55 @@ public class IncrementalBackward extends EcoreToSQLTestCase {
 	 * assertPostcondition statements.<br/>
 	 * <b>Features</b>: bwd, del
 	 */
-	@Test
-	public void testIncrementalDeletions() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable)
-				.andThen(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable)
-				.andThen(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
-		tool.performIdleSourceEdit(helperEcore::createMethods);
-		tool.performIdleSourceEdit(helperEcore::changeListLengthAttribute);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable,
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable,
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::createMethods));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListLengthAttribute));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataSQL"); 
 		
 		//------------		
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::deleteListLengthColumn)
-				.andThen(helperSQL::deleteDataNodeDataColumn)
-				.andThen(helperSQL::deleteKeyKeyinverseColumn)
-				.andThen(helperSQL::deleteValuePairinverseValueColumn));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::deleteListLengthColumn,
+				helperSQL::deleteDataNodeDataColumn,
+				helperSQL::deleteKeyKeyinverseColumn,
+				helperSQL::deleteValuePairinverseValueColumn));
 		//------------
 		util.assertPostcondition("CompositeListDataColumnDeletionEcore", "CompositeListDataColumnDeletionSQL");
 		//------------		
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::deleteKey_keyValuesTable)
-				.andThen(helperSQL::deleteList_start_inverse_Node_startOfTable));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::deleteKey_keyValuesTable,
+				helperSQL::deleteList_start_inverse_Node_startOfTable));
 		//------------
 		util.assertPostcondition("CompositeListDataColumnATableDeletionEcore", "CompositeListDataColumnATableDeletionSQL");
 		//------------		
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::deleteDataElementTable)
-				.andThen(helperSQL::deleteValueTable)
-				.andThen(helperSQL::deletePairTable)
-				.andThen(helperSQL::deleteKeyTable));
-		tool.performIdleSourceEdit(helperEcore::changeBackListAddParameter);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::deleteDataElementTable,
+				helperSQL::deleteValueTable,
+				helperSQL::deletePairTable,
+				helperSQL::deleteKeyTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeBackListAddParameter));
 		//------------
 		util.assertPostcondition("CompositeListDataColumnTablesDeletionEcore", "CompositeListDataColumnTablesDeletionSQL");
+		terminate();
 	}
 	
 	/**
@@ -112,38 +130,41 @@ public class IncrementalBackward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> : Model states as described in the postcondition.<br/>
 	 * <b>Features</b>: bwd, attribute, structural, corr-based, runtime
 	 */
-	@Test
-	public void testIncrementalRenaming() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable)
-				.andThen(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable)
-				.andThen(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
-		tool.performIdleSourceEdit(helperEcore::createMethods);
-		tool.performIdleSourceEdit(helperEcore::changeListLengthAttribute);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalRenaming(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable,
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable,
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::createMethods));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListLengthAttribute));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataSQL");
 		
 		//----------------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::renameSchema)
-				.andThen(helperSQL::renameListTable)
-				.andThen(helperSQL::renameDataNodeDataColumn)
-				.andThen(helperSQL::renameKey_keyValuesTable)
-				.andThen(helperSQL::addAnnotationToDataNode));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::renameSchema,
+				helperSQL::renameListTable,
+				helperSQL::renameDataNodeDataColumn,
+				helperSQL::renameKey_keyValuesTable,
+				helperSQL::addAnnotationToDataNode));
 		//----------------------
 		util.assertPostcondition("CompositeListDataAfterRenameBWDEcore", "CompositeListDataAfterRenameBWDWithDataAnnotationSQL");
-		
+		terminate();
 	}
 	
 	/**
@@ -152,36 +173,40 @@ public class IncrementalBackward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> : Model states as described in the postcondition.<br/>
 	 * <b>Features</b>: bwd, del+add, structural, runtime
 	 */
-	@Test
-	public void testIncrementalMixed() {
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable)
-				.andThen(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable)
-				.andThen(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
-		tool.performIdleSourceEdit(helperEcore::createMethods);
-		tool.performIdleSourceEdit(helperEcore::changeListLengthAttribute);
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testIncrementalMixed(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable,
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable,
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::createMethods));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListLengthAttribute));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataSQL");
 
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePair_KeyValueReferences)
-				.andThen(helperSQL::changeDataNodeData)
-				.andThen(helperSQL::changeListLength)
-				.andThen(helperSQL::changeForeignKeyPair_Key));
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePair_KeyValueReferences,
+				helperSQL::changeDataNodeData,
+				helperSQL::changeListLength,
+				helperSQL::changeForeignKeyPair_Key));
 		//------------
 		util.assertPostcondition("CompositeListDataAfterMixedEcore", "CompositeListDataAfterMixedSQL");
+		terminate();
 	}
 	
 	/**
@@ -189,32 +214,36 @@ public class IncrementalBackward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> Nothing should be changed after an idle target delta.<br/>
 	 * <b>Features</b>: bwd, runtime
 	 */
-	@Test
-	public void testStability() {
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testStability(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable)
-				.andThen(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable)
-				.andThen(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
-		tool.performIdleSourceEdit(helperEcore::createMethods);
-		tool.performIdleSourceEdit(helperEcore::changeListLengthAttribute);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable,
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable,
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::createMethods));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListLengthAttribute));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataSQL"); 
 		//------------
-		tool.performAndPropagateTargetEdit(helperSQL::idleDelta);
+		tool.performAndPropagateTargetEdit(trgEdit(helperSQL::idleDelta));
 		//------------
 		util.assertPostcondition("CompositeListDataEcore", "CompositeListDataSQL");
+		terminate();
 	}
 	
 	
@@ -223,32 +252,36 @@ public class IncrementalBackward extends EcoreToSQLTestCase {
 	 * <b>Expect</b> re-running the transformation after creating annotations does not change the EPackage.<br/>
 	 * <b>Features:</b>: bwd, fixed
 	 */
-	@Test
-	public void testHippocraticness() {
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testHippocraticness(BXTool<EPackage, Schema, Decisions> tool) {
+		this.tool = tool;
+		initialise();
 		//------------
-		tool.performAndPropagateTargetEdit(util
-				.execute(helperSQL::changePackageName)
-				.andThen(helperSQL::createNodeTable)
-				.andThen(helperSQL::createLeafTable)
-				.andThen(helperSQL::createDataNodeTable)
-				.andThen(helperSQL::createListTable)
-				.andThen(helperSQL::createDataElementTable)
-				.andThen(helperSQL::createPairTable)
-				.andThen(helperSQL::createValueTable)
-				.andThen(helperSQL::createKeyTable)
-				.andThen(helperSQL::createKey_keyValuesTable)
-				.andThen(helperSQL::createList_start_inverse_Node_startOfTable)
-				.andThen(helperSQL::changeDataNodeTable)
-				.andThen(helperSQL::changeListTable));
-		tool.performIdleSourceEdit(helperEcore::setDataElementAsInterface);
-		tool.performIdleSourceEdit(helperEcore::createMethods);
-		tool.performIdleSourceEdit(helperEcore::changeListLengthAttribute);
+		tool.performAndPropagateTargetEdit(trgEdit(
+				helperSQL::changePackageName,
+				helperSQL::createNodeTable,
+				helperSQL::createLeafTable,
+				helperSQL::createDataNodeTable,
+				helperSQL::createListTable,
+				helperSQL::createDataElementTable,
+				helperSQL::createPairTable,
+				helperSQL::createValueTable,
+				helperSQL::createKeyTable,
+				helperSQL::createKey_keyValuesTable,
+				helperSQL::createList_start_inverse_Node_startOfTable,
+				helperSQL::changeDataNodeTable,
+				helperSQL::changeListTable));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::setDataElementAsInterface));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::createMethods));
+		tool.performIdleSourceEdit(srcEdit(helperEcore::changeListLengthAttribute));
 		
 		util.assertPrecondition("CompositeListDataEcore", "CompositeListDataSQL"); 
 		//------------
-		tool.performAndPropagateTargetEdit(helperSQL::hippocraticDelta);
+		tool.performAndPropagateTargetEdit(trgEdit(helperSQL::hippocraticDelta));
 		//------------
 		util.assertPostcondition("CompositeListDataEcore", "CompositeListDataWithDataAnnotationsSQL");
+		terminate();
 	}
 
 }

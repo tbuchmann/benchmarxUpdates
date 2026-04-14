@@ -1,8 +1,14 @@
 package org.benchmarx.ecore.core;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
@@ -15,6 +21,8 @@ public class EcoreBuilder {
 	private final EPackage pck;
 	private final EcoreFactory f = EcoreFactory.eINSTANCE;
 	private EOperation op;
+	private Consumer<EObject> createNode;
+	private BiConsumer<EReference, List<EObject>> createEdge;
 	
 	public EcoreBuilder(String name) {
 		pck = f.createEPackage();
@@ -27,6 +35,13 @@ public class EcoreBuilder {
 		pck = _pack;
 	}
 	
+	public EcoreBuilder(Supplier<EPackage> packageSupplier, Consumer<EObject> deleteNode,
+			BiConsumer<EReference, List<EObject>> deleteEdge) {
+		pck = packageSupplier.get();
+		this.createNode = deleteNode;
+		this.createEdge = deleteEdge;
+	}
+
 	public EcoreBuilder name(String name) {
 		pck.setName(name);
 		pck.setNsPrefix(name);
