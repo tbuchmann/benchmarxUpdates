@@ -20,6 +20,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import de.tbuchmann.bxagent.pdb12pdb2.Pdb12Pdb2Transformation;
 import dev.emtagent.correspondence.CorrespondenceModel;
 import dev.emtagent.correspondence.TransformationContext;
+import dev.emtagent.correspondence.SyncConflictPolicy;
+
 import pdb1.Database;
 import pdb1.Pdb1Factory;
 
@@ -66,7 +68,11 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 	public void performAndPropagateEdit(Supplier<IEdit<Database>> sourceEdit,
 			Supplier<IEdit<pdb2.Database>> targetEdit) {
 		// TODO Auto-generated method stub
-		
+		Pdb12Pdb2Transformation.Options options;
+		if (conf.decide(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST)) 			
+			 options = new Pdb12Pdb2Transformation.Options("first");
+		else options = new Pdb12Pdb2Transformation.Options("last");
+		Pdb12Pdb2Transformation.sync(source, target, corr, SyncConflictPolicy.TARGET_WINS, TransformationContext.DeletionPolicy.CASCADE, options);
 	}
 
 	@Override

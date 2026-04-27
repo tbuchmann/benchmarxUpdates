@@ -158,9 +158,10 @@ public abstract class FamiliesToPersonsTestCase {
 				 * Solutions for CSync
 				 */
 				
-				new BXtendFamiliesToPersons(), // No failures
-				new WrapperOverBXtendWithMerge(), // No Failures
-				new BXtendDSLFamiliesToPersons()
+//				new BXtendFamiliesToPersons(), // No failures
+//				new WrapperOverBXtendWithMerge(), // No Failures
+//				new BXtendDSLFamiliesToPersons(), // 3 failures
+				new BXAgentF2p() // 4 failures
 				
 				//new JavaFamilies2Persons(),
 				//new BXAgentF2p()

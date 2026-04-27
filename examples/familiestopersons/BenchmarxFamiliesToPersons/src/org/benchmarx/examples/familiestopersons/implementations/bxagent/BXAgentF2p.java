@@ -1,7 +1,5 @@
 package org.benchmarx.examples.familiestopersons.implementations.bxagent;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.function.Supplier;
 
@@ -19,11 +17,15 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import com.google.common.collect.BiMap;
+
 import Families.FamiliesFactory;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 import de.tbuchmann.bxagent.f2p.Families2PersonsTransformation;
-import de.tbuchmann.bxagent.f2p.Families2PersonsTransformation_first;
+import dev.emtagent.correspondence.CorrespondenceModel;
+import dev.emtagent.correspondence.SyncConflictPolicy;
+import dev.emtagent.correspondence.TransformationContext;
 
 public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Decisions> {
 	private ResourceSet set = new ResourceSetImpl();
@@ -64,7 +66,7 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 		
 		source = set.createResource(URI.createURI("sourceModel.family"));
 		target = set.createResource(URI.createURI("targetModel.person"));
-		corr = set.createResource(URI.createURI("corrModel.corr"));
+		//corr = set.createResource(URI.createURI("corrModel.corr"));
 		FamilyRegister familiesRoot = FamiliesFactory.eINSTANCE.createFamilyRegister();
 		source.getContents().add(familiesRoot);
 		PersonRegister personsRoot = Persons.PersonsFactory.eINSTANCE.createPersonRegister();
@@ -75,6 +77,10 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 		//f2pt = new Families2PersonsTransformation();
 
 		// perform batch to establish consistent starting state
+		Families2PersonsTransformation.transform(source, target);
+		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
+				source.getURI(), target.getURI());
+		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 		
 	}
 	
@@ -92,7 +98,7 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 		Families2PersonsTransformation.Options options = 
 				new Families2PersonsTransformation.Options(conf.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW),
 						conf.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD));
-		Families2PersonsTransformation.transformBack(target, source, options);
+		Families2PersonsTransformation.transformBack(target, source, corr, TransformationContext.DeletionPolicy.CASCADE, options);
 	}
 
 	/**
@@ -106,7 +112,7 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 		edit.get();
 //		f2pt.configure(new ConfigurableTargetToSourceDecision(!conf.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW),
 //				conf.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD), false, false));
-		Families2PersonsTransformation.transform(source, target);
+		Families2PersonsTransformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
 	}				
 
 	@Override
@@ -140,16 +146,20 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 		URI trgURI = URI.createFileURI(RESULTPATH + "/" + name + "Person.xmi");
 		Resource resSource = set.createResource(srcURI);
 		Resource resTarget = set.createResource(trgURI);
+		Resource corrRes = set.createResource(URI.createFileURI(RESULTPATH + "/" + name + "Corr.xmi"));
 
 		EObject colSource = EcoreUtil.copy(getSourceModel());
 		EObject colTarget = EcoreUtil.copy(getTargetModel());
+		EObject colCorr = EcoreUtil.copy(corr.getContents().get(0));
 
 		resSource.getContents().add(colSource);
 		resTarget.getContents().add(colTarget);
+		corrRes.getContents().add(colCorr);
 
 		try {
 			resSource.save(null);
 			resTarget.save(null);
+			corrRes.save(null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -158,12 +168,18 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 	@Override
 	public void performAndPropagateEdit(Supplier<IEdit<FamilyRegister>> sourceEditOp,
 			Supplier<IEdit<PersonRegister>> targetEditOp) {
-		//fail();	
-		Families2PersonsTransformation.transform(source, target);
+		sourceEditOp.get();
+		targetEditOp.get();
+//		BiMap<EObject, EObject> idx = CorrespondenceModel.buildIndex(corr);
+//		  System.out.println("corrIndex entries: " + idx.size());
 		Families2PersonsTransformation.Options options = 
 				new Families2PersonsTransformation.Options(conf.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW),
 						conf.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD));
-		Families2PersonsTransformation.transformBack(target, source, options);
+		saveModels("Pre_ConcurrentEdit");
+		Families2PersonsTransformation.sync(source, target, corr, 
+				SyncConflictPolicy.TARGET_WINS, 
+				TransformationContext.DeletionPolicy.CASCADE, 
+				options);
 	}
 
 }

@@ -10,12 +10,12 @@
 	<classpathentry kind="lib" path="lib/IBeXTGGEcoreToSQL.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-ecore2sql-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/bxagent-ecore2sql-1.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.ecore2sql"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
