@@ -55,24 +55,28 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 		pdb1.Database pdb1Root = Pdb1Factory.eINSTANCE.createDatabase();
 		pdb2.Database pdb2Root = pdb2.Pdb2Factory.eINSTANCE.createDatabase();
 		source.getContents().add(pdb1Root);
-		target.getContents().add(pdb2Root);
+		//target.getContents().add(pdb2Root);
 		
-		// perform batch to establish consistent starting state
-		Pdb12Pdb2Transformation.transform(source, target);
+		// perform batch to establish consistent starting state		
 		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
 				source.getURI(), target.getURI());
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
+		Pdb12Pdb2Transformation.transform(source, target, corr);
 	}
 
 	@Override
 	public void performAndPropagateEdit(Supplier<IEdit<Database>> sourceEdit,
 			Supplier<IEdit<pdb2.Database>> targetEdit) {
+		sourceEdit.get();
+		targetEdit.get();
 		// TODO Auto-generated method stub
 		Pdb12Pdb2Transformation.Options options;
 		if (conf.decide(Decisions.PREFER_USING_FIRST_SPACE_TO_LAST)) 			
 			 options = new Pdb12Pdb2Transformation.Options("first");
 		else options = new Pdb12Pdb2Transformation.Options("last");
-		Pdb12Pdb2Transformation.sync(source, target, corr, SyncConflictPolicy.TARGET_WINS, TransformationContext.DeletionPolicy.CASCADE, options);
+		Pdb12Pdb2Transformation.sync(source, target, corr, 
+				SyncConflictPolicy.TARGET_WINS, 
+				TransformationContext.DeletionPolicy.CASCADE, options);
 	}
 
 	@Override
