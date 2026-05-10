@@ -19,6 +19,7 @@ import sql.Condition;
 import sql.ForeignKey;
 import sql.Property;
 import sql.Schema;
+import sql.SqlFactory;
 import sql.Table;
 
 public class SQLHelper {
@@ -171,6 +172,51 @@ public class SQLHelper {
 				.foreignKey().referencedColumn("DataElement").referencedTable("DataElement").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
 	}
+//	public void createDataElementTable() {                                        
+//        
+//	      //Create table DataElement                                                
+//	      builder.table().name("DataElement")
+//	          .annotation().name("class").end(TableBuilder.class)                   
+//	          .annotation().name("abstract").end(TableBuilder.class)
+//	          .column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)                                                                
+//	          .primaryKey().referencedColumn("id").end(TableBuilder.class)
+//	          .foreignKey().referencedColumn("id").referencedTable("EObject")       
+//	              .annotation().name("root").end(ForeignKeyBuilder.class)
+//	              .event().condition(Condition.DELETE).action(Action.CASCADE);      
+//	   
+//	      //Add DataElement column to EObject table                                 
+//	      Optional<Table> t = schemaSupplier.get().getOwnedTables().stream()
+//	              .filter(f -> f.getName().equals("EObject")).findAny();            
+//	      if(t.isPresent()) {
+//	          TableBuilder b = new TableBuilder(t.get(), builder);                  
+//	          b.column().name("DataElement").property(Property.UNIQUE).type("int").end(TableBuilder.class)
+//	          .foreignKey().referencedColumn("DataElement").referencedTable("DataElement")
+//	          .event().condition(Condition.DELETE).action(Action.CASCADE);
+//	      }                                                                         
+//	   
+//	      //Change DataNode.data from attribute to cross-reference targeting DataElement                                               
+//	      Optional<Table> dn = schemaSupplier.get().getOwnedTables().stream()
+//	              .filter(f -> f.getName().equals("DataNode")).findAny();           
+//	      if(dn.isPresent()) {
+//	          dn.get().getOwnedColumns().stream()                                   
+//	              .filter(c -> "data".equals(c.getName()))                          
+//	              .findAny().ifPresent(col -> {
+//	                  col.getOwnedAnnotations().removeIf(a -> "attribute".equals(a.getAnnotation()));                                             
+//	                  Annotation crossAnn = SqlFactory.eINSTANCE.createAnnotation();
+//	                  crossAnn.setAnnotation("cross");                                    
+//	                  col.getOwnedAnnotations().add(crossAnn);  
+//	                  Annotation uniAnn = SqlFactory.eINSTANCE.createAnnotation();  
+//	                  uniAnn.setAnnotation("unidirectional");
+//	                  col.getOwnedAnnotations().add(uniAnn);                        
+//	              });                                                               
+//	          new TableBuilder(dn.get(), builder)                      
+//	          .foreignKey().referencedColumn("data").referencedTable("DataElement")
+//	          .event().condition(Condition.DELETE).action(Action.SET_NULL).end(ForeignKeyBuilder.class)                                                   
+//	          .annotation().name("single").end(ForeignKeyBuilder.class)        
+//	          .annotation().name("unidirectional").end(ForeignKeyBuilder.class)
+//	          .annotation().name("cross").end(ForeignKeyBuilder.class);
+//	      }                                                                         
+//	  }
 	
 	public void createPairTable() {
 		//Precondition: Table DataElement must exist

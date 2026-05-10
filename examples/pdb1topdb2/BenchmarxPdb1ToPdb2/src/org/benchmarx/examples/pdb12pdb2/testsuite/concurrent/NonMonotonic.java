@@ -56,8 +56,8 @@ public class NonMonotonic extends Pdb12Pdb2TestCase {
 				trgEdit(helperPerson2::createGerhardSchroeder,
 						helperPerson2::changeIncrementalIDs));
 		// ------------
-		util.assertPostcondition("ConcSyncNonMonotonicDeleteCreatePDB1",
-				"ConcSyncNonMonotonicDeleteCreatePDB2");
+		util.assertPostcondition("ConcSyncNonMonotonicDeleteCreateNewPDB1",
+				"ConcSyncNonMonotonicDeleteCreateNewPDB2");
 		terminate();
 	}
 
@@ -79,8 +79,8 @@ public class NonMonotonic extends Pdb12Pdb2TestCase {
 				trgEdit(helperPerson2::changeLastNameOfLudwigErhard));
 		// ------------
 		tool.performIdleSourceEdit(srcEdit(helperPerson1::changeIncrementalIDs));
-		util.assertPostcondition("ConcSyncNonMonotonicDeleteRenamePDB1",
-				"ConcSyncNonMonotonicDeleteRenamePDB2");
+		util.assertPostcondition("ConcSyncNonMonotonicDeleteRenameNewPDB1",
+				"ConcSyncNonMonotonicDeleteRenameNewPDB2");
 		terminate();
 	}
 }

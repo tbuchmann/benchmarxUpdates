@@ -79,8 +79,8 @@ public class MonotonicDeleting extends Pdb12Pdb2TestCase {
 				trgEdit(helperPerson2::deleteKurtKiesinger,
 						helperPerson2::changePlaceOfBirthOfWillyBrandt));
 		// ------------
-		util.assertPostcondition("IncrBwdPDB1FirstSixChancellorsWithoutKiesinger",
-				"IncrBwdPDB2FirstSixChancellorsWithoutKiesinger");
+		util.assertPostcondition("ConcSyncCombinedMatchingDeletingPDB1",
+				"ConcSyncCombinedMatchingDeletingPDB2");
 		terminate();
 	}
 }

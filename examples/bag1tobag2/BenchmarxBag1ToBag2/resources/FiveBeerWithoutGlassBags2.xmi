@@ -5,9 +5,5 @@
     xmlns:bags2="http://de.ubt.ai1.bw.qvt.examples.bags2.ecore">
   <elements
       value="Beer"
-      multiplicity="6"
-      incrementalID=""/>
-  <elements
-      value="Beer Glass"
-      multiplicity="2"/>
+      multiplicity="5"/>
 </bags2:MyBag>

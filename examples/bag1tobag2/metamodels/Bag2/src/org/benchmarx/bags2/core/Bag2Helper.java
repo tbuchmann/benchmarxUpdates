@@ -76,6 +76,10 @@ public class Bag2Helper {
 		getElement("Empty Bottle").setValue("Broken Bottle");
 	}
 	
+	public void changeBeerGlassToEmptyBottle() {
+		getElement("Beer Glass").setValue("Empty Bottle");
+	}
+	
 	public void changeMultiplicityOfBeer() {
 		getElement("Beer").setMultiplicity(2);
 	}

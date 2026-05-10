@@ -88,6 +88,7 @@ public class Conflicts extends Pdb12Pdb2TestCase {
 		buildSixChancellorPrecondition();
 		util.assertPrecondition("Pre_IncrFwdPDB1FirstSixChancellors", "Pre_IncrFwdPDB2FirstSixChancellors");
 		// ------------
+		//tool.performIdleSourceEdit(srcEdit(helperPerson1::changeIncrementalIDs));
 		tool.performAndPropagateEdit(
 				srcEdit(helperPerson1::changeFirstNameOfKonradAdenauer),
 				trgEdit(helperPerson2::changeFirstNameOfKonradAdenauer));
@@ -97,8 +98,8 @@ public class Conflicts extends Pdb12Pdb2TestCase {
 				entry("ConcSyncConflictRenameRenameSrcWinsPDB1",
 					  "ConcSyncConflictRenameRenameSrcWinsPDB2"),
 				// Target-side full-name rename wins: "Heinz Jochen Adenauer"
-				entry("Pre_RoundtripEditPDB1",
-					  "Pre_RoundtripEditPDB2")));
+				entry("ConcSyncConflictRenameRenameTgtWinsPDB1",
+					  "ConcSyncConflictRenameRenameTgtWinsPDB2")));
 		terminate();
 	}
 }

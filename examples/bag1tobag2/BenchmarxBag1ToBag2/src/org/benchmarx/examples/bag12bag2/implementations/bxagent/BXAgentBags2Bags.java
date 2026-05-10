@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import bags1.MyBag;
 import de.tbuchmann.bxagent.bags2bags.Bags12Bags2Transformation;
 import dev.emtagent.correspondence.CorrespondenceModel;
+import dev.emtagent.correspondence.SyncConflictPolicy;
 import dev.emtagent.correspondence.TransformationContext;
 
 
@@ -130,6 +131,10 @@ public class BXAgentBags2Bags  extends BXToolForEMF<bags1.MyBag, bags2.MyBag, De
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		Bags12Bags2Transformation.Options options = new Bags12Bags2Transformation.Options();
+		Bags12Bags2Transformation.sync(source, target, corr, 
+				SyncConflictPolicy.TARGET_WINS,
+				TransformationContext.DeletionPolicy.CASCADE, options);
 	}
 
 }

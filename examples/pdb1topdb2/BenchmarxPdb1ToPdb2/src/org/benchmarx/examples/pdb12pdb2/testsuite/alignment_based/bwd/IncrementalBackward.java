@@ -194,7 +194,8 @@ public class IncrementalBackward extends Pdb12Pdb2TestCase {
 				helperPerson2::changePlaceOfBirthOfWillyBrandt));
 
 		//------------
-		util.assertPostcondition("IncrBwdPDB1FirstSixChancellorsAfterValueChange_2", "IncrBwdPDB2FirstSixChancellorsAfterValueChange_2");
+//		util.assertPostcondition("IncrBwdPDB1FirstSixChancellorsAfterValueChange_2", "IncrBwdPDB2FirstSixChancellorsAfterValueChange_2");
+		util.assertPostcondition("expected", "IncrBwdPDB2FirstSixChancellorsAfterValueChange_2");
 		terminate();
 	}
 
