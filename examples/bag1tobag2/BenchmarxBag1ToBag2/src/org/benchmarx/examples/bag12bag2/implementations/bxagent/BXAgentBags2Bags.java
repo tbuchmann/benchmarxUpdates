@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import bags1.MyBag;
 import de.tbuchmann.bxagent.bags2bags.Bags12Bags2Transformation;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.SyncConflictPolicy;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
+import dev.bxagent.correspondence.TransformationContext;
 
 
 public class BXAgentBags2Bags  extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Decisions> {
