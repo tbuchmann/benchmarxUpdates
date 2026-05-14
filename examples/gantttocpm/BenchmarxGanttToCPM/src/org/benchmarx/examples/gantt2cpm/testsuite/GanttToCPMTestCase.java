@@ -104,13 +104,20 @@ public abstract class GanttToCPMTestCase {
 	
 	@Parameters(name = "{0}")
 	public static Collection<BXTool<GanttDiagram, CPMNetwork, Decisions>> tools() {
-		return Arrays.asList(
-//				new BXtendGantt2CPM(),  // Currently 0 failures
+		List<BXTool<GanttDiagram, CPMNetwork, Decisions>> allTools = Arrays.asList(
+				//new BXtendGantt2CPM(),     // Currently 0 failures
 				//new PlainJavaUbtGantt2Cpm(),
 				//new MediniQVTGantt2CPM(),
-//				new BXLangGantt2Cpm() ,
+				//new BXLangGantt2Cpm(),
 				new BXAgentGantt2Cpm()
-			);
+		);
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 	}
 	
 	protected GanttToCPMTestCase(BXTool<GanttDiagram, CPMNetwork, Decisions> tool) {

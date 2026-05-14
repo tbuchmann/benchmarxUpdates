@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.benchmarx</groupId>
+  <artifactId>benchmarxUpdates-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>BenchmarX Updates - Root Parent</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+    <!-- EMF versions (all on Maven Central) -->
+    <emf.version>2.42.0</emf.version>
+    <emf.xmi.version>2.40.0</emf.xmi.version>
+    <xtend.version>2.40.0</xtend.version>
+    <!-- JUnit 5 -->
+    <junit.version>5.14.1</junit.version>
+  </properties>
+
+  <!-- Shared dependency management used by all child modules -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- EMF core (Maven Central: org.eclipse.emf) -->
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.ecore</artifactId>
+        <version>${emf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+        <version>${emf.xmi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.emf</groupId>
+        <artifactId>org.eclipse.emf.common</artifactId>
+        <version>${emf.version}</version>
+      </dependency>
+      <!-- emf.compare is NOT on Maven Central; installed via install-local-deps.sh -->
+      <dependency>
+        <groupId>org.eclipse.emf.compare</groupId>
+        <artifactId>org.eclipse.emf.compare</artifactId>
+        <version>3.5.3</version>
+      </dependency>
+      <!-- Xtend runtime (needed by xtend-gen sources) -->
+      <dependency>
+        <groupId>org.eclipse.xtend</groupId>
+        <artifactId>org.eclipse.xtend.lib</artifactId>
+        <version>${xtend.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.xtext</groupId>
+        <artifactId>org.eclipse.xtext.xbase.lib</artifactId>
+        <version>${xtend.version}</version>
+      </dependency>
+      <!-- Guava (pulled in transitively by Xtend, declared explicitly for clarity) -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>33.4.8-jre</version>
+      </dependency>
+      <!-- Logging -->
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+      </dependency>
+      <!-- JUnit 5 -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.5.2</version>
+          <configuration>
+            <!-- JUnit 5 provider is auto-detected when junit-platform-launcher is on classpath -->
+            <includes>
+              <include>**/*Test.java</include>
+              <include>**/Batch*.java</include>
+              <include>**/Incremental*.java</include>
+              <include>**/Roundtrip*.java</include>
+              <include>**/Conflicts.java</include>
+              <include>**/MonotonicCreating.java</include>
+              <include>**/MonotonicDeleting.java</include>
+              <include>**/NonMonotonic.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <!-- HTML test report: mvn surefire-report:report -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <modules>
+    <module>core/Benchmarx</module>
+    <module>examples/pdb1topdb2</module>
+  </modules>
+
+</project>

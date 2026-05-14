@@ -52,7 +52,7 @@ public class MonotonicCreating extends Bag12Bag2TestCase {
 				srcEdit(helperBag1::createBeerGlass),
 				trgEdit(helperBag2::createEmptyBottle));
 		// ── postcondition ──
-		util.assertPostcondition("OneBeerOneEmptyBottleWithGlassBags1", "OneBeerOneEmptyBottleWithGlassBags2");
+		util.assertPostcondition("MCNonMatchingValuesBags1", "MCNonMatchingValuesBags2");
 		terminate();
 	}
 
@@ -78,8 +78,8 @@ public class MonotonicCreating extends Bag12Bag2TestCase {
 		tool.performAndPropagateEdit(
 				srcEdit(helperBag1::createBeerGlass),
 				trgEdit(helperBag2::createBeerGlass));
-		// ── postcondition ──
-		util.assertPostcondition("OneBeerTwoGlassesBags1", "OneBeerTwoGlassesBags2");
+		// ── postcondition ── only one beer glass created on each side, but both have the same value (Beer Glass:1) ──
+		util.assertPostcondition("MCSameValueBags1", "MCSameValueBags2");
 		terminate();
 	}
 
@@ -103,8 +103,8 @@ public class MonotonicCreating extends Bag12Bag2TestCase {
 		tool.performAndPropagateEdit(
 				srcEdit(helperBag1::createFiveBeers, helperBag1::createBeerGlass),
 				trgEdit(helperBag2::createEmptyBottle, helperBag2::createBeerGlass));
-		// ── postcondition ──
-		util.assertPostcondition("FiveBeerOneEmptyBottleWithTwoGlassesBags1", "FiveBeerOneEmptyBottleWithTwoGlassesBags2");
+		// ── postcondition : beer glass was simultaneously created on both sides, establish match ──
+		util.assertPostcondition("MCCombinedBags1", "MCCombinedBags2");
 		terminate();
 	}
 }

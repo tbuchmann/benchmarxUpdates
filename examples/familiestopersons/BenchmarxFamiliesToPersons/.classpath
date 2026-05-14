@@ -29,7 +29,7 @@
 	<classpathentry kind="lib" path="lib/eneo/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-f2p-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/BXtendDSLSynch.jar"/>
-	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/bx-runtime-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.f2p"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

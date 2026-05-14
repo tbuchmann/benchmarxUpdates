@@ -96,12 +96,19 @@ public abstract class EcoreToSQLTestCase {
 	
 	@Parameters(name = "{0}")
 	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
-		return Arrays.asList(
-//				new BXtendEcore2SQL() ,  // Currently 0 failures				
-//				new MediniQVTEcore2SQL(),
-//				new IBeXTGGEcoreToSQL()
+		List<BXTool<EPackage, Schema, Decisions>> allTools = Arrays.asList(
+				//new BXtendEcore2SQL(),   // Currently 0 failures
+				//new MediniQVTEcore2SQL(),
+				//new IBeXTGGEcoreToSQL(),
 				new BXAgentEcore2SQL()
-			);
+		);
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 	}
 	
 	protected EcoreToSQLTestCase() {

@@ -91,13 +91,20 @@ public abstract class Pn2PnwTestCase {
 	
 	
 	public static Collection<BXTool<pn.Net, pnw.Net, Decisions>> tools() {
-		return Arrays.asList(
-				new BXtendPn2Pnw(),				
-//				new MediniQVTPn2Pnw(),
+		List<BXTool<pn.Net, pnw.Net, Decisions>> allTools = Arrays.asList(
+				new BXtendPn2Pnw(),
+				//new MediniQVTPn2Pnw(),
 				//new BXLangPn2Pnw(),
 				new BXAgentPn2Pnw()
 				//new IBeXTGGPetrinets()
-			);
+		);
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 	}
 	
 	protected Pn2PnwTestCase(BXTool<pn.Net, pnw.Net, Decisions> tool) {

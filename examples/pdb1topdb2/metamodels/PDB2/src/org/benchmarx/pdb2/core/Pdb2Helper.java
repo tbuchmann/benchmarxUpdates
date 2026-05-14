@@ -1,7 +1,5 @@
 package org.benchmarx.pdb2.core;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -44,7 +42,8 @@ public class Pdb2Helper {
 	}
 	
 	public void renameKanzlerDatabaseToPräsidenten() {
-		assertTrue(db.get().getName().equals("Bundeskanzler"));
+		if (!db.get().getName().equals("Bundeskanzler"))
+			throw new IllegalStateException("Expected database name 'Bundeskanzler' but was: " + db.get().getName());
 		db.get().setName("Bundespräsidenten");
 	}
 	
@@ -134,55 +133,49 @@ public class Pdb2Helper {
 	
 	private Person getKonradAdenauer() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("KA")).findAny();
-		
-		assertTrue(ka.isPresent());
+		if (!ka.isPresent()) throw new IllegalStateException("Expected person KA to be present");
 		Person konrad = ka.get();
-		assertTrue(konrad.getName().equals("Konrad Hermann Joseph Adenauer"));
+		if (!konrad.getName().equals("Konrad Hermann Joseph Adenauer")) throw new IllegalStateException("Unexpected name: " + konrad.getName());
 		return konrad;		
 	}
 	
 	private Person getKurtKiesinger() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("KK")).findAny();
-		
-		assertTrue(ka.isPresent());
+		if (!ka.isPresent()) throw new IllegalStateException("Expected person KK to be present");
 		Person konrad = ka.get();
-		assertTrue(konrad.getName().equals("Kurt Georg Kiesinger"));
+		if (!konrad.getName().equals("Kurt Georg Kiesinger")) throw new IllegalStateException("Unexpected name: " + konrad.getName());
 		return konrad;		
 	}
 	
 	private Person getLudwigErhard() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("LE")).findAny();
-		
-		assertTrue(ka.isPresent());
+		if (!ka.isPresent()) throw new IllegalStateException("Expected person LE to be present");
 		Person konrad = ka.get();
-		assertTrue(konrad.getName().equals("Ludwig Wilhelm Erhard"));
+		if (!konrad.getName().equals("Ludwig Wilhelm Erhard")) throw new IllegalStateException("Unexpected name: " + konrad.getName());
 		return konrad;		
 	}
 	
 	private Person getWillyBrandt() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("WB")).findAny();
-		
-		assertTrue(ka.isPresent());
+		if (!ka.isPresent()) throw new IllegalStateException("Expected person WB to be present");
 		Person konrad = ka.get();
-		assertTrue(konrad.getName().equals("Willy Brandt"));
+		if (!konrad.getName().equals("Willy Brandt")) throw new IllegalStateException("Unexpected name: " + konrad.getName());
 		return konrad;		
 	}
 	
 	private Person getHelmutSchmidt() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("HS")).findAny();
-		
-		assertTrue(ka.isPresent());
+		if (!ka.isPresent()) throw new IllegalStateException("Expected person HS to be present");
 		Person konrad = ka.get();
-		assertTrue(konrad.getName().equals("Helmut Heinrich Waldemar Schmidt"));
+		if (!konrad.getName().equals("Helmut Heinrich Waldemar Schmidt")) throw new IllegalStateException("Unexpected name: " + konrad.getName());
 		return konrad;		
 	}
 	
 	private Person getHelmutKohl() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("HK")).findAny();
-		
-		assertTrue(ka.isPresent());
+		if (!ka.isPresent()) throw new IllegalStateException("Expected person HK to be present");
 		Person konrad = ka.get();
-		assertTrue(konrad.getName().equals("Helmut Josef Michael Kohl"));
+		if (!konrad.getName().equals("Helmut Josef Michael Kohl")) throw new IllegalStateException("Unexpected name: " + konrad.getName());
 		return konrad;		
 	}
 }

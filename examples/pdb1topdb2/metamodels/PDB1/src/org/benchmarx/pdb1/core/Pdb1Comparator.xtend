@@ -4,8 +4,6 @@ import pdb1.Database
 import java.util.List
 import pdb1.Person
 import java.util.ArrayList
-
-import static org.junit.Assert.*
 import java.util.function.BiConsumer
 
 class Pdb1Comparator implements BiConsumer<pdb1.Database, pdb1.Database> {
@@ -42,8 +40,12 @@ class Pdb1Comparator implements BiConsumer<pdb1.Database, pdb1.Database> {
 	}
 	
 	override accept(Database expected, Database actual) {
-		assertTrue(personsToString(expected).startsWith("Pdb1Database"))
-		assertEquals(personsToString(expected), personsToString(actual))
+		val expectedStr = personsToString(expected)
+		val actualStr = personsToString(actual)
+		if (!expectedStr.startsWith("Pdb1Database"))
+			throw new IllegalStateException("Expected string to start with 'Pdb1Database' but was: " + expectedStr)
+		if (expectedStr != actualStr)
+			throw new AssertionError("Expected:\n" + expectedStr + "\nbut was:\n" + actualStr)
 	}
 	
 }

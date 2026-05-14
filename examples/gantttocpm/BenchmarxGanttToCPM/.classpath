@@ -12,16 +12,16 @@
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
 	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/bxagent-gantt2cpm-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-gantt2cpm-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/bxagent-gantt2cpm-1.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/CPM"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Gantt"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Gantt2CPM-bxlang"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Gantt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CPM"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

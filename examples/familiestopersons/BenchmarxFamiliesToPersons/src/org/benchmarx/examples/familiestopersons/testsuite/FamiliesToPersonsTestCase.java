@@ -19,9 +19,6 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.familiestopersons.implementations.bxagent.BXAgentF2p;
-import org.benchmarx.examples.familiestopersons.implementations.bxtend.BXtendFamiliesToPersons;
-import org.benchmarx.examples.familiestopersons.implementations.bxtend.WrapperOverBXtendWithMerge;
-import org.benchmarx.examples.familiestopersons.implementations.bxtenddsl.BXtendDSLFamiliesToPersons;
 import org.benchmarx.families.core.FamiliesComparator;
 import org.benchmarx.families.core.FamilyHelper;
 import org.benchmarx.persons.core.PersonHelper;
@@ -123,59 +120,30 @@ public abstract class FamiliesToPersonsTestCase {
 
 	// Solutions requiring additional setup are commented out.
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
-		return Arrays.asList(//
+		List<BXTool<FamilyRegister, PersonRegister, Decisions>> allTools = Arrays.asList(//
 				// new UbtXtendFamiliesToPersons(),
-				
 				// new IBeXTGGFamiliesToPersons(),
-				
-				/*
-				 * See setup instructions: /implementations/bigul/README-SETUP
-				 */
-				// new BiGULFamiliesToPersons(),
-
-				/*
-				 * Excluded due to problems with Closure
-				 */
-				// new FunnyQTFamiliesToPerson(),
-
-				/*
-				 * See setup instructions: /implementations/nmf/README-SETUP
-				 */
-				// new NMFFamiliesToPersonsIncremental(),
-
-				/*
-				 * Excluded due to problems with Emftext
-				 */
-				// new JTLFamiliesToPersons(),
-
-				// new EMoflonFamiliesToPersons(), 
-				
+				// new BiGULFamiliesToPersons(),        // See setup: implementations/bigul/README-SETUP
+				// new FunnyQTFamiliesToPerson(),       // Excluded: problems with Closure
+				// new NMFFamiliesToPersonsIncremental(), // See setup: implementations/nmf/README-SETUP
+				// new JTLFamiliesToPersons(),          // Excluded: problems with Emftext
+				// new EMoflonFamiliesToPersons(),
 				// new MediniQVTFamiliesToPersons(),
-				
-				// new MediniQVTFamiliesToPersonsConfig(), 
-				
-				/*
-				 * Solutions for CSync
-				 */
-				
-//				new BXtendFamiliesToPersons(), // No failures
-//				new WrapperOverBXtendWithMerge(), // No Failures
-//				new BXtendDSLFamiliesToPersons(), // 3 failures
-				new BXAgentF2p() // 4 failures
-				
-				//new JavaFamilies2Persons(),
-				//new BXAgentF2p()
-				
-				/*
-				 * See setup instructions: /implementations/eneo/README-SETUP
-				 */
-				//new ENeoFamiliesToPersons() // Currently 9 failures
-
-				/*
-				 * See setup instructions: /implementations/ibextgg/integrate/README-SETUP
-				 */
-				//new IBeXTGGIntegrateFamiliesToPersons()
-				);
+				// new MediniQVTFamiliesToPersonsConfig(),
+				// new BXtendFamiliesToPersons(),       // No failures
+				// new WrapperOverBXtendWithMerge(),    // No failures
+				// new BXtendDSLFamiliesToPersons(),    // 3 failures
+				new BXAgentF2p()                        // 4 failures
+				// new ENeoFamiliesToPersons(),         // See setup: implementations/eneo/README-SETUP
+				// new IBeXTGGIntegrateFamiliesToPersons() // See setup: implementations/ibextgg/integrate/README-SETUP
+		);
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 	}
 
 	protected FamiliesToPersonsTestCase(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {

@@ -100,15 +100,23 @@ public abstract class Pdb12Pdb2TestCase {
 	}
 	
 	public static Collection<BXTool<pdb1.Database, pdb2.Database, Decisions>> tools() {
-		return Arrays.asList(
-//				new BXtendPdb12Pdb2(),				
+		List<BXTool<pdb1.Database, pdb2.Database, Decisions>> allTools = Arrays.asList(
+				new BXtendPdb12Pdb2(),				
 				//new MediniQVTPdb12Pdb2(),
-				//new IBeXTGGPDB1ToPDB2()
-				new BXAgentPdb12Pdb2() //,
-//				new BXLangPdb12Pdb2() //,
-				//new JavaPdb12Pdb2()
-//				new LLMPdb12Pdb2()
-			);
+				//new IBeXTGGPDB1ToPDB2(),
+				new BXAgentPdb12Pdb2(),
+				new BXLangPdb12Pdb2()
+				//new JavaPdb12Pdb2(),
+				//new LLMPdb12Pdb2()
+		);
+		
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 	}
 	
 	protected Pdb12Pdb2TestCase(BXTool<pdb1.Database, pdb2.Database, Decisions> tool) {

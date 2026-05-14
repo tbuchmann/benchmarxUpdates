@@ -18,9 +18,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.pdb12pdb2.Pdb12Pdb2Transformation;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.TransformationContext;
-import dev.emtagent.correspondence.SyncConflictPolicy;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.SyncConflictPolicy;
 
 import pdb1.Database;
 import pdb1.Pdb1Factory;

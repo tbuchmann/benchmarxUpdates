@@ -9,6 +9,8 @@ Export-Package: org.benchmarx,
  org.benchmarx.emf,
  org.benchmarx.util
 Require-Bundle: org.eclipse.emf.ecore;bundle-version="2.11.2",
- org.eclipse.emf.ecore.xmi;bundle-version="2.11.1"
+ org.eclipse.emf.ecore.xmi;bundle-version="2.11.1",
+ junit-jupiter-api;bundle-version="5.0.0";resolution:=optional,
+ org.opentest4j;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-10
 Automatic-Module-Name: Benchmarx

@@ -100,11 +100,19 @@ public abstract class Ast2DagTestCase {
 	
 	@Parameters(name = "{0}")
 	public static Collection<BXTool<ast.Model, dag.Model, Decisions>> tools() {
-		return Arrays.asList(
-				new BXtendAst2Dag(),				
-//				, new MediniQVTAst2Dag(),
+		List<BXTool<ast.Model, dag.Model, Decisions>> allTools = Arrays.asList(
+				new BXtendAst2Dag(),
+				//new MediniQVTAst2Dag(),
 				new BXLangAst2Dag(),
 				new BXAgentAst2Dag()
+		);
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 			);
 	}
 	

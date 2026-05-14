@@ -614,3 +614,59 @@ All model state XMI files reside in `resources/`. Names follow a naming conventi
 | `IncrBwdPDB2FirstSixChancellorsAfterValueChange_1.xmi` / `_2.xmi` | PDB2 corresponding states |
 | `IncrBwdDynamicConfigPDB1_1.xmi` / `_2.xmi` / `_3.xmi` | Intermediate PDB1 states during dynamic config test |
 | `IncrBwdPDB2FirstSevenChancellors.xmi` | PDB2 with seven persons (intermediate dynamic config state) |
+
+## Running the Tests
+
+Because the tests are packaged as a standard Maven project, you can easily run all tests or target a specific tool/test class.
+
+**Run All Tests (for all active tools):**
+```sh
+cd <workspace-root>
+./mvnw test -pl examples/pdb1topdb2/BenchmarxPdb1ToPdb2 -am
+```
+
+**Run Tests for a Single Tool:**
+To run tests only for a specific tool (e.g., `BXAgentPdb12Pdb2`), supply the `benchmarx.tool` property:
+```sh
+cd <workspace-root>
+./mvnw test -pl examples/pdb1topdb2/BenchmarxPdb1ToPdb2 -am -Dbenchmarx.tool=BXAgentPdb12Pdb2
+```
+
+**Run a Single Test Class or Method (for a single tool):**
+You can combine the tool filter with Surefire's standard `-Dtest=` parameter. For example, to run only the `BatchForward` class for `BXAgentPdb12Pdb2`:
+```sh
+./mvnw test -pl examples/pdb1topdb2/BenchmarxPdb1ToPdb2 -am -Dbenchmarx.tool=BXAgentPdb12Pdb2 -Dtest=BatchForward
+```
+To run a specific method:
+```sh
+./mvnw test -pl examples/pdb1topdb2/BenchmarxPdb1ToPdb2 -am -Dbenchmarx.tool=BXAgentPdb12Pdb2 -Dtest=BatchForward#testCreateMultiplePersons
+```
+*(Note: If you omit `-Dbenchmarx.tool=...`, the specified test will be executed against all registered tools).*
+
+---
+
+## Adding a New Tool
+
+To add a new bidirectional transformation tool to this test suite, follow these steps:
+
+1. **Implement the Tool Wrapper**
+   Create a new class that implements `org.benchmarx.BXTool<pdb1.Database, pdb2.Database, Decisions>`. This class is responsible for connecting your framework to the Benchmarx execution lifecycle. Place it in the `org.benchmarx.examples.pdb12pdb2.implementations.*` package structure.
+
+2. **Add Dependencies**
+   If your tool requires additional libraries, add them to `BenchmarxPdb1ToPdb2/pom.xml`. If the libraries are not available on Maven Central, you must:
+   - Place the JARs in the `lib/` folder.
+   - Update `install-local-deps.sh` in the workspace root to install those JARs into the local Maven repository.
+   - Add the corresponding dependency to `BenchmarxPdb1ToPdb2/pom.xml`.
+
+3. **Register the Tool**
+   Open `org.benchmarx.examples.pdb12pdb2.testsuite.Pdb12Pdb2TestCase` and locate the `tools()` method. Register your tool by instantiating it inside the `allTools` list:
+   ```java
+   List<BXTool<pdb1.Database, pdb2.Database, Decisions>> allTools = Arrays.asList(
+           new MyNewToolPdb12Pdb2(), // <-- Add your tool here
+           new BXAgentPdb12Pdb2(),
+           new BXLangPdb12Pdb2()
+   );
+   ```
+
+4. **Verify**
+   Run the tests for your tool in isolation using the `-Dbenchmarx.tool=MyNewToolPdb12Pdb2` parameter to ensure your implementation passes the Benchmarx properties.

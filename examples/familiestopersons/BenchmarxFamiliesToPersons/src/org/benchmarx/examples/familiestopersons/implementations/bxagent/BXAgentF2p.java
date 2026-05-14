@@ -21,9 +21,9 @@ import Families.FamiliesFactory;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 import de.tbuchmann.bxagent.f2p.Families2PersonsTransformation;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.SyncConflictPolicy;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
+import dev.bxagent.correspondence.TransformationContext;
 
 public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Decisions> {
 	private ResourceSet set = new ResourceSetImpl();

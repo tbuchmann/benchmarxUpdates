@@ -6,8 +6,6 @@ import java.util.function.BiConsumer
 import pdb2.Database
 import pdb2.Person
 
-import static org.junit.Assert.*
-
 class Pdb2Comparator implements BiConsumer<Database, Database> {
 	
 	Pdb2Normaliser comparator
@@ -41,8 +39,12 @@ class Pdb2Comparator implements BiConsumer<Database, Database> {
 	}
 	
 	override accept(Database expected, Database actual) {
-		assertTrue(personsToString(expected).startsWith("Pdb2Database"))
-		assertEquals(personsToString(expected), personsToString(actual))
+		val expectedStr = personsToString(expected)
+		val actualStr = personsToString(actual)
+		if (!expectedStr.startsWith("Pdb2Database"))
+			throw new IllegalStateException("Expected string to start with 'Pdb2Database' but was: " + expectedStr)
+		if (expectedStr != actualStr)
+			throw new AssertionError("Expected:\n" + expectedStr + "\nbut was:\n" + actualStr)
 	}
 	
 }

@@ -9,12 +9,12 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.EReference;
 
-import Families.*;
-import Persons.*;
+import Families.FamilyRegister;
+import Persons.PersonRegister;
 
 class ChangeRecorder extends org.eclipse.emf.ecore.util.EContentAdapter {
 	
