@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.benchmarx</groupId>
+    <artifactId>bag1tobag2-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>BenchmarxBag1ToBag2</artifactId>
+  <packaging>jar</packaging>
+  <name>BenchmarX - Bag1 to Bag2 Tests</name>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>resources</directory>
+      </testResource>
+      <testResource>
+        <directory>.</directory>
+        <includes>
+          <include>*.xmi</include>
+          <include>*.corr.xmi</include>
+        </includes>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Reactor siblings -->
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Benchmarx</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Bag1</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Bag2</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- EMF -->
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+    <!-- emf.compare: installed locally via install-local-deps.sh -->
+    <dependency>
+      <groupId>org.eclipse.emf.compare</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+    </dependency>
+
+    <!--
+      Tool JARs from lib/ – installed into the local Maven repo once via
+      install-local-deps.sh (run from the repository root).
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxtend-bag12bag2</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- bxlang-bag12bag2: built from Bags12Bags2-bxlang Eclipse project (CAUTION §2) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxlang-bag12bag2</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- emt-agent: general BX-Agent framework -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>emt-agent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!-- bxagent-bags2bags: built from de.tbuchmann.bxagent.bags2bags (CAUTION §2) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxagent-bags2bags</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- bx-runtime: contains dev.bxagent.correspondence.* needed by BXAgentBags2Bags -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bx-runtime</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>mediniQVT</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>qvtemf</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>plainjavaubt-bags12bags2</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>plainjavaubt-util</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- commons-io: needed by MediniQVT implementation -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.18.0</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>

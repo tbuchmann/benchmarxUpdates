@@ -107,7 +107,7 @@ public abstract class Bag12Bag2TestCase {
 					.collect(java.util.stream.Collectors.toList());
 		}
 		return allTools;
-			);
+			
 	}
 	
 	protected Bag12Bag2TestCase(BXTool<bags1.MyBag, bags2.MyBag, Decisions> tool) {

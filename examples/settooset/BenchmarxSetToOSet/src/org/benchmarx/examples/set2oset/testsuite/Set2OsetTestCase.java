@@ -112,14 +112,21 @@ public class Set2OsetTestCase {
 	}
 	
 	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
-		return Arrays.asList(
-				new BXtendSet2Oset() ,
+		List<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> allTools = Arrays.asList(
+				new BXtendSet2Oset(),
 				//new PlainJavaUbtSet2Oset(),
 				new MediniQVTSetToOSet(),
-				//new IBeXTGGSetToOSet()
+				//new IBeXTGGSetToOSet(),
 				new BXLangSet2Oset(),
 				new BXAgentSet2OSet()
-			);
+		);
+		String toolName = System.getProperty("benchmarx.tool");
+		if (toolName != null && !toolName.isEmpty()) {
+			return allTools.stream()
+					.filter(t -> t.getClass().getSimpleName().equals(toolName))
+					.collect(java.util.stream.Collectors.toList());
+		}
+		return allTools;
 	}
 	
 	protected Supplier<IEdit<sets.MySet>> srcEdit(Runnable... ops) {

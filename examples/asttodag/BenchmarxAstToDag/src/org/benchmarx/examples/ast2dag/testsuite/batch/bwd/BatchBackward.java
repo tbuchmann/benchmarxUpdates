@@ -1,14 +1,20 @@
 package org.benchmarx.examples.ast2dag.testsuite.batch.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.ast2dag.testsuite.Ast2DagTestCase;
+import org.benchmarx.examples.ast2dag.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.ast2dag.testsuite.Decisions;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackward extends Ast2DagTestCase {
 
-	public BatchBackward(BXTool<ast.Model, dag.Model, Decisions> tool) {
-		super(tool);
+	public static Collection<BXTool<ast.Model, dag.Model, Decisions>> tools() {
+		return Ast2DagTestCase.tools();
 	}
 
 	/**
@@ -18,9 +24,9 @@ public class BatchBackward extends Ast2DagTestCase {
 	 * <br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testCreateSingleExpression()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateSingleExpression(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperDag::create42));
@@ -33,8 +39,9 @@ public class BatchBackward extends Ast2DagTestCase {
 	 * multiple Expressions.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test 
-	public void testCreateMultipleExpressions(){
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateMultipleExpressions(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createTextSum));
@@ -47,8 +54,9 @@ public class BatchBackward extends Ast2DagTestCase {
 	 * multiple Expressions. This time the Expressions will be there more than one time.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testCreateMultipleExpressionsComplex() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateMultipleExpressionsComplex(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createComplexNumberExample));
@@ -61,8 +69,9 @@ public class BatchBackward extends Ast2DagTestCase {
 	 * multiple Expressions in multiple identical subtrees.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testCreateMultipleSameSubtrees() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateMultipleSameSubtrees(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createMulitpleSubtrees));

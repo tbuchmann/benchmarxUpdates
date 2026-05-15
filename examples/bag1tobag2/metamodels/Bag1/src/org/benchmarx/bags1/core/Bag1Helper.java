@@ -1,6 +1,6 @@
 package org.benchmarx.bags1.core;
 
-import static org.junit.Assert.assertTrue;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -89,9 +89,9 @@ public class Bag1Helper {
 	private Element getElement(String value) {
 		Optional<Element> elementOpt = bag.get().getElements().stream().filter(e -> ((Element) e).getValue().equals(value)).findAny();
 		
-		assertTrue(elementOpt.isPresent());
+		if (!elementOpt.isPresent()) throw new IllegalStateException("Element with value not found: " + value);
 		Element element = elementOpt.get();
-		assertTrue(element.getValue().equals(value));
+		if (!element.getValue().equals(value)) throw new AssertionError("Element value mismatch: expected " + value + " but was " + element.getValue());
 		return element;		
 	}
 }

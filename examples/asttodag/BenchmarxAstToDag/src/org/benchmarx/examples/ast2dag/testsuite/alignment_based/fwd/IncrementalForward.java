@@ -1,22 +1,30 @@
 package org.benchmarx.examples.ast2dag.testsuite.alignment_based.fwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.ast2dag.testsuite.Ast2DagTestCase;
+import org.benchmarx.examples.ast2dag.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.ast2dag.testsuite.Decisions;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class IncrementalForward extends Ast2DagTestCase {
-	public IncrementalForward(BXTool<ast.Model, dag.Model, Decisions> tool) {
-		super(tool);
+
+	public static Collection<BXTool<ast.Model, dag.Model, Decisions>> tools() {
+		return Ast2DagTestCase.tools();
 	}
-	
+
 	/**
 	 * <b>Test</b> for inserting new nodes in an existing ast. Inserting a node is only possible at leaves. <br/>
 	 * <b>Expect</b> : New nodes are inserted in the ast. <br/>
 	 * <b>Features</b>: fwd, add, fixed
 	 */
-	@Test
-	public void testIncrementalInserts() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalInserts(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createBestDigit));
 		tool.performIdleTargetEdit(trgEdit(helperDag::changeIncrementalID));
 		
@@ -33,8 +41,9 @@ public class IncrementalForward extends Ast2DagTestCase {
 	 * <b>Expect</b>: Delete the correct nodes from an ast.
 	 * <b>Features</b>: fwd, del, corr-based, structural
 	 */
-	@Test
-	public void testIncrementalDeletions() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalDeletions(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createMoreBestDigits));
 		tool.performIdleTargetEdit(trgEdit(helperDag::changeIncrementalID));
 		
@@ -51,8 +60,9 @@ public class IncrementalForward extends Ast2DagTestCase {
 	 * <b>Expect</b>: Change some nodes in the ast.
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalModifications() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalModifications(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createBestDigitRef));
 		tool.performIdleTargetEdit(trgEdit(helperDag::changeIncrementalID));
 		
@@ -69,8 +79,9 @@ public class IncrementalForward extends Ast2DagTestCase {
 	 * <b>Expect</b>: Chaning the value of a node in the AST leads to deletions in the DAG
 	 * <b>Features</b>: fwd, attribute, fixed, structural, corr-based
 	 */
-	@Test
-	public void testIncrementalModificationsResultingInDeletions() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testIncrementalModificationsResultingInDeletions(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createSimpleASTRef));		
 		
 		util.assertPrecondition("SimpleASTRef", "SimpleDAGRef");
@@ -86,8 +97,9 @@ public class IncrementalForward extends Ast2DagTestCase {
 	 * <b>Expect</b> re-running the transformation after an idle source delta does not change the target model.<br/>
 	 * <b>Features:</b>: fwd, fixed
 	 */
-	@Test
-	public void testStability() {
+	@ParameterizedTest @MethodSource("tools")
+	public void testStability(BXTool<ast.Model, dag.Model, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateSourceEdit(srcEdit(helperAst::createBestDigit));

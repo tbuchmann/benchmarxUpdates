@@ -25,13 +25,8 @@ import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
 
-@RunWith(Parameterized.class)
 public abstract class Ast2DagTestCase {
 	protected BXTool<ast.Model, dag.Model, Decisions> tool;
 	protected BiConsumer<ast.Model, ast.Model> astComparator;
@@ -42,7 +37,6 @@ public abstract class Ast2DagTestCase {
 	protected IEdit<ast.Model> sourceEdit;
 	protected IEdit<dag.Model> targetEdit;
 
-	@Before
 	public void initialise() {
 		// Make sure packages are registered
 		ast.AstPackage.eINSTANCE.getAstFactory();
@@ -93,12 +87,11 @@ public abstract class Ast2DagTestCase {
 		return new DagHelper(rootSupplier, createTargetNode, createTargetEdge, changeTargetAttribute, deleteTargetNode, moveTargetNode, deleteTargetEdge);
 	}
 
-	@After
+	@AfterEach
 	public void terminate(){
-		tool.terminateSynchronisationDialogue();
+		if (tool != null) tool.terminateSynchronisationDialogue();
 	}
 	
-	@Parameters(name = "{0}")
 	public static Collection<BXTool<ast.Model, dag.Model, Decisions>> tools() {
 		List<BXTool<ast.Model, dag.Model, Decisions>> allTools = Arrays.asList(
 				new BXtendAst2Dag(),
@@ -113,11 +106,13 @@ public abstract class Ast2DagTestCase {
 					.collect(java.util.stream.Collectors.toList());
 		}
 		return allTools;
-			);
 	}
 	
 	protected Ast2DagTestCase(BXTool<ast.Model, dag.Model, Decisions> tool) {
 		this.tool = tool; 
+	}
+
+	protected Ast2DagTestCase() {
 	}
 	
 	protected Supplier<IEdit<ast.Model>> srcEdit(Runnable... ops) {

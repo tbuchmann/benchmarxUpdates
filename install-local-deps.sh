@@ -42,5 +42,35 @@ install "org.benchmarx.tools" "bx-runtime"        "1.0.0-SNAPSHOT" "${LIB}/bx-ru
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB}/mediniQVT/qvtemf.jar"
 
+# ── AST to DAG Tool JARs ──────────────────────────────────────────────────────
+LIB_AST="${SCRIPT_DIR}/examples/asttodag/BenchmarxAstToDag/lib"
+
+install "org.benchmarx.tools" "bxtend-ast2dag"  "1.0.0"          "${LIB_AST}/bxtend-ast2dag-1.0.0.jar"
+install "org.benchmarx.tools" "bxlang-ast2dag"  "1.0.0"          "${LIB_AST}/BXtend-AST2DAG.jar"
+install "org.benchmarx.tools" "emt-agent"        "1.0.0-SNAPSHOT" "${LIB_AST}/emt-agent-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "mediniQVT"        "1.0.0"          "${LIB_AST}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"           "1.0.0"          "${LIB_AST}/mediniQVT/qvtemf.jar"
+
+
+# ── Bag1 to Bag2 Tool JARs ────────────────────────────────────────────────────
+# bxtend-bag12bag2: from BenchmarxBag1ToBag2/lib/ (pre-built JAR)
+LIB_BAG="${SCRIPT_DIR}/examples/bag1tobag2/BenchmarxBag1ToBag2/lib"
+
+install "org.benchmarx.tools" "bxtend-bag12bag2"      "1.0.0"          "${LIB_BAG}/bxtend-bag12bag2-1.0.0.jar"
+# bxlang-bag12bag2: CAUTION §2 – BXtend-Bag12Bag2.jar has wrong package;
+#   rebuild from Bags12Bags2-bxlang workspace project:
+#   cd /home/tb/workspaceBenchmarXUpdate/Bags12Bags2-bxlang/bin && jar cf /tmp/bxlang-bag12bag2-1.0.0.jar dev/
+install "org.benchmarx.tools" "bxlang-bag12bag2"      "1.0.0"          "/tmp/bxlang-bag12bag2-1.0.0.jar"
+# bxagent-bags2bags: CAUTION §2 – not in emt-agent;
+#   rebuild from de.tbuchmann.bxagent.bags2bags workspace project:
+#   cd /home/tb/workspaceBenchmarXUpdate/de.tbuchmann.bxagent.bags2bags/bin && jar cf /tmp/bxagent-bags2bags-1.0.0.jar de/
+install "org.benchmarx.tools" "bxagent-bags2bags"     "1.0.0"          "/tmp/bxagent-bags2bags-1.0.0.jar"
+install "org.benchmarx.tools" "bx-runtime"            "1.0.0-SNAPSHOT" "${LIB_BAG}/bx-runtime-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "emt-agent"              "1.0.0-SNAPSHOT" "${LIB_BAG}/emt-agent-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "plainjavaubt-bags12bags2" "1.0.0"        "${LIB_BAG}/PlainJavaUbtBags12Bags2.jar"
+install "org.benchmarx.tools" "plainjavaubt-util"         "1.0.0"        "${LIB_BAG}/PlainJavaUbtUtil.jar"
+install "org.benchmarx.tools" "mediniQVT"              "1.0.0"          "${LIB_BAG}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"                 "1.0.0"          "${LIB_BAG}/mediniQVT/qvtemf.jar"
+
 echo ""
 echo "All local deps installed. You can now run: ./mvnw test"
