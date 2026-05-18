@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.benchmarx</groupId>
+    <artifactId>asttodag-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>BenchmarxAstToDag</artifactId>
+  <packaging>jar</packaging>
+  <name>BenchmarX - AST to DAG Tests</name>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>resources</directory>
+      </testResource>
+      <testResource>
+        <directory>.</directory>
+        <includes>
+          <include>*.xmi</include>
+          <include>*.corr.xmi</include>
+        </includes>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Reactor siblings -->
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Benchmarx</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>ExpressionAST</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>ExpressionDAG</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- EMF -->
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+    <!-- emf.compare: installed locally via install-local-deps.sh -->
+    <dependency>
+      <groupId>org.eclipse.emf.compare</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+    </dependency>
+
+    <!--
+      Tool JARs from lib/ – installed into the local Maven repo once via
+      install-local-deps.sh (run from the repository root).
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxtend-ast2dag</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- bxlang-ast2dag: built from Ast2Dag-bxlang Eclipse project (dev.bxlang.generated.*) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxlang-ast2dag</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- emt-agent: general BX-Agent framework (dev.emtagent.*) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>emt-agent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!-- bxagent-ast2dag: specific transformation (de.tbuchmann.bxagent.ast2dag.*) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxagent-ast2dag</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>mediniQVT</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>qvtemf</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- PlainJavaUbt tool (inactive, compiled for completeness) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>plainjavaubt-ast2dag</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>plainjavaubt-util</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!-- commons-io: needed by MediniQVT implementation (NullOutputStream) -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.18.0</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>

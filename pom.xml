@@ -130,6 +130,7 @@
     <module>examples/pdb1topdb2</module>
     <module>examples/asttodag</module>
     <module>examples/bag1tobag2</module>
+    <module>examples/settooset</module>
   </modules>
 
 </project>

@@ -1,6 +1,5 @@
 package org.benchmarx.examples.set2oset.testsuite.batch.bwd;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.benchmarx.BXTool;
@@ -14,17 +13,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 @ExtendWith(BXToolParameterResolver.class)
 public class BatchBackward extends Set2OsetTestCase {
 	
-	public BatchBackward(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
-		super(tool);
+	public BatchBackward() {
+		super();
 	}
 	
-	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() {
 		return Set2OsetTestCase.tools();
 	}
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testInitialiseSynchronisation(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testInitialiseSynchronisation(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		// No precondition!
@@ -35,7 +34,7 @@ public class BatchBackward extends Set2OsetTestCase {
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testDatabaseNameChangeOfEmpty(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testDatabaseNameChangeOfEmpty(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(helperOset::setSetName));
@@ -50,7 +49,7 @@ public class BatchBackward extends Set2OsetTestCase {
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testCreateElement(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testCreateElement(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(helperOset::setSetName));
@@ -65,7 +64,7 @@ public class BatchBackward extends Set2OsetTestCase {
 
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testCreateMultipleElements(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testCreateMultipleElements(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(helperOset::setSetName));

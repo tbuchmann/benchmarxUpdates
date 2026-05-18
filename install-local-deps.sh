@@ -72,5 +72,20 @@ install "org.benchmarx.tools" "plainjavaubt-util"         "1.0.0"        "${LIB_
 install "org.benchmarx.tools" "mediniQVT"              "1.0.0"          "${LIB_BAG}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"                 "1.0.0"          "${LIB_BAG}/mediniQVT/qvtemf.jar"
 
+# ── Set to OSet Tool JARs ─────────────────────────────────────────────────────
+LIB_SET="${SCRIPT_DIR}/examples/settooset/BenchmarxSetToOSet/lib"
+
+install "org.benchmarx.tools" "bxtend-set2oset"   "1.0.0"          "${LIB_SET}/bxtend-set2oset-1.0.0.jar"
+# bxlang-set2oset: CAUTION §2 – must rebuild from Set2OSets-bxlang workspace project:
+#   cd /home/tb/workspaceBenchmarXUpdate/Set2OSets-bxlang/bin && jar cf /tmp/bxlang-set2oset-1.0.0.jar dev/
+install "org.benchmarx.tools" "bxlang-set2oset"   "1.0.0"          "/tmp/bxlang-set2oset-1.0.0.jar"
+install "org.benchmarx.tools" "bxagent-set2oset"  "1.0.0"          "${LIB_SET}/bxagent-set2oset-1.0.0.jar"
+install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_SET}/emt-agent-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "bx-runtime"         "1.0.0-SNAPSHOT" "${LIB_SET}/bx-runtime-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "plainjavaubt-set2oset" "1.0.0"          "${LIB_SET}/PlainJavaUbtSet2Oset.jar"
+install "org.benchmarx.tools" "plainjavaubt-util"     "1.0.0"          "${LIB_SET}/PlainJavaUbtUtil.jar"
+install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_SET}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_SET}/mediniQVT/qvtemf.jar"
+
 echo ""
 echo "All local deps installed. You can now run: ./mvnw test"

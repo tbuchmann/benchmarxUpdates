@@ -1,6 +1,5 @@
 package org.benchmarx.examples.set2oset.testsuite;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -28,9 +27,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ParameterResolver;
 
 @DisplayName("Set2Oset Tests")
 public class Set2OsetTestCase {
@@ -42,18 +39,14 @@ public class Set2OsetTestCase {
 	protected OsetHelper helperOset;
 	protected IEdit<sets.MySet> sourceEdit;
 	protected IEdit<osets.MyOrderedSet> targetEdit;
-	protected ParameterResolver parameterResolver;
 
 	public Set2OsetTestCase(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
-		this.parameterResolver = new BXToolParameterResolver();
 	}
 
 	public Set2OsetTestCase() {
-		this.parameterResolver = new BXToolParameterResolver();
 	}
 
-	@BeforeEach
 	public void initialise() {
 		if (tool == null) return;
 
@@ -109,9 +102,10 @@ public class Set2OsetTestCase {
 	public void terminate() {
 		if (tool == null) return;
 		tool.terminateSynchronisationDialogue();
+		tool = null;  // prevent double-termination when tests also call terminate() explicitly
 	}
 	
-	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() {
 		List<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> allTools = Arrays.asList(
 				new BXtendSet2Oset(),
 				//new PlainJavaUbtSet2Oset(),

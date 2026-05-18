@@ -1,6 +1,5 @@
 package org.benchmarx.examples.set2oset.testsuite.alignment_based.bwd;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.benchmarx.BXTool;
@@ -14,18 +13,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 @ExtendWith(BXToolParameterResolver.class)
 public class IncrementalBackward extends Set2OsetTestCase {
 	
-	public IncrementalBackward(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
-		super(tool);
+	public IncrementalBackward() {
+		super();
 	}
 	
-	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() {
 		return Set2OsetTestCase.tools();
 	}
 	
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testIncrementalInserts(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testIncrementalInserts(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(
@@ -50,7 +49,7 @@ public class IncrementalBackward extends Set2OsetTestCase {
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testIncrementalDeletions(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testIncrementalDeletions(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(
@@ -78,7 +77,7 @@ public class IncrementalBackward extends Set2OsetTestCase {
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testIncrementalValueChange(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testIncrementalValueChange(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(
@@ -99,7 +98,7 @@ public class IncrementalBackward extends Set2OsetTestCase {
 	
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testStability(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) throws IOException {
+	public void testStability(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
 		this.tool = tool;
 		initialise();		
 		tool.performAndPropagateTargetEdit(trgEdit(
@@ -124,7 +123,9 @@ public class IncrementalBackward extends Set2OsetTestCase {
 	 */
 	@ParameterizedTest
 	@MethodSource("tools")
-	public void testHippocraticness() {
+	public void testHippocraticness(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(
 				helperOset::setSetName,
 				helperOset::createA,

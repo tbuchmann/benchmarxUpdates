@@ -1,8 +1,5 @@
 package org.benchmarx.osets.core;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +56,8 @@ public class OsetHelper {
 	}
 	
 	public void renameAlphabetSetToABC() {
-		assertTrue(set.get().getName().equals("Alphabet"));
+		if (!set.get().getName().equals("Alphabet"))
+			throw new IllegalStateException("Expected set name 'Alphabet' but was: " + set.get().getName());
 		set.get().setName("ABC");
 	}
 	
@@ -148,15 +146,19 @@ public class OsetHelper {
 	private Element getElement(String value) {
 		Optional<Element> elementOpt = set.get().getElements().stream().filter(e -> e.getValue().equals(value)).findAny();
 		
-		assertTrue(elementOpt.isPresent());
+		if (!elementOpt.isPresent())
+			throw new IllegalStateException("No element with value '" + value + "' found in oset");
 		Element element = elementOpt.get();
-		assertTrue(element.getValue().equals(value));
+		if (!element.getValue().equals(value))
+			throw new IllegalStateException("Element value mismatch: expected '" + value + "' but was '" + element.getValue() + "'");
 		return element;		
 	}
 	
 	private Element findFirst() {
-		assertTrue(OsetComparator.isConnected(set.get()));
-		assertFalse(OsetComparator.isCycle(set.get()));
+		if (!OsetComparator.isConnected(set.get()))
+			throw new IllegalStateException("Expected connected oset but was not connected");
+		if (OsetComparator.isCycle(set.get()))
+			throw new IllegalStateException("Expected no cycle in oset but found cycle");
 		
 		Element first = set.get().getElements().get(0);
 		while (first.getPrevious() != null) {

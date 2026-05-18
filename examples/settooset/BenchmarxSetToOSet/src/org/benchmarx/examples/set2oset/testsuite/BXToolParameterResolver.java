@@ -1,7 +1,7 @@
 package org.benchmarx.examples.set2oset.testsuite;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +10,23 @@ import org.benchmarx.BXTool;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.params.ParameterizedTest;
 
 public class BXToolParameterResolver implements ParameterResolver {
 
 	@Override
 	public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-		if (!(parameterContext.getDeclaringExecutable() instanceof Constructor)) {
+		// Never resolve constructor parameters – all test classes use no-arg constructors.
+		if (parameterContext.getDeclaringExecutable() instanceof Constructor) {
 			return false;
+		}
+		// @ParameterizedTest + @MethodSource already provides the argument;
+		// returning true here would cause a "multiple competing ParameterResolvers" error.
+		if (parameterContext.getDeclaringExecutable() instanceof Method) {
+			Method method = (Method) parameterContext.getDeclaringExecutable();
+			if (method.isAnnotationPresent(ParameterizedTest.class)) {
+				return false;
+			}
 		}
 		Parameter parameter = parameterContext.getParameter();
 		return BXTool.class.isAssignableFrom(parameter.getType());
@@ -24,18 +34,13 @@ public class BXToolParameterResolver implements ParameterResolver {
 
 	@Override
 	public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-		try {
-			List<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> toolList =
-					new ArrayList<>(Set2OsetTestCase.tools());
-			int index = getInvocationIndex(extensionContext);
-			return toolList.stream()
-					.skip(index)
-					.findFirst()
-					.orElseThrow(() -> new RuntimeException("No tool available at index " + index));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		List<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> toolList =
+				new ArrayList<>(Set2OsetTestCase.tools());
+		int index = getInvocationIndex(extensionContext);
+		return toolList.stream()
+				.skip(index)
+				.findFirst()
+				.orElseThrow(() -> new RuntimeException("No tool available at index " + index));
 	}
 
 	/**

@@ -1,7 +1,5 @@
 package org.benchmarx.sets.core;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -90,7 +88,8 @@ public class SetHelper {
 	}
 	
 	public void renameAlphabetSetToABC() {
-		assertTrue(set.get().getName().equals("Alphabet"));
+		if (!set.get().getName().equals("Alphabet"))
+			throw new IllegalStateException("Expected set name 'Alphabet' but was: " + set.get().getName());
 		set.get().setName("ABC");
 		delta.add(new SetHelper.Delta.SetNameChange("ABC"));
 	}
@@ -168,9 +167,11 @@ public class SetHelper {
 	private Element getElement(String value) {
 		Optional<Element> elementOpt = set.get().getElements().stream().filter(e -> e.getValue().equals(value)).findAny();
 		
-		assertTrue(elementOpt.isPresent());
+		if (!elementOpt.isPresent())
+			throw new IllegalStateException("No element with value '" + value + "' found in set");
 		Element element = elementOpt.get();
-		assertTrue(element.getValue().equals(value));
+		if (!element.getValue().equals(value))
+			throw new IllegalStateException("Element value mismatch: expected '" + value + "' but was '" + element.getValue() + "'");
 		return element;		
 	}
 }

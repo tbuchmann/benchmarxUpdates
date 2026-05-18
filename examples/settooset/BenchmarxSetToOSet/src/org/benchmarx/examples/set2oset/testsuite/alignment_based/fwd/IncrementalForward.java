@@ -30,18 +30,21 @@ import osets.MyOrderedSet;
 @ExtendWith(BXToolParameterResolver.class)
 public class IncrementalForward extends Set2OsetTestCase {
 	
-	public IncrementalForward(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
-		super(tool);
+	public IncrementalForward() {
+		super();
 	}
 	
-	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() throws IOException {
+	public static Collection<BXTool<sets.MySet, osets.MyOrderedSet, Decisions>> tools() {
 		return Set2OsetTestCase.tools();
 	}
 
 	@BeforeEach
 	public void resetTargetHistory() {
-		clearDelta();
+		// Always initialise lastAssertedTarget so generatePossibleTargets() never sees null.
 		lastAssertedTarget = osets.OsetsFactory.eINSTANCE.createMyOrderedSet();
+		// helperSet/helperOset are null until initialise() is called; defer clearDelta.
+		if (helperSet == null || helperOset == null) return;
+		clearDelta();
 	}
 	
 	/**
