@@ -7,11 +7,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/PlainJavaUbtPn2Pnw.jar"/>
-	<classpathentry kind="lib" path="lib/PlainJavaUbtUtil.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
-	<classpathentry kind="lib" path="lib/IBeXTGGPetrinets.jar"/>
 	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-pn2pnw-1.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.xtend.XTEND_CONTAINER"/>

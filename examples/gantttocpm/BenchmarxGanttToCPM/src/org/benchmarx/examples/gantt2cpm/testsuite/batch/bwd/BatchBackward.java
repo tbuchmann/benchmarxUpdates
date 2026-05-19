@@ -1,26 +1,37 @@
 package org.benchmarx.examples.gantt2cpm.testsuite.batch.bwd;
 
+import java.util.Collection;
+
 import org.benchmarx.BXTool;
+import org.benchmarx.examples.gantt2cpm.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.gantt2cpm.testsuite.Decisions;
 import org.benchmarx.examples.gantt2cpm.testsuite.GanttToCPMTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import cpm.CPMNetwork;
 import gantt.GanttDiagram;
 
+@ExtendWith(BXToolParameterResolver.class)
 public class BatchBackward extends GanttToCPMTestCase {
-	public BatchBackward(BXTool<GanttDiagram, CPMNetwork, Decisions> tool) {
-		super(tool);
+
+	public BatchBackward() {
+		super();
 	}
-	
+
+	public static Collection<BXTool<GanttDiagram, CPMNetwork, Decisions>> tools() {
+		return GanttToCPMTestCase.tools();
+	}
+
 	/**
 	 * <b>Test</b> for name change of an empty cpm network.<br/>
 	 * <b>Expect</b> name in the gantt diagram is also changed.<br/>
 	 * <b>Features</b>: bwd, fixed
 	 */
-	@Test
-	public void testCpmNameChangeOfEmpty()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testCpmNameChangeOfEmpty(BXTool<GanttDiagram, CPMNetwork, Decisions> tool) {
+		this.tool = tool; initialise();
 		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createEmptyGantt2CPMProcedure));
 
 		util.assertPrecondition("EmptyGantt2CpmGantt", "EmptyGantt2CpmCpm");
@@ -29,7 +40,7 @@ public class BatchBackward extends GanttToCPMTestCase {
 		//------------
 		util.assertPostcondition("EmptyItalyTankRushGantt", "EmptyItalyTankRushCpm");
 	}
-	
+
 	/**
 	 * <b>Test</b> for creation of a simple cpm network.
 	 * <br/>
@@ -37,9 +48,9 @@ public class BatchBackward extends GanttToCPMTestCase {
 	 * <br/>
 	 * <b>Features:</b>: bwd, fixed
 	 */
-	@Test
-	public void testCreateCpm()
-	{
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateCpm(BXTool<GanttDiagram, CPMNetwork, Decisions> tool) {
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createSimpleTankRush));
@@ -51,8 +62,9 @@ public class BatchBackward extends GanttToCPMTestCase {
 	 * Analogous to @link {@link #testCreateCpm()}, now with all possible dependency types.<br/>
 	 * <b>Features:</b>: bwd, fixed
 	 */
-	@Test 
-	public void testCreateComplexGantt(){ // rename to CPM?
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreateComplexGantt(BXTool<GanttDiagram, CPMNetwork, Decisions> tool) { // rename to CPM?
+		this.tool = tool; initialise();
 		// No precondition!
 		//------------
 		tool.performAndPropagateTargetEdit(trgEdit(helperCPM::createComplexTankRush));

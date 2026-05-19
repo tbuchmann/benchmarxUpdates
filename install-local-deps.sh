@@ -87,5 +87,19 @@ install "org.benchmarx.tools" "plainjavaubt-util"     "1.0.0"          "${LIB_SE
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_SET}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_SET}/mediniQVT/qvtemf.jar"
 
+
+# ── Gantt to CPM Tool JARs ────────────────────────────────────────────────────
+LIB_G2C="${SCRIPT_DIR}/examples/gantttocpm/BenchmarxGanttToCPM/lib"
+
+install "org.benchmarx.tools" "bxtend-gantt2cpm"  "1.0.0"          "${LIB_G2C}/bxtend-gantt2cpm-1.0.0.jar"
+install "org.benchmarx.tools" "bxagent-gantt2cpm" "1.0.0"          "${LIB_G2C}/bxagent-gantt2cpm-1.0.0.jar"
+# bxlang-gantt2cpm: CAUTION §2 – BXtend-Gantt2CPM.jar has wrong package;
+#   rebuild from Gantt2CPM-bxlang workspace project:
+#   cd /home/tb/workspaceBenchmarXUpdate/Gantt2CPM-bxlang/bin && jar cf /tmp/bxlang-gantt2cpm-1.0.0.jar dev/
+install "org.benchmarx.tools" "bxlang-gantt2cpm"  "1.0.0"          "/tmp/bxlang-gantt2cpm-1.0.0.jar"
+install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_G2C}/emt-agent-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_G2C}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_G2C}/mediniQVT/qvtemf.jar"
+
 echo ""
 echo "All local deps installed. You can now run: ./mvnw test"
