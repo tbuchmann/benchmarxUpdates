@@ -19,7 +19,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,26 @@ public final class StateSerializer {
 		resourceSet.getResourceFactoryRegistry()
 				.getExtensionToFactoryMap()
 				.put("ecore", new XMIResourceFactoryImpl());
+	}
+
+	/**
+	 * Serialize {@code state} to an XMI string (used by the generator).
+	 *
+	 * @param state      the AST node to serialize
+	 * @param ecorePath  absolute path to the referenced .ecore file
+	 * @return XMI content as a string
+	 */
+	public String serializeToString(StateDecl state, Path ecorePath)
+			throws IOException {
+		EPackage ePackage = loadEPackage(ecorePath);
+		EObject root = buildEObject(state.getRoot(), ePackage);
+
+		URI uri = URI.createURI("__inmemory__/" + state.getName() + ".xmi");
+		Resource resource = resourceSet.createResource(uri);
+		resource.getContents().add(root);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		resource.save(out, Map.of());
+		return out.toString(StandardCharsets.UTF_8);
 	}
 
 	/**

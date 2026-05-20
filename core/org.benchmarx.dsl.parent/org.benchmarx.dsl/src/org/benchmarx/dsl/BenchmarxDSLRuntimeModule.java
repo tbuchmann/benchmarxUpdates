@@ -3,9 +3,16 @@
  */
 package org.benchmarx.dsl;
 
+import org.benchmarx.dsl.generator.BenchmarxDSLGenerator;
+import org.eclipse.xtext.generator.IGenerator2;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class BenchmarxDSLRuntimeModule extends AbstractBenchmarxDSLRuntimeModule {
+
+	@Override
+	public Class<? extends IGenerator2> bindIGenerator2() {
+		return BenchmarxDSLGenerator.class;
+	}
 }
