@@ -26,9 +26,7 @@ import Persons.PersonRegister;
 @ExtendWith(BXToolParameterResolver.class)
 public class ScalabilityIncrTestsBwd extends ScalabilityTests {
 
-	public ScalabilityIncrTestsBwd(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool, "INCR_BWD_");
-	}
+	public ScalabilityIncrTestsBwd() { super("INCR_BWD_"); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return ScalabilityTests.tools();

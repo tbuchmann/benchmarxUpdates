@@ -16,9 +16,7 @@ import Persons.PersonRegister;
 @ExtendWith(BXToolParameterResolver.class)
 public class BatchForward extends FamiliesToPersonsTestCase {
 
-	public BatchForward(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool);
-	}
+	public BatchForward() { super(); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return FamiliesToPersonsTestCase.tools();

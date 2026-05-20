@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.junit.Assert;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -108,8 +107,8 @@ public class NMFFamiliesToPersonsIncremental implements BXTool<FamilyRegister, P
 			return Long.parseLong(result);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Assert.fail();
-			return 0;
+			throw new RuntimeException("Unexpected failure");
+			//return 0;
 		}
 	}
 
@@ -147,12 +146,15 @@ public class NMFFamiliesToPersonsIncremental implements BXTool<FamilyRegister, P
 			writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
-			Assert.fail();
+			throw new RuntimeException("Unexpected failure");
 		}
 	}
 	
 	private void normaliseAndCompare(String expected, String actual) {
-		Assert.assertEquals(expected.replaceAll("\\s+",""), actual.replaceAll("\\s+",""));
+		String exp = expected.replaceAll("\\s+", "");
+		String act = actual.replaceAll("\\s+", "");
+		if (!exp.equals(act))
+			throw new AssertionError("Expected:\n" + expected + "\nbut was:\n" + actual);
 	}
 
 	private void runNMF() {
@@ -170,7 +172,7 @@ public class NMFFamiliesToPersonsIncremental implements BXTool<FamilyRegister, P
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			Assert.fail();
+			throw new RuntimeException("Unexpected failure");
 		}
 	}
 
@@ -193,7 +195,7 @@ public class NMFFamiliesToPersonsIncremental implements BXTool<FamilyRegister, P
 			// swallow this exception. no decision made yet
 		} catch (Exception e) {
 			e.printStackTrace();
-			Assert.fail();
+			throw new RuntimeException("Unexpected failure");
 		}
 	}
 
@@ -223,8 +225,8 @@ public class NMFFamiliesToPersonsIncremental implements BXTool<FamilyRegister, P
 			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
-			Assert.fail();
-			return null;
+			throw new RuntimeException("Unexpected failure");
+			//return null;
 		}
 	}
 	

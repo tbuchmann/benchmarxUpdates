@@ -1,7 +1,5 @@
 package org.benchmarx.families.core;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -49,7 +47,7 @@ public class FamilyHelper {
 	private Family getFromRegister(String name) {
 		Optional<Family> family = register.get().getFamilies().stream().filter(f -> f.getName().equals(name)).findAny();
 
-		assertTrue(family.isPresent());
+		if (!family.isPresent()) throw new IllegalStateException("Family '" + name + "' not found in register");
 		return family.get();
 	}
 
@@ -57,11 +55,11 @@ public class FamilyHelper {
 		Optional<Family> family = register.get().getFamilies().stream()
 				.filter(f -> f.getName().equals("Simpson") && f.getFather().getName().equals("Homer")).findAny();
 
-		assertTrue(family.isPresent());
+		if (!family.isPresent()) throw new IllegalStateException("Simpson family with Homer not found");
 
 		Family fam = family.get();
-		assertTrue(fam.getName().equals("Simpson"));
-		assertTrue(fam.getFather().getName().equals("Homer"));
+		if (!fam.getName().equals("Simpson")) throw new IllegalStateException("Expected Simpson family");
+		if (!fam.getFather().getName().equals("Homer")) throw new IllegalStateException("Expected Homer as father");
 
 		return fam;
 	}
@@ -70,9 +68,9 @@ public class FamilyHelper {
 		Family fam = getSimpsonFamily();
 		Optional<FamilyMember> liz = fam.getDaughters().stream().filter(f -> f.getName().equals("Lisa")).findAny();
 
-		assertTrue(liz.isPresent());
+		if (!liz.isPresent()) throw new IllegalStateException("Lisa not found in Simpson family");
 		FamilyMember lisa = liz.get();
-		assertTrue(lisa.getName().equals("Lisa"));
+		if (!lisa.getName().equals("Lisa")) throw new IllegalStateException("Expected Lisa");
 		return lisa;
 	}
 
@@ -80,9 +78,9 @@ public class FamilyHelper {
 		Family fam = getSimpsonFamily();
 		Optional<FamilyMember> mag = fam.getDaughters().stream().filter(f -> f.getName().equals("Maggie")).findAny();
 
-		assertTrue(mag.isPresent());
+		if (!mag.isPresent()) throw new IllegalStateException("Maggie not found in Simpson family");
 		FamilyMember maggie = mag.get();
-		assertTrue(maggie.getName().equals("Maggie"));
+		if (!maggie.getName().equals("Maggie")) throw new IllegalStateException("Expected Maggie");
 		return maggie;
 	}
 
@@ -98,25 +96,25 @@ public class FamilyHelper {
 
 	public void createFatherNed() {
 		Family family = getFromRegister("Flanders");
-		assertTrue(family.getName().equals("Flanders"));
+		if (!family.getName().equals("Flanders")) throw new IllegalStateException("Expected Flanders family");
 		builder.family(family).father("Ned");
 	}
 
 	public void createMotherMaude() {
 		Family family = getFromRegister("Flanders");
-		assertTrue(family.getName().equals("Flanders"));
+		if (!family.getName().equals("Flanders")) throw new IllegalStateException("Expected Flanders family");
 		builder.family(family).mother("Maude");
 	}
 
 	public void createSonTodd() {
 		Family family = getFromRegister("Flanders");
-		assertTrue(family.getName().equals("Flanders"));
+		if (!family.getName().equals("Flanders")) throw new IllegalStateException("Expected Flanders family");
 		builder.family(family).son("Todd");
 	}
 
 	public void createSonRod() {
 		Family family = getFromRegister("Flanders");
-		assertTrue(family.getName().equals("Flanders"));
+		if (!family.getName().equals("Flanders")) throw new IllegalStateException("Expected Flanders family");
 		builder.family(family).son("Rod");
 	}
 
@@ -155,7 +153,7 @@ public class FamilyHelper {
 		Optional<Family> family = register.get().getFamilies().stream()
 				.filter(f -> f.getName().equals("Simpson") && f.getFather() == null).findAny();
 
-		assertTrue(family.isPresent());
+		if (!family.isPresent()) throw new IllegalStateException("Empty Simpson family not found");
 		Family fam = family.get();
 
 		builder.family(fam).father("Homer");
@@ -199,7 +197,7 @@ public class FamilyHelper {
 		Optional<Family> family = register.get().getFamilies().stream()
 				.filter(f -> f.getName().equals("Simpson") && f.getFather() == null).findAny();
 
-		assertTrue(family.isPresent());
+		if (!family.isPresent()) throw new IllegalStateException("Empty Simpson family not found");
 		Family fam = family.get();
 		builder.family(fam).father("Bart");
 	}
@@ -230,17 +228,17 @@ public class FamilyHelper {
 			// Unable to locate firstBart via object identity, so rely on position-based
 			// heuristics
 			Family family = getSimpsonFamily();
-			assertTrue(family.getName().equals("Simpson"));
+			if (!family.getName().equals("Simpson")) throw new IllegalStateException("Expected Simpson family");
 			deleteMemberFromFamily(FamiliesPackage.Literals.FAMILY__SONS, family, family.getSons().get(0));
 		}
 	}
-	
+
 	public void moveLisaToFlandersAsDaughter(String simpsonFamilyName, String flandersFamilyName) {
 		Family simspons = getFromRegister(simpsonFamilyName);
 		Family flanders = getFromRegister(flandersFamilyName);
 		Optional<FamilyMember> liz = simspons.getDaughters().stream().filter(f -> f.getName().equals("Lisa")).findAny();
 
-		assertTrue(liz.isPresent());
+		if (!liz.isPresent()) throw new IllegalStateException("Lisa not found in " + simpsonFamilyName);
 		FamilyMember lisa = liz.get();
 
 		moveNode.accept(lisa, List.of(lisa.getDaughtersInverse(), FamiliesPackage.Literals.FAMILY__DAUGHTERS, flanders,
@@ -276,7 +274,7 @@ public class FamilyHelper {
 
 	public void renameEmptySimpsonToBouvier() {
 		Family fam = getFromRegister("Simpson");
-		assertTrue(fam.getName().equals("Simpson"));
+		if (!fam.getName().equals("Simpson")) throw new IllegalStateException("Expected Simpson family");
 
 		changeAttribute.accept(FamiliesPackage.Literals.FAMILY__NAME, List.of(fam, "Simpson", "Bouvier"));
 		fam.setName("Bouvier");
@@ -284,7 +282,7 @@ public class FamilyHelper {
 
 	public void renameSimpsonToBouvier() {
 		Family family = getSimpsonFamily();
-		assertTrue(family.getName().equals("Simpson"));
+		if (!family.getName().equals("Simpson")) throw new IllegalStateException("Expected Simpson family");
 
 		changeAttribute.accept(FamiliesPackage.Literals.FAMILY__NAME, List.of(family, "Simpson", "Bouvier"));
 		family.setName("Bouvier");
@@ -292,7 +290,7 @@ public class FamilyHelper {
 
 	public void renameFlandersFamilyToBouvier() {
 		Family family = getFromRegister("Flanders");
-		assertTrue(family.getName().equals("Flanders"));
+		if (!family.getName().equals("Flanders")) throw new IllegalStateException("Expected Flanders family");
 
 		changeAttribute.accept(FamiliesPackage.Literals.FAMILY__NAME, List.of(family, "Flanders", "Bouvier"));
 		family.setName("Bouvier");

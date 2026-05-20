@@ -26,9 +26,7 @@ import Persons.PersonRegister;
 @ExtendWith(BXToolParameterResolver.class)
 public class ScalabilityBatchTestsBwd extends ScalabilityTests {
 
-	public ScalabilityBatchTestsBwd(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool, "BWD_");
-	}
+	public ScalabilityBatchTestsBwd() { super("BWD_"); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return ScalabilityTests.tools();

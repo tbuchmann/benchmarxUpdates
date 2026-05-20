@@ -33,9 +33,7 @@ public class ScalabilityConstDeltaCFCSync extends ScalabilityTests {
 
 	public static final int NR_OF_EDITED_FAMILIES = 3;
 
-	public ScalabilityConstDeltaCFCSync(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool, "CDCFCSync_");
-	}
+	public ScalabilityConstDeltaCFCSync() { super("CDCFCSync_"); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return ScalabilityTests.tools();

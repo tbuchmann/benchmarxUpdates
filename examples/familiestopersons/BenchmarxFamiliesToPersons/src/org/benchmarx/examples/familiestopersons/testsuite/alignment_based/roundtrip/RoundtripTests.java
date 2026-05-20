@@ -16,9 +16,7 @@ import Persons.PersonRegister;
 @ExtendWith(BXToolParameterResolver.class)
 public class RoundtripTests extends FamiliesToPersonsTestCase {
 
-	public RoundtripTests(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool);
-	}
+	public RoundtripTests() { super(); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return FamiliesToPersonsTestCase.tools();

@@ -18,7 +18,7 @@ import org.benchmarx.edit.IEdit;
 import org.benchmarx.examples.familiestopersons.testsuite.Decisions;
 import org.benchmarx.families.core.FamiliesComparator;
 import org.benchmarx.persons.core.PersonsComparator;
-import org.junit.Assert;
+
 
 import Families.FamiliesFactory;
 import Families.FamilyRegister;
@@ -124,7 +124,10 @@ public class BiGULFamiliesToPersons implements BXTool<FamilyRegister, PersonRegi
 	}
 	
 	private void normaliseAndCompare(String expected, String actual) {
-		Assert.assertEquals(expected.replaceAll("\\s+",""), actual.replaceAll("\\s+",""));
+		String exp = expected.replaceAll("\\s+", "");
+		String act = actual.replaceAll("\\s+", "");
+		if (!exp.equals(act))
+			throw new AssertionError("Expected:\n" + expected + "\nbut was:\n" + actual);
 	}
 
 	private String runBigul(String dir, String familyRegister, String personsRegister) {

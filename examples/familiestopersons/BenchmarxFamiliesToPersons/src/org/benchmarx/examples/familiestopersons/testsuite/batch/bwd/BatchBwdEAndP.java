@@ -16,9 +16,7 @@ import Persons.PersonRegister;
 @ExtendWith(BXToolParameterResolver.class)
 public class BatchBwdEAndP extends FamiliesToPersonsTestCase {
 
-	public BatchBwdEAndP(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool);
-	}
+	public BatchBwdEAndP() { super(); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return FamiliesToPersonsTestCase.tools();

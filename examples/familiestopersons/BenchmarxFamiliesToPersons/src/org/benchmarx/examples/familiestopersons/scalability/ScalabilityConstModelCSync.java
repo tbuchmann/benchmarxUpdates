@@ -32,9 +32,7 @@ public class ScalabilityConstModelCSync extends ScalabilityTests {
 
 	public static final int NR_OF_FAMILY_PAIRS = 50;
 
-	public ScalabilityConstModelCSync(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
-		super(tool, "CMCSync_");
-	}
+	public ScalabilityConstModelCSync() { super("CMCSync_"); }
 
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return ScalabilityTests.tools();

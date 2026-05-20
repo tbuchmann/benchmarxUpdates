@@ -27,7 +27,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcorePackage;
-import org.junit.runners.Parameterized.Parameters;
 
 import sql.Schema;
 import sql.SqlPackage;
@@ -94,7 +93,6 @@ public abstract class EcoreToSQLTestCase {
 		tool.terminateSynchronisationDialogue();
 	}
 	
-	@Parameters(name = "{0}")
 	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
 		List<BXTool<EPackage, Schema, Decisions>> allTools = Arrays.asList(
 				//new BXtendEcore2SQL(),   // Currently 0 failures

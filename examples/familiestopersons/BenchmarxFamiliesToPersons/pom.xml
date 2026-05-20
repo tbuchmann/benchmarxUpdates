@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.benchmarx</groupId>
+    <artifactId>familiestopersons-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>BenchmarxFamiliesToPersons</artifactId>
+  <packaging>jar</packaging>
+  <name>BenchmarX - Families to Persons Tests</name>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>.</directory>
+        <includes>
+          <include>*.xmi</include>
+          <include>*.corr.xmi</include>
+        </includes>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!--
+            IBeXTGG files import org.emoflon.ibex.* which requires a complex
+            external Eclipse-based setup. Exclude them from Maven compilation;
+            they are commented out in FamiliesToPersonsTestCase.tools() anyway.
+          -->
+          <excludes>
+            <exclude>**/implementations/ibextgg/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Reactor siblings -->
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Benchmarx</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Families</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Persons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- EMF -->
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+    <!-- emf.compare: installed locally via install-local-deps.sh -->
+    <dependency>
+      <groupId>org.eclipse.emf.compare</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+    </dependency>
+
+    <!--
+      Tool JARs – installed into the local Maven repo via install-local-deps.sh.
+    -->
+
+    <!--
+      bxtend-f2p: lib/bxtend-f2p-1.0.0.jar
+      Contains de.tbuchmann.bxtend.f2p.rules.* used by BXtendFamiliesToPersons.
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxtend-f2p</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!--
+      bxtenddsl-f2p: lib/BXtendDSLSynch.jar
+      Contains de.tbuchmann.bxtenddsl.f2p.trafo.* used by BXtendDSLFamiliesToPersons.
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxtenddsl-f2p</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!--
+      emt-agent-f2p: lib/BXAgent.jar
+      Contains de.tbuchmann.bxagent.f2p.Families2PersonsTransformation used by BXAgentF2p,
+      plus dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.).
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>emt-agent-f2p</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <!--
+      emt-agent: lib/emt-agent-1.0.0-SNAPSHOT.jar
+      Contains the general dev.emtagent.correspondence.* framework classes used
+      by the generated BX-Agent transformation API.
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>emt-agent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <!--
+      bx-runtime: lib/bx-runtime-1.0.0-SNAPSHOT.jar
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bx-runtime</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <!--
+      mediniQVT + qvtemf: lib/mediniQVT/
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>mediniQVT</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>qvtemf</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!-- Guava: used by BiGULFamiliesToPersons and NMFFamiliesToPersonsIncremental -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <!-- commons-io: optional, used by MediniQVT implementation -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.18.0</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>

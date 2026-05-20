@@ -28,7 +28,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 
 import Families.FamiliesPackage;
 import Families.FamilyRegister;
@@ -46,7 +45,6 @@ public abstract class FamiliesToPersonsTestCase {
 	protected IEdit<FamilyRegister> sourceEdit;
 	protected IEdit<PersonRegister> targetEdit;
 
-	@BeforeEach
 	public void initialise() {
 		Logger.getRootLogger().setLevel(Level.INFO);
 		
@@ -115,7 +113,10 @@ public abstract class FamiliesToPersonsTestCase {
 
 	@AfterEach
 	public void terminate() {
-		tool.terminateSynchronisationDialogue();
+		if (tool != null) {
+			tool.terminateSynchronisationDialogue();
+			tool = null;
+		}
 	}
 
 	// Solutions requiring additional setup are commented out.
@@ -148,6 +149,10 @@ public abstract class FamiliesToPersonsTestCase {
 
 	protected FamiliesToPersonsTestCase(BXTool<FamilyRegister, PersonRegister, Decisions> tool) {
 		this.tool = tool;
+	}
+
+	protected FamiliesToPersonsTestCase() {
+		// no-arg constructor for JUnit 5 — tool is set by each test method
 	}
 
 	protected Supplier<IEdit<FamilyRegister>> srcEdit(Runnable... ops) {

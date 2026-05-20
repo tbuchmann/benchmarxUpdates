@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.benchmarx</groupId>
+    <artifactId>pntopnw-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>BenchmarxPetrinetToPetrinetWeighted</artifactId>
+  <packaging>jar</packaging>
+  <name>BenchmarX - Petrinet to PetrinetWeighted Tests</name>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <!--
+      The resources/ directory (XMI files) is added as a test resource so
+      the tests can load models at runtime.
+    -->
+    <testResources>
+      <testResource>
+        <directory>resources</directory>
+      </testResource>
+      <testResource>
+        <directory>.</directory>
+        <includes>
+          <include>*.xmi</include>
+          <include>*.corr.xmi</include>
+        </includes>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <!-- version inherited from parent pluginManagement -->
+        <configuration>
+          <!-- Test classes are compiled to target/classes (src/ is the main source dir) -->
+          <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Reactor siblings: Benchmarx, Petrinet, PetrinetWeighted -->
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Benchmarx</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>Petrinet</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx</groupId>
+      <artifactId>PetrinetWeighted</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- EMF -->
+    <dependency>
+      <groupId>org.eclipse.emf</groupId>
+      <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+    </dependency>
+    <!-- emf.compare: installed locally via install-local-deps.sh -->
+    <dependency>
+      <groupId>org.eclipse.emf.compare</groupId>
+      <artifactId>org.eclipse.emf.compare</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- JUnit 5 (test scope; engine auto-detected by surefire 3.x) -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+    </dependency>
+
+    <!--
+      Tool JARs from lib/ – installed into the local Maven repo once via
+      install-local-deps.sh (run from the repository root).
+      After that these are normal Maven dependencies.
+    -->
+    <!-- bxtend-pn2pnw: lib/bxtend-pn2pnw-1.0.0.jar (correct package de.tbuchmann.bxtend.pn2pnw.*) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bxtend-pn2pnw</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <!--
+      emt-agent-pn2pnw: lib/emt-agent-1.0.0-SNAPSHOT.jar contains only the
+      dev.emtagent.* framework; the de.tbuchmann.bxagent.pn2pnw.* classes must
+      be built from the de.tbuchmann.bxagent.pn2pnw Eclipse workspace project.
+      See install-local-deps.sh for the jar-build command.
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>emt-agent-pn2pnw</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!-- emt-agent framework (dev.emtagent.*) -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>emt-agent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>mediniQVT</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>qvtemf</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+  </dependencies>
+
+</project>

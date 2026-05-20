@@ -78,6 +78,15 @@ public abstract class ScalabilityTests extends FamiliesToPersonsTestCase {
 		label = l;
 	}
 
+	protected ScalabilityTests(String l) {
+		super();
+		label = l;
+	}
+
+	protected ScalabilityTests() {
+		super();
+	}
+
 	public static Collection<BXTool<FamilyRegister, PersonRegister, Decisions>> tools() {
 		return FamiliesToPersonsTestCase.tools();
 	}
