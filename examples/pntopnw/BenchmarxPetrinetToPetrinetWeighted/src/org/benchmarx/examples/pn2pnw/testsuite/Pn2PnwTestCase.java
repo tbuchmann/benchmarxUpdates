@@ -86,7 +86,10 @@ public abstract class Pn2PnwTestCase {
 
 	
 	public void terminate(){
-		tool.terminateSynchronisationDialogue();
+		if (tool != null) {
+			tool.terminateSynchronisationDialogue();
+			tool = null;
+		}
 	}
 	
 	

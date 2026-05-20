@@ -3,11 +3,8 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="xtend-gen"/>
-	<classpathentry kind="lib" path="lib/PlainJavaUbtEcore2Sql.jar"/>
-	<classpathentry kind="lib" path="lib/PlainJavaUbtUtil.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
-	<classpathentry kind="lib" path="lib/IBeXTGGEcoreToSQL.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-ecore2sql-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/bxagent-ecore2sql-1.0.0.jar"/>

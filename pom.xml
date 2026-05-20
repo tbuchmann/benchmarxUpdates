@@ -132,6 +132,9 @@
     <module>examples/bag1tobag2</module>
     <module>examples/settooset</module>
     <module>examples/gantttocpm</module>
+    <module>examples/pntopnw</module>
+    <module>examples/familiestopersons</module>
+    <module>examples/ecoretosql</module>
   </modules>
 
 </project>

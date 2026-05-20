@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.commons.io.output.NullOutputStream;
+
 import org.benchmarx.config.Configurator;
 import org.benchmarx.ecore.core.EcoreComparator;
 import org.benchmarx.edit.IEdit;
@@ -61,7 +62,7 @@ public class MediniQVTEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions
 	public MediniQVTEcore2SQL() {
 		super(new EcoreComparator(), new SQLComparator());
 		
-		logger = new OutputStreamLog(new PrintStream(new NullOutputStream())); 
+		logger = new OutputStreamLog(new PrintStream(OutputStream.nullOutputStream())); 
 		// logger = new OutputStreamLog(System.err); 
 		
 		processorImpl = new EMFQvtProcessorImpl(this.logger);
@@ -228,8 +229,8 @@ public class MediniQVTEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions
 		
 		// Load the QVT relations
 		try {
-			System.setOut(new PrintStream(new NullOutputStream()));
-			System.setErr(new PrintStream(new NullOutputStream()));
+			System.setOut(new PrintStream(OutputStream.nullOutputStream()));
+			System.setErr(new PrintStream(OutputStream.nullOutputStream()));
 
 			qvtRuleSet = new FileReader(basePath + RULESET);
 			this.transform(qvtRuleSet, transformation, direction);

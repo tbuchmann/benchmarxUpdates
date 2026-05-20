@@ -1,7 +1,5 @@
 package org.benchmarx.petrinetweighted.core;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -50,8 +48,12 @@ public class PNWComparator implements BiConsumer<Net, Net> {
 	
 	@Override
 	public void accept(Net expected, Net actual) {
-		assertTrue(netToString(expected).startsWith("PetriNetWeighted "));
-		org.junit.Assert.assertEquals(netToString(expected), netToString(actual));
+		String expectedStr = netToString(expected);
+		String actualStr   = netToString(actual);
+		if (!expectedStr.startsWith("PetriNetWeighted "))
+			throw new IllegalStateException("Expected net string does not start with 'PetriNetWeighted ': " + expectedStr);
+		if (!expectedStr.equals(actualStr))
+			throw new AssertionError("Expected:\n" + expectedStr + "\nbut was:\n" + actualStr);
 	}
 	
 	private static String placesToString(List<Place> places) {

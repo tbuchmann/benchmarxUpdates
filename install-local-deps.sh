@@ -101,5 +101,59 @@ install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_G2C}/
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_G2C}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_G2C}/mediniQVT/qvtemf.jar"
 
+# -- Petrinet to PetrinetWeighted Tool JARs -----------------------------------
+LIB_PN="${SCRIPT_DIR}/examples/pntopnw/BenchmarxPetrinetToPetrinetWeighted/lib"
+
+# bxtend-pn2pnw: lib/bxtend-pn2pnw-1.0.0.jar contains the correct package
+#   de.tbuchmann.bxtend.pn2pnw.* (differs from the obsolete BXtend-PN2PNW.jar).
+install "org.benchmarx.tools" "bxtend-pn2pnw"    "1.0.0"          "${LIB_PN}/bxtend-pn2pnw-1.0.0.jar"
+
+# emt-agent-pn2pnw: the emt-agent-1.0.0-SNAPSHOT.jar contains only the general
+#   dev.emtagent.* framework; de.tbuchmann.bxagent.pn2pnw.* must be built from
+#   the de.tbuchmann.bxagent.pn2pnw Eclipse workspace project:
+#     cd /home/tb/workspaceBenchmarXUpdate/de.tbuchmann.bxagent.pn2pnw/bin
+#     jar cf /tmp/emt-agent-pn2pnw-1.0.0-SNAPSHOT.jar de/
+install "org.benchmarx.tools" "emt-agent-pn2pnw" "1.0.0-SNAPSHOT" "/tmp/emt-agent-pn2pnw-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "emt-agent"         "1.0.0-SNAPSHOT" "${LIB_PN}/emt-agent-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_PN}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_PN}/mediniQVT/qvtemf.jar"
+
+# ── Families to Persons Tool JARs ─────────────────────────────────────────────
+LIB_F2P="${SCRIPT_DIR}/examples/familiestopersons/BenchmarxFamiliesToPersons/lib"
+
+# bxtend-f2p: lib/bxtend-f2p-1.0.0.jar
+# Contains de.tbuchmann.bxtend.f2p.rules.* (BXtendFamiliesToPersons)
+install "org.benchmarx.tools" "bxtend-f2p"    "1.0.0"          "${LIB_F2P}/bxtend-f2p-1.0.0.jar"
+
+# bxtenddsl-f2p: lib/BXtendDSLSynch.jar
+# Contains de.tbuchmann.bxtenddsl.f2p.trafo.* (BXtendDSLFamiliesToPersons)
+install "org.benchmarx.tools" "bxtenddsl-f2p" "1.0.0"          "${LIB_F2P}/BXtendDSLSynch.jar"
+
+# emt-agent-f2p: lib/BXAgent.jar
+# Contains de.tbuchmann.bxagent.f2p.Families2PersonsTransformation (BXAgentF2p),
+# but not the general dev.emtagent.correspondence.* framework classes.
+install "org.benchmarx.tools" "emt-agent-f2p" "1.0.0-SNAPSHOT" "${LIB_F2P}/BXAgent.jar"
+
+# emt-agent: lib/emt-agent-1.0.0-SNAPSHOT.jar
+# Contains the general dev.emtagent.correspondence.* framework classes used by BXAgentF2p.
+install "org.benchmarx.tools" "emt-agent"     "1.0.0-SNAPSHOT" "${LIB_F2P}/emt-agent-1.0.0-SNAPSHOT.jar"
+
+# bx-runtime: lib/bx-runtime-1.0.0-SNAPSHOT.jar
+install "org.benchmarx.tools" "bx-runtime"    "1.0.0-SNAPSHOT" "${LIB_F2P}/bx-runtime-1.0.0-SNAPSHOT.jar"
+
+# mediniQVT + qvtemf (shared coordinates with other examples, re-installing is idempotent)
+install "org.benchmarx.tools" "mediniQVT"     "1.0.0"          "${LIB_F2P}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"        "1.0.0"          "${LIB_F2P}/mediniQVT/qvtemf.jar"
+
+
+# ── Ecore to SQL Tool JARs ────────────────────────────────────────────────────
+LIB_E2S="${SCRIPT_DIR}/examples/ecoretosql/BenchmarxEcoreToSQL/lib"
+
+install "org.benchmarx.tools" "bxtend-ecore2sql"  "1.0.0"          "${LIB_E2S}/bxtend-ecore2sql-1.0.0.jar"
+install "org.benchmarx.tools" "bxagent-ecore2sql" "1.0.0"          "${LIB_E2S}/bxagent-ecore2sql-1.0.0.jar"
+install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_E2S}/emt-agent-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_E2S}/mediniQVT/mediniQVT.jar"
+install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_E2S}/mediniQVT/qvtemf.jar"
+
 echo ""
 echo "All local deps installed. You can now run: ./mvnw test"
