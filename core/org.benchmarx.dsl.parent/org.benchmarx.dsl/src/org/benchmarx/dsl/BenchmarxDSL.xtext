@@ -1,0 +1,142 @@
+grammar org.benchmarx.dsl.BenchmarxDSL with org.eclipse.xtext.common.Terminals
+
+generate benchmarxDSL "http://www.benchmarx.org/dsl/BenchmarxDSL"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Top-level model
+// ─────────────────────────────────────────────────────────────────────────────
+
+BxModel:
+    (problems+=ProblemDecl)*
+    (states+=StateDecl)*
+    (suites+=SuiteDecl)*
+;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Problem declaration
+// ─────────────────────────────────────────────────────────────────────────────
+
+ProblemDecl:
+    'problem' name=ID '{'
+        'source'  'metamodel' sourceMeta=EcoreRef
+        'target'  'metamodel' targetMeta=EcoreRef
+        ('decisions' '{' decisions+=DecisionEntry (',' decisions+=DecisionEntry)* '}')?
+    '}'
+;
+
+DecisionEntry:
+    name=ID
+;
+
+EcoreRef:
+    // Reference to an .ecore file relative to the .bx file.
+    // Stored as a plain string path; resolved at generation time.
+    path=STRING
+;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Named model state (replaces hand-authored XMI files)
+// ─────────────────────────────────────────────────────────────────────────────
+
+StateDecl:
+    'state' name=ID ':' metamodel=[ProblemDecl|QualifiedName] '.' side=('source'|'target') '{'
+        root=ObjectNode
+    '}'
+;
+
+ObjectNode:
+    eClass=ID ('(' attrs+=AttrAssign (',' attrs+=AttrAssign)* ')')? '{'
+        (children+=ChildAssign)*
+    '}'
+    | eClass=ID ('(' attrs+=AttrAssign (',' attrs+=AttrAssign)* ')')?
+;
+
+AttrAssign:
+    name=ID '=' value=AttrValue
+;
+
+AttrValue:
+    StringValue | IntValue | BoolValue
+;
+
+StringValue: value=STRING;
+IntValue:    value=INT;
+BoolValue:   value=('true'|'false');
+
+ChildAssign:
+    feature=ID '{' children+=ObjectNode (',' children+=ObjectNode)* '}'
+    | feature=ID children+=ObjectNode            // single child shorthand
+;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Test suite
+// ─────────────────────────────────────────────────────────────────────────────
+
+SuiteDecl:
+    'suite' name=ID 'for' problem=[ProblemDecl] '{'
+        (tests+=TestDecl)*
+    '}'
+;
+
+TestDecl:
+    'test' name=ID '{'
+        'category' ':' category=TestCategory
+        ('setup' '{' setup+=SetupStep* '}')?
+        ('precondition' '{'
+            'source' ':' preSource=[StateDecl] ','
+            'target' ':' preTarget=[StateDecl]
+        '}')?
+        edits+=EditDecl+
+        postcondition=PostconditionDecl
+    '}'
+;
+
+TestCategory:
+    BatchFwd   | BatchBwd
+    | IncrFwd  | IncrBwd
+    | Roundtrip
+    | Concurrent
+;
+
+BatchFwd:   {BatchFwd}   'batch.forward';
+BatchBwd:   {BatchBwd}   'batch.backward';
+IncrFwd:    {IncrFwd}    'incremental.forward';
+IncrBwd:    {IncrBwd}    'incremental.backward';
+Roundtrip:  {Roundtrip}  'roundtrip';
+Concurrent: {Concurrent} 'concurrent';
+
+SetupStep:
+    'propagate' side=('source'|'target') '{' ops+=ID+ '}'
+;
+
+EditDecl:
+    'edit' side=('source'|'target') '{'
+        ('decide' '(' decision=ID '=' value=('true'|'false') ')')?
+        ops+=ID+
+    '}'
+;
+
+PostconditionDecl:
+    ExactPostcondition | AnyPostcondition
+;
+
+ExactPostcondition:
+    {ExactPostcondition}
+    'postcondition' '{'
+        'source' ':' srcState=[StateDecl] ','
+        'target' ':' trgState=[StateDecl]
+    '}'
+;
+
+AnyPostcondition:
+    {AnyPostcondition}
+    'postcondition' 'any' '{'
+        (alternatives+=StatePair)+
+    '}'
+;
+
+StatePair:
+    '{' 'source' ':' srcState=[StateDecl] ',' 'target' ':' trgState=[StateDecl] '}'
+;
+
+QualifiedName: ID ('.' ID)*;
