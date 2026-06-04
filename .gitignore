@@ -21,3 +21,6 @@ examples/pdb1topdb2/BenchmarxPdb1ToPdb2/src/org/benchmarx/examples/pdb12pdb2/imp
 *.lst
 **/target/**
 **/results/**
+**/src-gen/**
+**/xtend-gen/**
+*.corr.xmi
