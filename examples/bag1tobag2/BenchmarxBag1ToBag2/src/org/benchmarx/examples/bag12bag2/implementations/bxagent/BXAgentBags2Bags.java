@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import bags1.MyBag;
-import de.tbuchmann.bxagent.bags2bags.Bags12Bags2Transformation;
+import de.tbuchmann.bxagent.bag12bag2.Bags12Bags2Transformation;
 import dev.bxagent.correspondence.CorrespondenceModel;
 import dev.bxagent.correspondence.SyncConflictPolicy;
 import dev.bxagent.correspondence.TransformationContext;

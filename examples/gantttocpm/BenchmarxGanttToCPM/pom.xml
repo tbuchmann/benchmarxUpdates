@@ -96,11 +96,15 @@
       <artifactId>bxtend-gantt2cpm</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <!-- bxagent-gantt2cpm: lib/bxagent-gantt2cpm-1.0.0.jar (pre-built, see CAUTION §2) -->
+    <!--
+      de-tbuchmann-bxagent-gantt2cpm: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.gantt2cpm
+      Contains de.tbuchmann.bxagent.gantt2cpm.Gantt2CpmTransformation used by BXAgentGantt2Cpm.
+      Supersedes the old org.benchmarx.tools:bxagent-gantt2cpm.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>bxagent-gantt2cpm</artifactId>
-      <version>1.0.0</version>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-gantt2cpm</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <!-- bxlang-gantt2cpm: built from Gantt2CPM-bxlang Eclipse project (see CAUTION §2) -->
     <dependency>
@@ -108,10 +112,13 @@
       <artifactId>bxlang-gantt2cpm</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <!-- emt-agent: general BX-Agent framework (also contains dev.emtagent.correspondence.*) -->
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.)
+      used by BXAgentGantt2Cpm. Supersedes the old org.benchmarx.tools:emt-agent.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent</artifactId>
+      <groupId>dev.bxagent</groupId>
+      <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

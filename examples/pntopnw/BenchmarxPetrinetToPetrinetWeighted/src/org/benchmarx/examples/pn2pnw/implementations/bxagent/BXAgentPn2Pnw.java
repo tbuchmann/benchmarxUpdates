@@ -18,8 +18,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.pn2pnw.Pn2PnwTransformation;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.TransformationContext;
 import pn.Net;
 
 public class BXAgentPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {

@@ -102,21 +102,22 @@
       <artifactId>bxlang-bag12bag2</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <!-- emt-agent: general BX-Agent framework -->
+    <!--
+      de-tbuchmann-bxagent-bag12bag2: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.bag12bag2
+      Contains de.tbuchmann.bxagent.bags2bags.Bags12Bags2Transformation used by BXAgentBags2Bags.
+      Supersedes the old org.benchmarx.tools:bxagent-bags2bags.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent</artifactId>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-bag12bag2</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    <!-- bxagent-bags2bags: built from de.tbuchmann.bxagent.bags2bags (CAUTION §2) -->
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* needed by BXAgentBags2Bags.
+      Supersedes the old org.benchmarx.tools:emt-agent and bx-runtime.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>bxagent-bags2bags</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <!-- bx-runtime: contains dev.bxagent.correspondence.* needed by BXAgentBags2Bags -->
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
+      <groupId>dev.bxagent</groupId>
       <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

@@ -24,8 +24,8 @@ import cpm.CPMNetwork;
 import cpm.CpmFactory;
 import de.tbuchmann.bxagent.gantt2cpm.Gantt2CpmTransformation;
 import de.tbuchmann.bxagent.gantt2cpm.Gantt2CpmTransformation.PostProcessor;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.TransformationContext;
 import gantt.GanttDiagram;
 import gantt.GanttFactory;
 

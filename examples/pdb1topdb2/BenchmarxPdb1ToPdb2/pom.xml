@@ -104,18 +104,27 @@
       <artifactId>bxtend-pdb12pdb2</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <!--
+      de-tbuchmann-bxagent-pdb12pdb2: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.pdb12pdb2
+      Contains de.tbuchmann.bxagent.pdb12pdb2.Pdb12Pdb2Transformation used by BXAgentPdb12Pdb2.
+      Supersedes the old org.benchmarx.tools:bxagent-pdb12pdb2.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>bxagent-pdb12pdb2</artifactId>
-      <version>1.0.0</version>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-pdb12pdb2</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxlang-pdb12pdb2</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* needed by BXAgentPdb12Pdb2.
+      Supersedes the old org.benchmarx.tools:bx-runtime.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
+      <groupId>dev.bxagent</groupId>
       <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

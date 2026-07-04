@@ -123,32 +123,23 @@
     </dependency>
 
     <!--
-      emt-agent-f2p: lib/BXAgent.jar
-      Contains de.tbuchmann.bxagent.f2p.Families2PersonsTransformation used by BXAgentF2p,
-      plus dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.).
+      de-tbuchmann-bxagent-f2p: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.f2p
+      Contains de.tbuchmann.bxagent.f2p.Families2PersonsTransformation used by BXAgentF2p.
+      Supersedes the old org.benchmarx.tools:emt-agent-f2p (lib/BXAgent.jar).
     -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent-f2p</artifactId>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-f2p</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <!--
-      emt-agent: lib/emt-agent-1.0.0-SNAPSHOT.jar
-      Contains the general dev.emtagent.correspondence.* framework classes used
-      by the generated BX-Agent transformation API.
+      bx-runtime: dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext,
+      SyncConflictPolicy, etc.) used by BXAgentF2p.
+      Supersedes the old org.benchmarx.tools:emt-agent and org.benchmarx.tools:bx-runtime.
     -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-
-    <!--
-      bx-runtime: lib/bx-runtime-1.0.0-SNAPSHOT.jar
-    -->
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
+      <groupId>dev.bxagent</groupId>
       <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

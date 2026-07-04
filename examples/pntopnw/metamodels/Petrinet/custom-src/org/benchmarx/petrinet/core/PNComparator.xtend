@@ -8,7 +8,7 @@ import pn.NetElement
 import pn.Place
 import pn.Transition
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class PNComparator implements BiConsumer<Net, Net> {
 	def static netToString(Net net) {

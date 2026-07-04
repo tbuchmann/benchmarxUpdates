@@ -102,21 +102,22 @@
       <artifactId>bxlang-set2oset</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <!-- emt-agent: general BX-Agent framework -->
+    <!--
+      de-tbuchmann-bxagent-set2oset: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.set2oset
+      Contains de.tbuchmann.bxagent.set2oset.Sets2OsetsTransformation used by BXAgentSet2OSet.
+      Supersedes the old org.benchmarx.tools:bxagent-set2oset.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent</artifactId>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-set2oset</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    <!-- bxagent-set2oset: lib/bxagent-set2oset-1.0.0.jar (pre-built) -->
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.)
+      used by BXAgentSet2OSet. Supersedes the old org.benchmarx.tools:emt-agent and bx-runtime.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>bxagent-set2oset</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <!-- bx-runtime: contains dev.emtagent.correspondence.* -->
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
+      <groupId>dev.bxagent</groupId>
       <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

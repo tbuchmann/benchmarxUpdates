@@ -38,6 +38,16 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/bxlang/BXLangPn2Pnw.java</exclude>
+            <exclude>**/medini/MediniQVTPn2Pnw.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <!-- version inherited from parent pluginManagement -->
         <configuration>
@@ -105,20 +115,22 @@
       <version>1.0.0</version>
     </dependency>
     <!--
-      emt-agent-pn2pnw: lib/emt-agent-1.0.0-SNAPSHOT.jar contains only the
-      dev.emtagent.* framework; the de.tbuchmann.bxagent.pn2pnw.* classes must
-      be built from the de.tbuchmann.bxagent.pn2pnw Eclipse workspace project.
-      See install-local-deps.sh for the jar-build command.
+      de-tbuchmann-bxagent-pn2pnw: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.pn2pnw
+      Contains de.tbuchmann.bxagent.pn2pnw.Pn2PnwTransformation used by BXAgentPn2Pnw.
+      Supersedes the old org.benchmarx.tools:emt-agent-pn2pnw (lib/emt-agent-1.0.0-SNAPSHOT.jar).
     -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent-pn2pnw</artifactId>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-pn2pnw</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    <!-- emt-agent framework (dev.emtagent.*) -->
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.)
+      used by BXAgentPn2Pnw. Supersedes the old org.benchmarx.tools:emt-agent.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent</artifactId>
+      <groupId>dev.bxagent</groupId>
+      <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

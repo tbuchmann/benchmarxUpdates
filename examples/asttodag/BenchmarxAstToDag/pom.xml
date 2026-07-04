@@ -34,6 +34,15 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/bxlang/BXLangAst2Dag.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
@@ -102,17 +111,24 @@
       <artifactId>bxlang-ast2dag</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <!-- emt-agent: general BX-Agent framework (dev.emtagent.*) -->
+    <!--
+      de-tbuchmann-bxagent-ast2dag: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.ast2dag
+      Contains de.tbuchmann.bxagent.ast2dag.Ast2DagTransformation used by BXAgentAst2Dag.
+      Supersedes the old org.benchmarx.tools:bxagent-ast2dag.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>emt-agent</artifactId>
+      <groupId>de.tbuchmann.bxagent</groupId>
+      <artifactId>de-tbuchmann-bxagent-ast2dag</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    <!-- bxagent-ast2dag: specific transformation (de.tbuchmann.bxagent.ast2dag.*) -->
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.)
+      used by BXAgentAst2Dag. Supersedes the old org.benchmarx.tools:emt-agent.
+    -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>bxagent-ast2dag</artifactId>
-      <version>1.0.0</version>
+      <groupId>dev.bxagent</groupId>
+      <artifactId>bx-runtime</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.benchmarx.tools</groupId>

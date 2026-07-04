@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.set2oset.Sets2OsetsTransformation;
 import de.tbuchmann.bxagent.set2oset.Sets2OsetsTransformation.PostProcessor;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.TransformationContext;
 import osets.MyOrderedSet;
 import osets.OsetsFactory;
 import sets.MySet;

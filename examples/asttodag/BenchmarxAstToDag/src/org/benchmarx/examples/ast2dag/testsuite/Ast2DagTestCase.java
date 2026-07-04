@@ -19,7 +19,7 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.ast2dag.implementations.bxagent.BXAgentAst2Dag;
-import org.benchmarx.examples.ast2dag.implementations.bxlang.BXLangAst2Dag;
+//import org.benchmarx.examples.ast2dag.implementations.bxlang.BXLangAst2Dag;
 import org.benchmarx.examples.ast2dag.implementations.bxtend.BXtendAst2Dag;
 import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
@@ -96,7 +96,7 @@ public abstract class Ast2DagTestCase {
 		List<BXTool<ast.Model, dag.Model, Decisions>> allTools = Arrays.asList(
 				new BXtendAst2Dag(),
 				//new MediniQVTAst2Dag(),
-				new BXLangAst2Dag(),
+				//new BXLangAst2Dag(),
 				new BXAgentAst2Dag()
 		);
 		String toolName = System.getProperty("benchmarx.tool");

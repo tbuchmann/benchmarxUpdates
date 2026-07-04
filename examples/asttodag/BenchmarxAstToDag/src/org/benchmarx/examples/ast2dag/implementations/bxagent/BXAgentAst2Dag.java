@@ -19,8 +19,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import ast.Model;
 import de.tbuchmann.bxagent.ast2dag.Ast2DagTransformation;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.TransformationContext;
 
 public class BXAgentAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions> {
 
