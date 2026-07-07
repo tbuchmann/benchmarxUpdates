@@ -126,9 +126,10 @@ public class BXAgentSet2OSet extends BXToolForEMF<sets.MySet, osets.MyOrderedSet
 	@Override
 	public void performAndPropagateEdit(Supplier<IEdit<sets.MySet>> sourceEdit,
 			Supplier<IEdit<osets.MyOrderedSet>> targetEdit) {
-		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		Sets2OsetsTransformation.transform(source, target, corr,
+				TransformationContext.DeletionPolicy.CASCADE, linkedListHook);
 	}
 
 	@Override

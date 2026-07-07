@@ -54,8 +54,7 @@ public class BXAgentAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions
 		
 		// perform batch to establish consistent starting state
 		Ast2DagTransformation.transform(source, target);
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://ast-dag-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 	}
 	
@@ -64,6 +63,7 @@ public class BXAgentAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions
 	public void performAndPropagateEdit(Supplier<IEdit<Model>> sourceEdit, Supplier<IEdit<dag.Model>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
+		Ast2DagTransformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
 	}
 	
 	@Override

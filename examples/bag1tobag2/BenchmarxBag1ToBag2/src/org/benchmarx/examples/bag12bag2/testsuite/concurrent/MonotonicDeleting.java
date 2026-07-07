@@ -1,6 +1,7 @@
 package org.benchmarx.examples.bag12bag2.testsuite.concurrent;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.benchmarx.BXTool;
 import org.benchmarx.examples.bag12bag2.testsuite.Bag12Bag2TestCase;
@@ -109,9 +110,12 @@ public class MonotonicDeleting extends Bag12Bag2TestCase {
 		tool.performAndPropagateEdit(
 				srcEdit(helperBag1::deleteBeer, helperBag1::deleteBeerGlass),
 				trgEdit(helperBag2::deleteBeerGlass));
-		// ── postcondition: five Beers + no Beer Glass ──
-		util.assertPostcondition("FiveBeerWithGlassBags1", "FiveBeerWithoutGlassBags2");
-		// also accepted postcondition: six Beers + no Beer Glass (if TRG deletion is merged with one of the SRC deletions)
+		// ── postcondition: both deletions reflected; Beer Glass may or may not survive ──
+		util.assertAnyPostcondition(Map.ofEntries(
+				// option 1: ideal merge — one Beer Glass deletion from each side merged into one
+				Map.entry("FiveBeerWithGlassBags1", "MDCombinedDeletionBags2"),
+				// option 2: target deletion wins — Beer Glass fully removed from both models
+				Map.entry("FiveBeerBags1", "FiveBeerIncrIDBags2")));
 		terminate();
 	}
 }

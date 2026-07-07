@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.benchmarx.BXTool;
 import org.benchmarx.config.Configurator;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.opentest4j.AssertionFailedError;
 
 /**
  * A collection of helper methods used by the test framework. See {@link BXTool}
@@ -53,7 +52,7 @@ public class BenchmarxUtil<S, T, D> {
 	 *                     Each entry is a possible postcondition (consistent pair).
 	 */
 	public void assertAnyPostcondition(Map<String, String> alternativePostconditions) {
-		var failures = new ArrayList<AssertionFailedError>();
+		var failures = new ArrayList<AssertionError>();
 		for (var entry : alternativePostconditions.entrySet()) {
 			try {
 				// Attempt to assert post condition
@@ -61,20 +60,17 @@ public class BenchmarxUtil<S, T, D> {
 
 				// Attempt was successful so exit
 				return;
-			} catch (AssertionFailedError failed) {
+			} catch (AssertionError failed) {
 				// Attempt was unsuccessful so continue search
 				failures.add(failed);
 			}
 		}
 
 		// No attempt was successful so fail
-		var expected = failures.stream()
-				.map(f -> f.getExpected() != null ? String.valueOf(f.getExpected().getValue()) : "")
-				.collect(Collectors.joining("========>\n"));
-		var actual = failures.stream()
-				.map(f -> f.getActual() != null ? String.valueOf(f.getActual().getValue()) : "")
-				.collect(Collectors.joining("========>\n"));
-		throw new AssertionFailedError("None of the provided postconditions holds.", expected, actual);
+		var messages = failures.stream()
+				.map(Throwable::getMessage)
+				.collect(Collectors.joining("\n========>\n"));
+		throw new AssertionError("None of the provided postconditions holds:\n" + messages);
 	}
 
 	/**

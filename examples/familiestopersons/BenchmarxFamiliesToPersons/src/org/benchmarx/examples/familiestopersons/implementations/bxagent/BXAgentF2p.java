@@ -179,5 +179,17 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 				TransformationContext.DeletionPolicy.CASCADE, 
 				options);
 	}
+	
+	@Override
+	public void terminateSynchronisationDialogue() {
+	    // Delete persisted corr file so the next test starts with a clean state.
+	    // Without this, the corr file from test N influences test N+1 when
+	    // CorrespondenceModel.loadOrCreate() finds it on disk.
+	    if (corr != null && corr.getURI() != null) {
+	        java.io.File corrFile = new java.io.File(corr.getURI().toFileString());
+	        if (corrFile != null) corrFile.delete();
+	    }
+	    set = new ResourceSetImpl();
+	}
 
 }

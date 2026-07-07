@@ -61,10 +61,9 @@ public class BXAgentPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 
 	@Override
 	public void performAndPropagateEdit(Supplier<IEdit<Net>> sourceEdit, Supplier<IEdit<pnw.Net>> targetEdit) {
-		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
-		
+		Pn2PnwTransformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
 	}
 	
 	@Override

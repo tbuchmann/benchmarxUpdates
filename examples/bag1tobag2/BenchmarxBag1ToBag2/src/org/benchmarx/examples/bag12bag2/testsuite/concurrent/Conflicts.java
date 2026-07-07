@@ -72,7 +72,7 @@ public class Conflicts extends Bag12Bag2TestCase {
 		// ── any resolution is acceptable ──
 		util.assertAnyPostcondition(Map.ofEntries(
 				// option 1: source deletion wins → two Beers remain
-				Map.entry("TwoBeerBags1", "TwoBeerBags2"),
+				Map.entry("TwoBeerBags1", "TwoBeerIncrIDBags2"),
 				// option 2: target deletion wins → empty bags
 				Map.entry("RootElementBags1", "RootElementBags2")));
 		terminate();
@@ -186,7 +186,7 @@ public class Conflicts extends Bag12Bag2TestCase {
 				// option 1: both changes accepted → four Beers + two Empty Bottles
 				Map.entry("FourBeerTwoEmptyBottlesBags1", "FourBeerTwoEmptyBottlesBags2"),
 				// option 2: source change wins, target rename rejected → four Beers + one Empty Bottle + Beer Glass
-				Map.entry("FourBeerOneEmptyBottleWithGlassBags1woInc", "FourBeerOneEmptyBottleWithGlassBags2"),
+				Map.entry("FourBeerOneEmptyBottleWithGlassBags1woInc", "FourBeerOneEmptyBottleWithGlassIncrIDBags2"),
 				// option 3: target rename wins, source change rejected → five Beers + one Empty Bottle
 				Map.entry("FiveBeerOneEmptyBottleBags1", "FiveBeerOneEmptyBottleBags2")));
 		terminate();

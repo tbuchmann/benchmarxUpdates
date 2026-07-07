@@ -290,9 +290,10 @@ public class BXAgentGantt2Cpm extends BXToolForEMF<gantt.GanttDiagram, cpm.CPMNe
 	@Override
 	public void performAndPropagateEdit(Supplier<IEdit<GanttDiagram>> sourceEdit,
 			Supplier<IEdit<CPMNetwork>> targetEdit) {
-		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		Gantt2CpmTransformation.transform(source, target, corr,
+				TransformationContext.DeletionPolicy.CASCADE, forwardHook);
 	}
 
 }
