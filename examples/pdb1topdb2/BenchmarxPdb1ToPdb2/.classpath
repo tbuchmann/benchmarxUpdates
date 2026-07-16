@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="lib/bxlang-pdb12pdb2.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-pdb12pdb2-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/bx-runtime-1.0.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/bxagent-pdb12pdb2-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/de-tbuchmann-bxagent-pdb12pdb2-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>

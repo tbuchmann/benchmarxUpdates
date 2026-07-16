@@ -11,9 +11,9 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
-	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/bx-runtime-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-gantt2cpm-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/bxagent-gantt2cpm-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/de-tbuchmann-bxagent-gantt2cpm-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>

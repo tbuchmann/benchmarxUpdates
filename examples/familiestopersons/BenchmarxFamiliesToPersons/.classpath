@@ -22,7 +22,7 @@
 	<classpathentry kind="lib" path="lib/bxtend-f2p-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/BXtendDSLSynch.jar"/>
 	<classpathentry kind="lib" path="lib/bx-runtime-1.0.0-SNAPSHOT.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.f2p"/>
+	<classpathentry kind="lib" path="lib/de-tbuchmann-bxagent-f2p-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

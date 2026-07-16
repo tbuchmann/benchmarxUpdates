@@ -23,7 +23,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/de.tbuchmann.bxagent.bags2bags"/>
+	<classpathentry kind="lib" path="lib/de-tbuchmann-bxagent-bag12bag2-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Bag1"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Bag2"/>
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="resources">
