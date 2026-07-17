@@ -2,7 +2,7 @@ package org.benchmarx.bags1.core
 
 import bags1.MyBag
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 import bags1.Element
 import java.util.ArrayList
 import java.util.function.BiConsumer

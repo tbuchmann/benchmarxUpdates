@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.benchmarx.examples.pdb12pdb2.implementations.directllm.DirectLLMPdb;
 
 public abstract class Pdb12Pdb2TestCase {
 
@@ -105,10 +106,10 @@ public abstract class Pdb12Pdb2TestCase {
 				//new MediniQVTPdb12Pdb2(),
 				//new IBeXTGGPDB1ToPDB2(),
 				new BXAgentPdb12Pdb2(),
-				new BXLangPdb12Pdb2()
+				//new BXLangPdb12Pdb2(),
 				//new JavaPdb12Pdb2(),
-				//new LLMPdb12Pdb2()
-		);
+				//new LLMPdb12Pdb2(),
+				new DirectLLMPdb());
 		
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {

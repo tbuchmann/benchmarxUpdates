@@ -33,6 +33,7 @@ import Families.FamiliesPackage;
 import Families.FamilyRegister;
 import Persons.PersonRegister;
 import Persons.PersonsPackage;
+import org.benchmarx.examples.familiestopersons.implementations.directllm.DirectLLMF2p;
 
 public abstract class FamiliesToPersonsTestCase {
 
@@ -137,7 +138,8 @@ public abstract class FamiliesToPersonsTestCase {
 				new BXAgentF2p()                        // 4 failures
 				// new ENeoFamiliesToPersons(),         // See setup: implementations/eneo/README-SETUP
 				// new IBeXTGGIntegrateFamiliesToPersons() // See setup: implementations/ibextgg/integrate/README-SETUP
-		);
+		,
+				new DirectLLMF2p());
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

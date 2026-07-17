@@ -8,7 +8,7 @@ import dag.Variable
 import java.util.LinkedHashMap
 import java.util.function.BiConsumer
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class DagComparator implements BiConsumer<Model, Model> {
 	def static modelToString(Model model) {

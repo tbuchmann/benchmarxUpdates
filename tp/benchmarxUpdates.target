@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<!--
+  benchmarxUpdates.target
+  Tycho target platform definition.
+
+  Uses the local Eclipse installation's plugins/ directory directly
+  (type="Directory") - no P2 metadata (content.xml) required.
+
+  To switch to online P2 resolution instead, replace with:
+    <location type="InstallableUnit">
+      <repository location="https://download.eclipse.org/releases/2025-12/"/>
+      ...units...
+    </location>
+-->
+<target name="benchmarxUpdates" sequenceNumber="2">
+  <locations>
+    <!-- Local Eclipse plugins directory (no P2 metadata needed) -->
+    <location path="/home/tb/develop/eclipse/plugins" type="Directory"/>
+  </locations>
+</target>

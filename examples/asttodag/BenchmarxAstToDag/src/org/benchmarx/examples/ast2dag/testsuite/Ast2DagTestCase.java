@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.AfterEach;
+//import org.benchmarx.examples.ast2dag.implementations.directllm.DirectLLMAst2Dag;
 
 public abstract class Ast2DagTestCase {
 	protected BXTool<ast.Model, dag.Model, Decisions> tool;
@@ -98,7 +99,8 @@ public abstract class Ast2DagTestCase {
 				//new MediniQVTAst2Dag(),
 				//new BXLangAst2Dag(),
 				new BXAgentAst2Dag()
-		);
+				//new DirectLLMAst2Dag()
+				);
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

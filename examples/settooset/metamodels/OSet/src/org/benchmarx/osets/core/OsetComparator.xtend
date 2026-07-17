@@ -3,7 +3,7 @@ package org.benchmarx.osets.core
 import java.util.List
 import java.util.ArrayList
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 import osets.MyOrderedSet
 import osets.Element

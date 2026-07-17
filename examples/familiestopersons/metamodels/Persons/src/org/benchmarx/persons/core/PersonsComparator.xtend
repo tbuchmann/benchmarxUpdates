@@ -8,9 +8,11 @@ import java.util.ArrayList
 import java.util.Date
 import java.util.List
 import java.util.function.BiConsumer
-import static org.junit.Assert.*
+import java.util.logging.Logger
 
 class PersonsComparator implements BiConsumer<PersonRegister, PersonRegister> {
+	static val LOG = Logger.getLogger(PersonsComparator.name)
+
 	PersonNormaliser comparator
 	PersonStructuralNormaliser structuralComparator
 	boolean checkAttributeValues
@@ -28,8 +30,18 @@ class PersonsComparator implements BiConsumer<PersonRegister, PersonRegister> {
 	}
 	
 	override void accept(PersonRegister expected, PersonRegister actual) {
-		assertTrue(personsToString(expected).startsWith("PersonRegister"))
-		assertEquals(personsToString(expected), personsToString(actual))
+		val expectedStr = personsToString(expected)
+		val actualStr = personsToString(actual)
+		if (!expectedStr.startsWith("PersonRegister")) {
+			val msg = "Invalid expected PersonRegister: " + expectedStr
+			LOG.severe(msg)
+			throw new AssertionError(msg)
+		}
+		if (expectedStr != actualStr) {
+			val msg = "PersonRegister mismatch:\nExpected: " + expectedStr + "\nActual:   " + actualStr
+			LOG.severe(msg)
+			throw new AssertionError(msg)
+		}
 	}
 	
 	def personsToString(PersonRegister persons) {

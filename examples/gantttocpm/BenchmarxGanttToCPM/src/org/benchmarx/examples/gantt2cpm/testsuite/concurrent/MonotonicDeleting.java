@@ -56,6 +56,11 @@ public class MonotonicDeleting extends GanttToCPMTestCase {
 		tool.performAndPropagateEdit(
 				srcEdit(helperGantt::deleteGantt2CPMHelpers),
 				trgEdit(helperCPM::idleDelta));
-		util.assertPostcondition("TestsModelComparatorGantt", "TestsModelComparatorCPM");
+		// Note: deleteGantt2CPMHelpers only removes Helper-incident dependencies, so the
+		// Model->Comparator dependencies added by addGantt2CPMModelsToComparatorDependencies
+		// in initialise() are still present here (unlike IncrementalForward/Backward's
+		// testIncrementalDeletions, which explicitly delete them first) - hence the dashed
+		// fixture name, per the naming convention documented in RoundtripTests.
+		util.assertPostcondition("TestsModel-ComparatorGantt", "TestsModel-ComparatorCPM");
 	}
 }

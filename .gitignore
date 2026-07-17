@@ -19,6 +19,7 @@ examples/pdb1topdb2/BenchmarxPdb1ToPdb2/src/org/benchmarx/examples/pdb12pdb2/imp
 /examples/familiestopersons/FamiliesToPersonsIBeXTGG/gen/
 
 *.lst
+/.local-build/
 **/target/**
 **/results/**
 **/src-gen/**

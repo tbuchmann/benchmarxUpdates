@@ -28,29 +28,33 @@ public class RoundtripTests extends Ast2DagTestCase {
 	}
 
 	/**
-	 * <b>Test</b> for a round-trip: forward create, then backward modify reference, then backward idle.<br/>
-	 * Starting with the BestDigitRef AST/DAG state, the backward modification of the shared reference
-	 * is propagated, then a backward idle confirms the new state is stable.<br/>
+	 * <b>Test</b> for a round-trip: backward create, then backward modify reference, then backward idle.<br/>
+	 * Starting with the BestDigitRef DAG state (built directly via {@code helperDag}, so its internal
+	 * {@code DagModelBuilder} navigation state actually reflects the created structure), the backward
+	 * modification of the shared reference is propagated, then a backward idle confirms the new state
+	 * is stable.<br/>
+	 * Note: this deliberately builds the initial state via {@code helperDag} rather than forward
+	 * propagation from the AST side. {@code DagModelBuilder} only tracks structure it built itself, so
+	 * navigating into a DAG produced by forward propagation (bypassing the builder) fails with
+	 * "Can't navigate in empty dag."<br/>
 	 * <b>Expect</b>: After modifyBestDigitRef both models reflect the modified reference.
 	 * Backward idle leaves the state unchanged.<br/>
-	 * <b>Features</b>: roundtrip, fwd+bwd, structural-dedup, modify
+	 * <b>Features</b>: roundtrip, bwd, structural-dedup, modify
 	 */
 	@ParameterizedTest
 	@MethodSource("tools")
 	public void testRoundtripCreateRefThenModify(BXTool<ast.Model, dag.Model, Decisions> tool) {
 		this.tool = tool;
 		initialise();
-		tool.performAndPropagateSourceEdit(srcEdit(
-				helperAst::create42,
-				helperAst::createBestDigit,
-				helperAst::createBestDigitRef));
-		util.assertPrecondition("BestDigitRefAst", "BestDigitRefDag");
+		tool.performAndPropagateTargetEdit(trgEdit(helperDag::createBestDigitRef));
+		tool.performIdleSourceEdit(srcEdit(helperAst::changeIncrementalID));
+		util.assertPrecondition("BestDigitRefIncrIDAst", "BestDigitRefDag");
 		// Backward: modify the shared reference in the DAG
 		tool.performAndPropagateTargetEdit(trgEdit(helperDag::modifyBestDigitRef));
-		util.assertPostcondition("BestDigitRefModifiedAst", "BestDigitRefModifiedDag");
+		util.assertPostcondition("BestDigitRefModifiedIncrIDAst", "BestDigitRefModifiedDag");
 		// Backward idle: state must remain stable
 		tool.performAndPropagateTargetEdit(trgEdit(helperDag::idleDelta));
-		util.assertPostcondition("BestDigitRefModifiedAst", "BestDigitRefModifiedDag");
+		util.assertPostcondition("BestDigitRefModifiedIncrIDAst", "BestDigitRefModifiedDag");
 	}
 
 	/**

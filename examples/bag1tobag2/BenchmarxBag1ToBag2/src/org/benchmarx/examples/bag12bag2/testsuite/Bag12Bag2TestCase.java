@@ -25,6 +25,7 @@ import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.benchmarx.examples.bag12bag2.implementations.directllm.DirectLLMBags;
 
 public abstract class Bag12Bag2TestCase {
 	protected BXTool<bags1.MyBag, bags2.MyBag, Decisions> tool;
@@ -99,7 +100,8 @@ public abstract class Bag12Bag2TestCase {
 				//new MediniQVTBag12Bag2(),
 				//new BXLangBag12Bag2(),
 				new BXAgentBags2Bags()
-		);
+		,
+				new DirectLLMBags());
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

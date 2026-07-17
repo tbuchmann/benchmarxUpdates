@@ -38,6 +38,10 @@
         <configuration>
           <excludes>
             <exclude>**/bxlang/BXLangAst2Dag.java</exclude>
+            <!-- Local-only directllm evaluation artifact; references
+                 de.tbuchmann.prompting.ast2dag.Ast2DagTransformation, which isn't
+                 published anywhere and was never meant to be committed. -->
+            <exclude>**/directllm/DirectLLMAst2Dag.java</exclude>
           </excludes>
         </configuration>
       </plugin>

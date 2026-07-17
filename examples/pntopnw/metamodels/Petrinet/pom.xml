@@ -25,17 +25,6 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>3.6.0</version>
         <executions>
-          <!-- xtend-gen: pre-generated Java from Xtend sources (PNComparator) -->
-          <execution>
-            <id>add-xtend-gen</id>
-            <phase>generate-sources</phase>
-            <goals><goal>add-source</goal></goals>
-            <configuration>
-              <sources>
-                <source>xtend-gen</source>
-              </sources>
-            </configuration>
-          </execution>
           <!-- custom-src: hand-written helpers (PNBuilder, PNHelper, PNNormalizer) -->
           <execution>
             <id>add-custom-src</id>
@@ -48,6 +37,11 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <!-- xtend-gen: Xtend-generated comparator (PNComparator), compiled from .xtend by xtend-maven-plugin -->
+      <plugin>
+        <groupId>org.eclipse.xtext</groupId>
+        <artifactId>xtend-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

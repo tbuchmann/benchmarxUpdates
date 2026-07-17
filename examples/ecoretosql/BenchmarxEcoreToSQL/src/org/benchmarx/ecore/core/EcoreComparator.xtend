@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.EOperation
 import org.eclipse.emf.ecore.EPackage
 import org.eclipse.emf.ecore.EReference
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class EcoreComparator implements BiConsumer<EPackage, EPackage>{
 		

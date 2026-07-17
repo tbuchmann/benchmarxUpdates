@@ -110,6 +110,24 @@
             </includes>
           </configuration>
         </plugin>
+        <!-- Compiles .xtend sources to xtend-gen/*.java during the build, so the
+             (gitignored) xtend-gen directory no longer needs to be pre-populated
+             by an Eclipse checkout. Child modules just declare the bare plugin. -->
+        <plugin>
+          <groupId>org.eclipse.xtext</groupId>
+          <artifactId>xtend-maven-plugin</artifactId>
+          <version>${xtend.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <outputDirectory>${basedir}/xtend-gen</outputDirectory>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

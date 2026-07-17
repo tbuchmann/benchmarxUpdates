@@ -11,7 +11,7 @@ import sql.Property
 import sql.Schema
 import sql.Table
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class SQLComparator implements BiConsumer<Schema, Schema>{
 	

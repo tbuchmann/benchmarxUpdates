@@ -1,6 +1,6 @@
 package org.benchmarx.cpm.core
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 import cpm.CPMNetwork
 import java.util.ArrayList

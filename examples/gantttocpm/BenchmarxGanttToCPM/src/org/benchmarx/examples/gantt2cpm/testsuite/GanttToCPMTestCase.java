@@ -33,6 +33,7 @@ import cpm.CPMNetwork;
 import cpm.CpmPackage;
 import gantt.GanttDiagram;
 import gantt.GanttPackage;
+import org.benchmarx.examples.gantt2cpm.implementations.directllm.DirectLLMGantt2Cpm;
 
 @DisplayName("GanttToCPM Tests")
 public abstract class GanttToCPMTestCase {
@@ -122,7 +123,8 @@ public abstract class GanttToCPMTestCase {
 				new MediniQVTGantt2CPM(),
 				//new BXLangGantt2Cpm(),
 				new BXAgentGantt2Cpm()
-		);
+		,
+				new DirectLLMGantt2Cpm());
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

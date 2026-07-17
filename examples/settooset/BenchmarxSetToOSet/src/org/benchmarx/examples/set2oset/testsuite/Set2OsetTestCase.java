@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
+import org.benchmarx.examples.set2oset.implementations.directllm.DirectLLMSets2OSets;
 
 @DisplayName("Set2Oset Tests")
 public class Set2OsetTestCase {
@@ -111,9 +112,10 @@ public class Set2OsetTestCase {
 				//new PlainJavaUbtSet2Oset(),
 				new MediniQVTSetToOSet(),
 				//new IBeXTGGSetToOSet(),
-				new BXLangSet2Oset(),
+				//new BXLangSet2Oset(),
 				new BXAgentSet2OSet()
-		);
+		,
+				new DirectLLMSets2OSets());
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

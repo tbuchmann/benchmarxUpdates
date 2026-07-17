@@ -5,7 +5,7 @@ import bags2.MyBag
 import java.util.ArrayList
 import java.util.function.BiConsumer
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class Bag2Comparator implements BiConsumer<MyBag, MyBag> {
 	

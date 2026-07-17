@@ -6,7 +6,7 @@ import java.util.function.BiConsumer
 import sets.Element
 import sets.MySet
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class SetComparator implements BiConsumer<MySet, MySet> {	
 	ElementNormaliser comparator

@@ -24,6 +24,7 @@ import org.benchmarx.util.BenchmarxUtil;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.benchmarx.examples.pn2pnw.implementations.directllm.DirectLLMPn2Pnw;
 
 public abstract class Pn2PnwTestCase {
 	protected BXTool<pn.Net, pnw.Net, Decisions> tool;
@@ -100,7 +101,8 @@ public abstract class Pn2PnwTestCase {
 				//new BXLangPn2Pnw(),
 				new BXAgentPn2Pnw()
 				//new IBeXTGGPetrinets()
-		);
+		,
+				new DirectLLMPn2Pnw());
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

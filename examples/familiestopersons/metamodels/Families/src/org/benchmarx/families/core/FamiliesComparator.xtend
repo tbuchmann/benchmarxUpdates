@@ -6,10 +6,11 @@ import Families.FamilyRegister
 import java.util.ArrayList
 import java.util.List
 import java.util.function.BiConsumer
-
-import static org.junit.Assert.*
+import java.util.logging.Logger
 
 class FamiliesComparator implements BiConsumer<FamilyRegister, FamilyRegister> {
+	static val LOG = Logger.getLogger(FamiliesComparator.name)
+
 	FamilyNormaliser comparator
 	FamilyMemberNormaliser familyMemberComparator
 	boolean checkAttributeValues
@@ -26,9 +27,19 @@ class FamiliesComparator implements BiConsumer<FamilyRegister, FamilyRegister> {
 		this.checkAttributeValues = checkAttributeValues
 	}
 	
-	override accept(FamilyRegister expected, FamilyRegister actual) {	
-		assertTrue(familyToString(expected).startsWith("FamilyRegister"))
-		assertEquals(familyToString(expected), familyToString(actual))
+	override accept(FamilyRegister expected, FamilyRegister actual) {
+		val expectedStr = familyToString(expected)
+		val actualStr = familyToString(actual)
+		if (!expectedStr.startsWith("FamilyRegister")) {
+			val msg = "Invalid expected FamilyRegister: " + expectedStr
+			LOG.severe(msg)
+			throw new AssertionError(msg)
+		}
+		if (expectedStr != actualStr) {
+			val msg = "FamilyRegister mismatch:\nExpected: " + expectedStr + "\nActual:   " + actualStr
+			LOG.severe(msg)
+			throw new AssertionError(msg)
+		}
 	}
 	
 	def familyToString(FamilyRegister families) {

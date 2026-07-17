@@ -7,7 +7,7 @@ import ast.Operator
 import ast.Variable
 import java.util.function.BiConsumer
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class AstComparator implements BiConsumer<Model, Model> {
 	def static modelToString(Model model) {

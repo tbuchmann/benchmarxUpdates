@@ -7,7 +7,7 @@ import gantt.GanttDiagram
 import java.util.ArrayList
 import java.util.function.BiConsumer
 
-import static org.junit.Assert.*
+import static org.junit.jupiter.api.Assertions.*
 
 class GanttComparator implements BiConsumer<GanttDiagram, GanttDiagram> {
 	def static modelToString(GanttDiagram diagram) {
