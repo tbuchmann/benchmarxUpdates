@@ -36,8 +36,14 @@ public class PNWHelper {
 	public void renameToLettersAndDigits() {		
 		builder.netName("LettersAndDigits");
 	}
-	public void renameToFactoryModel() {		
+	public void renameToFactoryModel() {
 		builder.netName("FactoryModel");
+	}
+	// Used for Conflicts tests: renames to a value that diverges from what SRC's
+	// renameToFactoryModel() sets, so the two sides genuinely disagree when edited
+	// concurrently on the same corresponding net name.
+	public void renameToAlternativeModel() {
+		builder.netName("AlternativeModel");
 	}
 	
 	public void changeIncrementalID() {

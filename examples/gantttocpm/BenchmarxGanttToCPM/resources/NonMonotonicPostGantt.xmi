@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<de.ubt.ai1.m2m:GanttDiagram
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:de.ubt.ai1.m2m="http://de.ubt.ai1.bw.qvt.examples.gantt.ecore"
+    xsi:schemaLocation="http://de.ubt.ai1.bw.qvt.examples.gantt.ecore ../../de.ubt.ai1.m2m.gantt/model/Gantt.ecore"
+    name="Gantt2CPM"
+    incrementalID="changed">
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="Gantt2CPMTestCases"
+      duration="5"
+      outgoingDependencies="//@elements.3 //@elements.4"
+      incomingDependencies="//@elements.7 //@elements.8"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="GanttComparator"
+      duration="3"
+      incomingDependencies="//@elements.3 //@elements.9"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="CPMComparator"
+      duration="1"
+      incomingDependencies="//@elements.4 //@elements.10"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.0"
+      successor="//@elements.1"
+      dependencyType="EndEnd"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.0"
+      successor="//@elements.2"
+      dependencyType="EndEnd"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="GanttModel"
+      outgoingDependencies="//@elements.7 //@elements.9"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="CPMModel"
+      duration="4"
+      outgoingDependencies="//@elements.8 //@elements.10"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.5"
+      successor="//@elements.0"
+      dependencyType="EndStart"
+      offset="1"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.6"
+      successor="//@elements.0"
+      dependencyType="EndStart"
+      offset="2"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.5"
+      successor="//@elements.1"
+      dependencyType="EndStart"
+      offset="3"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.6"
+      successor="//@elements.2"
+      dependencyType="EndStart"
+      offset="6"/>
+</de.ubt.ai1.m2m:GanttDiagram>

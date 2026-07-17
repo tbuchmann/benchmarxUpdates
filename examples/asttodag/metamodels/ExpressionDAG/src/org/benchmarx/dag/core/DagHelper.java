@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EReference;
 import dag.ArithmeticOperator;
 import dag.Number;
 import dag.Model;
+import dag.Variable;
 
 public class DagHelper {
 	private DagModelBuilder builder;
@@ -160,6 +161,18 @@ public class DagHelper {
 //			.variable(Direction.RIGHT).setName("zweiundvierzig").navigateToRoot();
 //	}
 	
-	public void idleDelta() {	
+	public void idleDelta() {
+	}
+
+	// Direct (non-navigation) mutation used for Conflicts tests: renames the shared "sieben"
+	// variable independently of DagModelBuilder, so it's safe to call regardless of whether
+	// this side's structure was authored by this helper's own builder or created via
+	// propagation from the other side.
+	public void renameSharedVariableSieben() {
+		rootSupplier.get().getExprs().stream()
+			.filter(Variable.class::isInstance)
+			.map(Variable.class::cast)
+			.filter(v -> "sieben".equals(v.getName()))
+			.forEach(v -> v.setName("unbekannt"));
 	}
 }

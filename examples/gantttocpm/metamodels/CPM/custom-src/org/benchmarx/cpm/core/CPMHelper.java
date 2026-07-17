@@ -125,6 +125,13 @@ public class CPMHelper {
 		EcoreUtil.delete(findEventByNumber(6));
 	}
 	
+	// Used for Conflicts tests: renames "GanttHelper" to a value that diverges from what
+	// changeGantt2CPMHelperToBuilder sets on the source side, so the two sides genuinely
+	// disagree when edited concurrently on the same corresponding element.
+	public void renameHelperToAlternative() {
+		findActivityByName("GanttHelper").setName("Alternativname");
+	}
+
 	public void changeCPM2GanttHelperToBuilder() {
 		findActivityByName("GanttHelper").setName("CPMBuilder");
 		findActivityByName("CPMHelper").setName("GanttBuilder");

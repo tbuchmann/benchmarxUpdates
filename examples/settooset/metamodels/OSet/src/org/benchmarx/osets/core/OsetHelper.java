@@ -116,6 +116,14 @@ public class OsetHelper {
 		getElement("B").setValue("X");
 		getElement("C").setValue("Y");
 	}
+
+	// Used for Conflicts tests: renames only "A" (unlike changeABCtoZXY, which also
+	// touches the uncontested B/C), so a concurrent conflict on A doesn't get muddled by
+	// unrelated collateral data whose backward-propagation is a separate concern - see
+	// BXAgent-KnownIssues.md section on the concurrent backward-drop bug.
+	public void renameAToZ() {
+		getElement("A").setValue("Z");
+	}
 	
 	public void invert() {
 		if (set.get().getElements().isEmpty()) {

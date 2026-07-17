@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<de.ubt.ai1.m2m:GanttDiagram
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:de.ubt.ai1.m2m="http://de.ubt.ai1.bw.qvt.examples.gantt.ecore"
+    xsi:schemaLocation="http://de.ubt.ai1.bw.qvt.examples.gantt.ecore ../../de.ubt.ai1.m2m.gantt/model/Gantt.ecore"
+    name="Gantt2CPM"
+    incrementalID="changed">
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="Gantt2CPMTestCases"
+      duration="5"
+      outgoingDependencies="//@elements.3 //@elements.4 //@elements.7 //@elements.8"
+      incomingDependencies="//@elements.11 //@elements.12"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="CPMBuilder"
+      duration="2"
+      incomingDependencies="//@elements.4"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="GanttBuilder"
+      duration="2"
+      incomingDependencies="//@elements.3"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.0"
+      successor="//@elements.2"
+      dependencyType="StartEnd"
+      offset="4"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.0"
+      successor="//@elements.1"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="GanttComparator"
+      duration="3"
+      incomingDependencies="//@elements.7 //@elements.13"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="CPMComparator"
+      duration="1"
+      incomingDependencies="//@elements.8 //@elements.14"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.0"
+      successor="//@elements.5"
+      dependencyType="EndEnd"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.0"
+      successor="//@elements.6"
+      dependencyType="EndEnd"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="GanttModel"
+      duration="1"
+      outgoingDependencies="//@elements.11 //@elements.13"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Activity"
+      name="CPMModel"
+      duration="1"
+      outgoingDependencies="//@elements.12 //@elements.14"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.9"
+      successor="//@elements.0"
+      dependencyType="EndStart"
+      offset="1"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.10"
+      successor="//@elements.0"
+      dependencyType="EndStart"
+      offset="2"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.9"
+      successor="//@elements.5"
+      dependencyType="EndStart"
+      offset="3"/>
+  <elements
+      xsi:type="de.ubt.ai1.m2m:Dependency"
+      predecessor="//@elements.10"
+      successor="//@elements.6"
+      dependencyType="EndStart"
+      offset="6"/>
+</de.ubt.ai1.m2m:GanttDiagram>
