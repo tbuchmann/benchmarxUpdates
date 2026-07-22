@@ -51,9 +51,12 @@ This project has many optional tool implementations. The required non-Central JA
 <dependency><groupId>org.benchmarx.tools</groupId><artifactId>bxtend-f2p</artifactId><version>1.0.0</version></dependency>
 <dependency><groupId>org.benchmarx.tools</groupId><artifactId>bx-runtime</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
 <dependency><groupId>org.benchmarx.tools</groupId><artifactId>emt-agent-f2p</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
+<dependency><groupId>org.benchmarx.tools</groupId><artifactId>emt-agent</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
 <dependency><groupId>org.benchmarx.tools</groupId><artifactId>mediniQVT</artifactId><version>1.0.0</version></dependency>
 <dependency><groupId>org.benchmarx.tools</groupId><artifactId>qvtemf</artifactId><version>1.0.0</version></dependency>
 ```
+
+> **BX-Agent note:** `BXAgent.jar` contains `de.tbuchmann.bxagent.f2p.*`, but the generated transformation API also depends on the general `dev.emtagent.correspondence.*` classes from `emt-agent-1.0.0-SNAPSHOT.jar`. Therefore both `emt-agent-f2p` **and** `emt-agent` must be declared and installed.
 
 > **Note on optional implementations:** Several tool wrappers (BiGUL, FunnyQT, JTL, NMF,
 > eMoflon, ENeo, IBeXTGG-Integrate) require additional native or external runtimes. They are
@@ -70,6 +73,7 @@ LIB_F2P="<repo-root>/examples/familiestopersons/BenchmarxFamiliesToPersons/lib"
 install "org.benchmarx.tools" "bxtend-f2p"    "1.0.0"          "${LIB_F2P}/bxtend-f2p-1.0.0.jar"
 install "org.benchmarx.tools" "bx-runtime"    "1.0.0-SNAPSHOT" "${LIB_F2P}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "emt-agent-f2p" "1.0.0-SNAPSHOT" "${LIB_F2P}/BXAgent.jar"
+install "org.benchmarx.tools" "emt-agent"     "1.0.0-SNAPSHOT" "${LIB_F2P}/emt-agent-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "mediniQVT"     "1.0.0"          "${LIB_F2P}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"        "1.0.0"          "${LIB_F2P}/mediniQVT/qvtemf.jar"
 ```

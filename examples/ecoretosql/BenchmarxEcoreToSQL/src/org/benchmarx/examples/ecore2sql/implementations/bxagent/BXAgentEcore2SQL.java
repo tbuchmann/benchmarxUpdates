@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.ecore2sql.Ecore2SqlTransformation;
 import dev.emtagent.correspondence.CorrespondenceModel;
+import dev.emtagent.correspondence.SyncConflictPolicy;
 import dev.emtagent.correspondence.TransformationContext;
 import sql.Schema;
 import sql.SqlFactory;
@@ -126,9 +127,11 @@ private static final String RESULTPATH = "results/BXAgent";
 	}
 
 	@Override
-	public void performAndPropagateEdit(Supplier<IEdit<EPackage>> sourceEdit, Supplier<IEdit<Schema>> targetEdit) {
-		// TODO Auto-generated method stub
+	public void performAndPropagateEdit(Supplier<IEdit<EPackage>> sourceEdit, Supplier<IEdit<Schema>> targetEdit) {		
 		sourceEdit.get();
 		targetEdit.get();
+		Ecore2SqlTransformation.sync(source, target, corr,
+				SyncConflictPolicy.TARGET_WINS,
+				TransformationContext.DeletionPolicy.CASCADE, Ecore2SqlTransformation.Options.defaults());
 	}
 }

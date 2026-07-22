@@ -1,8 +1,5 @@
 package org.benchmarx.examples.familiestopersons.implementations.ibextgg.integrate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.function.Supplier;
 
@@ -139,10 +136,14 @@ public class IBeXTGGIntegrateFamiliesToPersons implements BXTool<FamilyRegister,
 		var expectedSource = new FamiliesComparator().familyToString(source);
 		var expectedTarget = new PersonsComparator().personsToString(target);
 		
-		assertTrue(expectedSource.startsWith("FamilyRegister"));
-		assertEquals(expectedSource, actualSource);
-		
-		assertTrue(expectedTarget.startsWith("PersonRegister"));
-		assertEquals(expectedTarget, actualTarget);
+		if (!expectedSource.startsWith("FamilyRegister"))
+			throw new IllegalStateException("Expected source does not start with 'FamilyRegister'");
+		if (!expectedSource.equals(actualSource))
+			throw new AssertionError("Source expected:\n" + expectedSource + "\nbut was:\n" + actualSource);
+
+		if (!expectedTarget.startsWith("PersonRegister"))
+			throw new IllegalStateException("Expected target does not start with 'PersonRegister'");
+		if (!expectedTarget.equals(actualTarget))
+			throw new AssertionError("Target expected:\n" + expectedTarget + "\nbut was:\n" + actualTarget);
 	}
 }
