@@ -2,16 +2,22 @@
 
 Bugs and gaps discovered in the `BXAgent` tool implementations while filling
 round-trip and concurrent test coverage across the benchmarx examples (see the
-per-example `concurrent/`/`alignment_based/roundtrip/` test suites). Bugs 1, 2, and 3
-all need a fix in the `bxagent`/`emt-agent` generator repos (sibling repos that generate
-the `BXAgent*` transformation code), followed by a jar rebuild/copy back into this repo
-and re-verification of the affected test(s). None of them are fixable from
-`benchmarxUpdates` directly — the adapter classes here just call into generated code.
+per-example `concurrent/`/`alignment_based/roundtrip/` test suites). Bugs 1 and 2 still
+need a fix in the `bxagent`/`emt-agent` generator repos (sibling repos that generate the
+`BXAgent*` transformation code), followed by a jar rebuild/copy back into this repo and
+re-verification of the affected test(s) — not fixable from `benchmarxUpdates` directly,
+since the adapter classes here just call into generated code. Bug 3 has been fixed the
+same way (fix landed in `bxagent`, jar rebuilt) and is now **resolved**.
 
 Found and documented: 2026-07-17 (bugs 1, 2); 2026-07-22 (bug 3, after the original
 stub was wired up and found to expose a deeper generator bug); 2026-07-23 (bug 3
-narrowed after a `bxagent`-repo fix landed — updates now work, creation/deletion still
-don't).
+narrowed after a first `bxagent`-repo fix landed — updates worked, creation/deletion
+still didn't; corrected same day from an initial wrong "creation propagates nothing"
+claim to the precise "creation produces structurally empty stubs, deletion leaves
+orphaned/corrupted references"; a second `bxagent`-repo fix later the same day resolved
+both remaining halves — all three previously-`@Disabled` reproduction tests in
+`Conflicts.java` now pass unchanged, confirming the fix against the exact assertions
+that caught the bug).
 
 ## Summary
 
@@ -19,7 +25,7 @@ don't).
 |---|---|---|---|---|
 | 1 | `Operator.op` lost during conflict resolution | Ast2Dag | Concurrent **conflict** (both sides edit the same shared/structurally-relevant node) | High — AST/DAG end up structurally inconsistent |
 | 2 | Target-side edits dropped during concurrent sync | Gantt2Cpm, Set2OSet | Concurrent edit where target touches an attribute that has a **real source-side correspondence counterpart** | High — source/target end up permanently divergent, not just "resolved differently" |
-| 3 | `sync()` never creates/deletes role-based-type (EClass/Column-level) objects | Ecore2SQL | Any concurrent edit that creates or deletes an EClass/EAttribute — renames/value-changes to *already-corresponded* objects now work as of 2026-07-23 | Moderate — blocks `MonotonicCreating`/`MonotonicDeleting`/`NonMonotonic`; `Conflicts` (rename-vs-rename) now passes |
+| 3 | ~~`sync()` creates empty Table stubs / leaves orphaned columns on delete~~ **RESOLVED 2026-07-23** | Ecore2SQL | Was: any concurrent edit that creates or deletes an EClass/EAttribute | Fixed upstream in `bxagent`; all 4 `Conflicts` tests (including 3 former reproduction cases) pass |
 
 **Working, not affected**: concurrent target-side edits to attributes with **no
 source-side counterpart** (`weightA1BWith73` in pntopnw — weight only exists on the
@@ -209,15 +215,27 @@ passes in both examples), so it's a good reference implementation to diff agains
 
 ## 3. Ecore2SQL: `Ecore2SqlTransformation.sync()` doesn't create/delete role-based-type objects
 
-**Status**: stub wired up 2026-07-22 (owner: user); empirical testing that day found
-the underlying generated `sync()` method non-functional for essentially every
-scenario touching an `EClass`. On 2026-07-23 the user landed a fix in the `bxagent`
-repo and regenerated `Ecore2SqlTransformation.java`; the jars in `~/.m2` were rebuilt
-from it. Re-testing confirmed the fix covers **updates** to already-corresponded
-role-based objects (renames, attribute value changes — including two-sided conflicts)
-but **not** creation or deletion of new role-based objects during a concurrent
-`sync()` call, which is a narrower, still-open gap. This is still a **`bxagent`-repo
-fix** for the remaining piece, not something fixable in `benchmarxUpdates`.
+**Status: RESOLVED 2026-07-23.** Fixed in two rounds in the `bxagent` repo, both on
+2026-07-23. The first round fixed **updates** (see below); a second round the same
+day fixed the remaining **creation** (empty Table stubs) and **deletion** (orphaned
+columns/foreign keys on `EObject`) gaps. Verified by re-enabling the three
+`@Disabled` reproduction tests in
+`examples/ecoretosql/BenchmarxEcoreToSQL/src/org/benchmarx/examples/ecore2sql/testsuite/concurrent/Conflicts.java`
+(`testMonotonicCreating`, `testMonotonicDeleting`, `testNonMonotonic`) without
+touching their assertions — all three now pass, along with the rest of the module
+(25/25, 0 skipped). The rest of this section is kept as historical diagnosis (useful
+if a regression ever reintroduces this class of bug).
+
+**Original status (superseded)**: stub wired up 2026-07-22 (owner: user); empirical
+testing that day found the underlying generated `sync()` method non-functional for
+essentially every scenario touching an `EClass`. On 2026-07-23 the user landed a first
+fix in the `bxagent` repo and regenerated `Ecore2SqlTransformation.java`; the jars in
+`~/.m2` were rebuilt from it. Re-testing confirmed that fix covered **updates** to
+already-corresponded role-based objects (renames, attribute value changes — including
+two-sided conflicts) but **not** creation or deletion of new role-based objects during
+a concurrent `sync()` call — see "What's still broken" below for what that gap
+actually looked like. A second fix later the same day closed it; see the **RESOLVED**
+note above.
 
 **Where**: `examples/ecoretosql/BenchmarxEcoreToSQL/src/org/benchmarx/examples/ecore2sql/implementations/bxagent/BXAgentEcore2SQL.java`,
 method `performAndPropagateEdit`, now:
@@ -265,42 +283,57 @@ hardcoded `TARGET_WINS`) and via an ad hoc single-sided rename probe
 (`EcoreHelper.renameListClass` with target idle) — both now propagate correctly where
 they previously produced an all-zero `SyncResult`.
 
-**What's still broken**: **creation and deletion** of role-based objects during
-`sync()`. The partitions that handle new/removed objects (`Schritt 2` "new target
-object from unmatched source", `Schritt 3` "source-deleted, target kept", `Schritt 5`
-"new objects without corrEntry") all still gate on `isCoveredByTypeMappingSource`/
-`Target` — i.e. only `EPackage`/`Schema` — so a brand-new `EClass`/`EAttribute` created
-concurrently, or an existing one deleted concurrently, is silently ignored by `sync()`
-just like updates used to be. Confirmed via two probes:
-- `EcoreHelper.addDataElementFeature()` (adds four new EClasses: `DataElement`, `Pair`,
-  `Value`, `Key`) concurrent with target idle — source model correctly shows the new
-  classes afterward (`sourceEdit.get()` always mutates locally), but **no
-  corresponding tables appear in the target SQL schema**.
-- `EcoreHelper.deleteDataAttribute()` (deletes `DataNode.data`) concurrent with target
-  idle — source model correctly loses the attribute, but **the `data` column still
-  exists in the target SQL schema** afterward.
+**Correction (2026-07-23, same day)**: the paragraph above (and the two probes it
+cites) is **wrong** about creation producing no result at all — that was a testing
+mistake (grepped a stale dump file after switching probe scenarios, before the file
+had been regenerated). The real picture, found while reviewing user-authored
+`testMonotonicCreating`/`testMonotonicDeleting`/`testNonMonotonic` tests that
+initially (and misleadingly) passed against only a table-count assertion:
 
-**Practical impact**: `MonotonicCreating`, `MonotonicDeleting`, and `NonMonotonic` (per
-the standing project convention, the latter mixes creation and/or deletion — see this
-repo's `CLAUDE.md`) all fundamentally require the still-broken creation/deletion path
-and remain blocked. `Conflicts` no longer needs to — a same-element rename-vs-rename
-conflict only exercises the now-fixed update path — so it's written and passing
-(`testConcurrentRenameListLengthConflict`, 22/22 tests green for `BXAgentEcore2SQL` as
-of 2026-07-23). `RoundtripTests` remains unaffected either way (it only uses
-`performAndPropagateSourceEdit`/`performAndPropagateTargetEdit`, which go through
-`transform`/`transformBack` instead of `sync`).
+**Creation**: `sync()` *does* create a `Table` for every new `EClass`, via
+`createAndMapCTMObjectsIncremental` (`bxagent/generated/Ecore2SqlTransformation.java`,
+around line 860) — a code path that runs unconditionally near the end of `sync()`,
+entirely separate from the `isCoveredByTypeMappingSource`/`Target`-gated partitions
+(`Schritt 2`/`3`/`5`) described above, which is why grepping those didn't surface it.
+But the `Table` it creates is an empty shell: only `.setName(...)` and a
+`class`+(`concrete`|`abstract`) annotation. It has **no `id` column, no primary key,
+no foreign keys, and no attribute/reference columns** — everything
+`SQLHelper.createXTable()`/the working forward-transform path always produces. A
+naive "one class-`Table` per `EClass`" count check passes, because the stub *is* a
+`Table` with the right name and annotation — it just isn't usable.
 
-**Likely fix** (in the `bxagent` repo): extend `Schritt 2`/`3`/`5`'s
-`isCoveredByTypeMappingSource`/`Target` guards to also cover role-based types, reusing
-`createNewTargetObject`/`createNewSourceObject` (which already dispatch on `EPackage`
-only — would need `EClass`/`EAttribute` cases added) and the existing
-`EcoreUtil.delete`-based deletion logic from the TypeMapping partition-3 branch. Worth
-checking whether `bxagent`'s `fixedCode/correct/Ecore2SqlTransformation.java` already
-covers this before re-deriving it.
+**Deletion**: `sync()` does correctly remove the `Table` objects for deleted
+`EClass`es (so a naive count check passes here too), but leaves their "unique"
+identity column and foreign key **behind on the `EObject` root table** — the column
+that every class-`Table` gets on the shared root table when it's created (see e.g.
+`SQLHelper.createDataElementTable()`'s `"Add DataElement column to EObject table"`
+step) is never cleaned up. Worse than a mere leak: of the four orphaned foreign keys
+observed, three end up with no `referencedTable` at all (dangling), and the fourth
+silently ends up pointing at an unrelated surviving table (`List`) — an artifact of
+the deletion leaving a stale position-based reference that gets re-resolved against
+the now-shrunk `ownedTables` list at serialization time. This is referential
+corruption on the *surviving* part of the schema, not just an incomplete propagation
+of the deleted part.
 
-**Precondition fixtures already captured for when this is fixed**:
-`MonotonicCreatingPreEcore.ecore`/`MonotonicCreatingPreSQL.xmi` and
-`MonotonicDeletingPreEcore.ecore`/`MonotonicDeletingPreSQL.xmi` in
-`examples/ecoretosql/BenchmarxEcoreToSQL/resources/` (simple CompositeList state and the
-richer CompositeListData state respectively — reusable as starting points once
-creation/deletion in `sync()` is fixed).
+**Practical impact (while open)**: `MonotonicCreating`, `MonotonicDeleting`, and
+`NonMonotonic` (per the standing project convention, the latter mixes creation and/or
+deletion — see this repo's `CLAUDE.md`) were written with assertions that actually
+check structure (not just counts) in
+`examples/ecoretosql/BenchmarxEcoreToSQL/src/org/benchmarx/examples/ecore2sql/testsuite/concurrent/Conflicts.java`,
+and all three reliably reproduced their respective bug while kept `@Disabled` (same
+convention as bug 1's disabled test). `Conflicts`'s own test
+(`testConcurrentRenameListLengthConflict`) never hit either gap — a same-element
+rename-vs-rename conflict only exercised the update path fixed in round one.
+
+**Fix applied** (in the `bxagent` repo, round two, 2026-07-23):
+`createAndMapCTMObjectsIncremental` now builds full `Table` structure for each new
+`EClass` (the `id` column, primary key, superType/root foreign key, and
+attribute/reference columns) instead of just setting the name and annotations; the
+deletion path now also removes the owning root table's identity column + foreign key
+when a class's `Table` is deleted, closing the referential-corruption gap. All four
+`Conflicts` tests pass against this fix with no assertion changes on this repo's side.
+
+**Precondition fixtures** (`MonotonicCreatingPreEcore.ecore`/`MonotonicCreatingPreSQL.xmi`
+and `MonotonicDeletingPreEcore.ecore`/`MonotonicDeletingPreSQL.xmi` in
+`examples/ecoretosql/BenchmarxEcoreToSQL/resources/`) remain in place, still used as
+preconditions by the now-passing tests.
