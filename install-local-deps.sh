@@ -163,6 +163,9 @@ LIB_E2S="${SCRIPT_DIR}/examples/ecoretosql/BenchmarxEcoreToSQL/lib"
 install "org.benchmarx.tools" "bxtend-ecore2sql"  "1.0.0"          "${LIB_E2S}/bxtend-ecore2sql-1.0.0.jar"
 install "org.benchmarx.tools" "bxagent-ecore2sql" "1.0.0"          "${LIB_E2S}/bxagent-ecore2sql-1.0.0.jar"
 install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_E2S}/emt-agent-1.0.0-SNAPSHOT.jar"
+# New BXAgent transformation (supersedes bxagent-ecore2sql)
+install "org.benchmarx.tools" "de-tbuchmann-bxagent-ecore2sql" "1.0.0-SNAPSHOT" "${LIB_E2S}/de-tbuchmann-bxagent-ecore2sql-1.0.0-SNAPSHOT.jar"
+install "org.benchmarx.tools" "bx-runtime"         "1.0.0-SNAPSHOT" "${LIB_E2S}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_E2S}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_E2S}/mediniQVT/qvtemf.jar"
 

@@ -7,17 +7,13 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/classes" path="xtend-gen">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
 	<classpathentry kind="lib" path="lib/bxtend-ecore2sql-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/emt-agent-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/bxagent-ecore2sql-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/de-tbuchmann-bxagent-ecore2sql-1.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/bx-runtime-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

@@ -327,6 +327,14 @@ public class EcoreHelper {
 		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		c.setName("Queue");
 	}
+
+	public void renameListLengthAttribute() {
+		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
+		Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("length")).findAny();
+		if(ea.isPresent()) {
+			ea.get().setName("count");
+		}
+	}
 	
 	public void renamePackage() {
 		

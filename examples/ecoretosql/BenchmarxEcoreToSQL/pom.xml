@@ -109,14 +109,29 @@
       <artifactId>bxtend-ecore2sql</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>bxagent-ecore2sql</artifactId>
-      <version>1.0.0</version>
-    </dependency>
+    <!-- bxagent-ecore2sql 1.0.0 (old, dev.emtagent package) kept in lib for reference only — excluded from classpath -->
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>emt-agent</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!--
+      de-tbuchmann-bxagent-ecore2sql: built from bxagent-transformations/de.tbuchmann.bxagent.ecore2sql
+      Contains de.tbuchmann.bxagent.ecore2sql.Ecore2SqlTransformation used by BXAgentEcoreToSQL.
+      Supersedes the old org.benchmarx.tools:bxagent-ecore2sql.
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>de-tbuchmann-bxagent-ecore2sql</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <!--
+      bx-runtime: dev.bxagent.correspondence.* (CorrespondenceModel, TransformationContext, etc.)
+      used by BXAgentEcoreToSQL. Supersedes the old org.benchmarx.tools:emt-agent.
+    -->
+    <dependency>
+      <groupId>org.benchmarx.tools</groupId>
+      <artifactId>bx-runtime</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

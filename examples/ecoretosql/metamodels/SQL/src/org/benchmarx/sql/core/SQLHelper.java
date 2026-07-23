@@ -588,6 +588,16 @@ public class SQLHelper {
 		if(oc.isPresent()) oc.get().setReferencedTable(list);
 	}
 	
+	public void renameListLengthColumnToSize() {
+		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("List")).findAny();
+		if(!ot.isPresent()) return;
+		Table t = ot.get();
+		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("length")).findAny();
+		if(oc.isPresent()) {
+			oc.get().setName("size");
+		}
+	}
+
 	public void renameDataNodeDataColumn() {
 		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;

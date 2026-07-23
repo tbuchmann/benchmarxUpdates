@@ -21,9 +21,9 @@ import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.ecore2sql.Ecore2SqlTransformation;
-import dev.emtagent.correspondence.CorrespondenceModel;
-import dev.emtagent.correspondence.SyncConflictPolicy;
-import dev.emtagent.correspondence.TransformationContext;
+import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
+import dev.bxagent.correspondence.TransformationContext;
 import sql.Schema;
 import sql.SqlFactory;
 
