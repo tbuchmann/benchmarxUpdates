@@ -46,6 +46,10 @@ install "org.benchmarx.tools" "bxagent-pdb12pdb2" "1.0.0"          "${LIB}/bxage
 # bxlang-pdb12pdb2: BXLang excluded for now (see per-example TestCase.java tools()).
 # install "org.benchmarx.tools" "bxlang-pdb12pdb2"  "1.0.0"          "${LIB}/bxlang-pdb12pdb2.jar"
 install "org.benchmarx.tools" "bx-runtime"        "1.0.0-SNAPSHOT" "${LIB}/bx-runtime-1.0.0-SNAPSHOT.jar"
+# de-tbuchmann-bxagent-pdb12pdb2 / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxPdb1ToPdb2/pom.xml depends on (supersedes the org.benchmarx.tools:* jars above).
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-pdb12pdb2" "1.0.0-SNAPSHOT" "${LIB}/de-tbuchmann-bxagent-pdb12pdb2-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                     "1.0.0-SNAPSHOT" "${LIB}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB}/mediniQVT/qvtemf.jar"
 
@@ -56,6 +60,10 @@ install "org.benchmarx.tools" "bxtend-ast2dag"  "1.0.0"          "${LIB_AST}/bxt
 # bxlang-ast2dag: BXLang excluded for now (see per-example TestCase.java tools()).
 # install "org.benchmarx.tools" "bxlang-ast2dag"  "1.0.0"          "${LIB_AST}/BXtend-AST2DAG.jar"
 install "org.benchmarx.tools" "emt-agent"        "1.0.0-SNAPSHOT" "${LIB_AST}/emt-agent-1.0.0-SNAPSHOT.jar"
+# de-tbuchmann-bxagent-ast2dag / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxAstToDag/pom.xml depends on.
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-ast2dag" "1.0.0-SNAPSHOT" "${LIB_AST}/de-tbuchmann-bxagent-ast2dag-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                   "1.0.0-SNAPSHOT" "${LIB_AST}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "mediniQVT"        "1.0.0"          "${LIB_AST}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"           "1.0.0"          "${LIB_AST}/mediniQVT/qvtemf.jar"
 
@@ -70,11 +78,16 @@ install "org.benchmarx.tools" "bxtend-bag12bag2"      "1.0.0"          "${LIB_BA
 #   Bags12Bags2-bxlang workspace project:
 #   cd /home/tb/workspaceBenchmarXUpdate/Bags12Bags2-bxlang/bin && jar cf ${BUILD_TMP}/bxlang-bag12bag2-1.0.0.jar dev/
 # install "org.benchmarx.tools" "bxlang-bag12bag2"      "1.0.0"          "${BUILD_TMP}/bxlang-bag12bag2-1.0.0.jar"
-# bxagent-bags2bags: CAUTION §2 – not in emt-agent;
-#   rebuild from de.tbuchmann.bxagent.bags2bags workspace project:
+# bxagent-bags2bags: obsolete, no pom.xml depends on it anymore (superseded by
+# de-tbuchmann-bxagent-bag12bag2 below); kept commented out since its jar must be
+# manually rebuilt from the de.tbuchmann.bxagent.bags2bags Eclipse workspace project:
 #   cd /home/tb/workspaceBenchmarXUpdate/de.tbuchmann.bxagent.bags2bags/bin && jar cf ${BUILD_TMP}/bxagent-bags2bags-1.0.0.jar de/
-install "org.benchmarx.tools" "bxagent-bags2bags"     "1.0.0"          "${BUILD_TMP}/bxagent-bags2bags-1.0.0.jar"
+# install "org.benchmarx.tools" "bxagent-bags2bags"     "1.0.0"          "${BUILD_TMP}/bxagent-bags2bags-1.0.0.jar"
 install "org.benchmarx.tools" "bx-runtime"            "1.0.0-SNAPSHOT" "${LIB_BAG}/bx-runtime-1.0.0-SNAPSHOT.jar"
+# de-tbuchmann-bxagent-bag12bag2 / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxBag1ToBag2/pom.xml depends on (supersedes the org.benchmarx.tools:* jars above).
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-bag12bag2" "1.0.0-SNAPSHOT" "${LIB_BAG}/de-tbuchmann-bxagent-bag12bag2-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                     "1.0.0-SNAPSHOT" "${LIB_BAG}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "emt-agent"              "1.0.0-SNAPSHOT" "${LIB_BAG}/emt-agent-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "plainjavaubt-bags12bags2" "1.0.0"        "${LIB_BAG}/PlainJavaUbtBags12Bags2.jar"
 install "org.benchmarx.tools" "plainjavaubt-util"         "1.0.0"        "${LIB_BAG}/PlainJavaUbtUtil.jar"
@@ -92,6 +105,10 @@ install "org.benchmarx.tools" "bxtend-set2oset"   "1.0.0"          "${LIB_SET}/b
 install "org.benchmarx.tools" "bxagent-set2oset"  "1.0.0"          "${LIB_SET}/bxagent-set2oset-1.0.0.jar"
 install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_SET}/emt-agent-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "bx-runtime"         "1.0.0-SNAPSHOT" "${LIB_SET}/bx-runtime-1.0.0-SNAPSHOT.jar"
+# de-tbuchmann-bxagent-set2oset / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxSetToOSet/pom.xml depends on (supersedes the org.benchmarx.tools:* jars above).
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-set2oset" "1.0.0-SNAPSHOT" "${LIB_SET}/de-tbuchmann-bxagent-set2oset-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                    "1.0.0-SNAPSHOT" "${LIB_SET}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "plainjavaubt-set2oset" "1.0.0"          "${LIB_SET}/PlainJavaUbtSet2Oset.jar"
 install "org.benchmarx.tools" "plainjavaubt-util"     "1.0.0"          "${LIB_SET}/PlainJavaUbtUtil.jar"
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_SET}/mediniQVT/mediniQVT.jar"
@@ -109,6 +126,10 @@ install "org.benchmarx.tools" "bxagent-gantt2cpm" "1.0.0"          "${LIB_G2C}/b
 #   cd /home/tb/workspaceBenchmarXUpdate/Gantt2CPM-bxlang/bin && jar cf ${BUILD_TMP}/bxlang-gantt2cpm-1.0.0.jar dev/
 # install "org.benchmarx.tools" "bxlang-gantt2cpm"  "1.0.0"          "${BUILD_TMP}/bxlang-gantt2cpm-1.0.0.jar"
 install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_G2C}/emt-agent-1.0.0-SNAPSHOT.jar"
+# de-tbuchmann-bxagent-gantt2cpm / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxGanttToCPM/pom.xml depends on.
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-gantt2cpm" "1.0.0-SNAPSHOT" "${LIB_G2C}/de-tbuchmann-bxagent-gantt2cpm-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                     "1.0.0-SNAPSHOT" "${LIB_G2C}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_G2C}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_G2C}/mediniQVT/qvtemf.jar"
 
@@ -119,13 +140,17 @@ LIB_PN="${SCRIPT_DIR}/examples/pntopnw/BenchmarxPetrinetToPetrinetWeighted/lib"
 #   de.tbuchmann.bxtend.pn2pnw.* (differs from the obsolete BXtend-PN2PNW.jar).
 install "org.benchmarx.tools" "bxtend-pn2pnw"    "1.0.0"          "${LIB_PN}/bxtend-pn2pnw-1.0.0.jar"
 
-# emt-agent-pn2pnw: the emt-agent-1.0.0-SNAPSHOT.jar contains only the general
-#   dev.emtagent.* framework; de.tbuchmann.bxagent.pn2pnw.* must be built from
-#   the de.tbuchmann.bxagent.pn2pnw Eclipse workspace project:
-#     cd /home/tb/workspaceBenchmarXUpdate/de.tbuchmann.bxagent.pn2pnw/bin
-#     jar cf ${BUILD_TMP}/emt-agent-pn2pnw-1.0.0-SNAPSHOT.jar de/
-install "org.benchmarx.tools" "emt-agent-pn2pnw" "1.0.0-SNAPSHOT" "${BUILD_TMP}/emt-agent-pn2pnw-1.0.0-SNAPSHOT.jar"
+# emt-agent-pn2pnw: obsolete, no pom.xml depends on it anymore (superseded by
+# de-tbuchmann-bxagent-pn2pnw below); kept commented out since its jar must be
+# manually rebuilt from the de.tbuchmann.bxagent.pn2pnw Eclipse workspace project:
+#   cd /home/tb/workspaceBenchmarXUpdate/de.tbuchmann.bxagent.pn2pnw/bin
+#   jar cf ${BUILD_TMP}/emt-agent-pn2pnw-1.0.0-SNAPSHOT.jar de/
+# install "org.benchmarx.tools" "emt-agent-pn2pnw" "1.0.0-SNAPSHOT" "${BUILD_TMP}/emt-agent-pn2pnw-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "emt-agent"         "1.0.0-SNAPSHOT" "${LIB_PN}/emt-agent-1.0.0-SNAPSHOT.jar"
+# de-tbuchmann-bxagent-pn2pnw / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxPetrinetToPetrinetWeighted/pom.xml depends on.
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-pn2pnw" "1.0.0-SNAPSHOT" "${LIB_PN}/de-tbuchmann-bxagent-pn2pnw-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                  "1.0.0-SNAPSHOT" "${LIB_PN}/bx-runtime-1.0.0-SNAPSHOT.jar"
 install "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_PN}/mediniQVT/mediniQVT.jar"
 install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_PN}/mediniQVT/qvtemf.jar"
 
@@ -140,17 +165,22 @@ install "org.benchmarx.tools" "bxtend-f2p"    "1.0.0"          "${LIB_F2P}/bxten
 # Contains de.tbuchmann.bxtenddsl.f2p.trafo.* (BXtendDSLFamiliesToPersons)
 install "org.benchmarx.tools" "bxtenddsl-f2p" "1.0.0"          "${LIB_F2P}/BXtendDSLSynch.jar"
 
-# emt-agent-f2p: lib/BXAgent.jar
-# Contains de.tbuchmann.bxagent.f2p.Families2PersonsTransformation (BXAgentF2p),
-# but not the general dev.emtagent.correspondence.* framework classes.
-install "org.benchmarx.tools" "emt-agent-f2p" "1.0.0-SNAPSHOT" "${LIB_F2P}/BXAgent.jar"
+# emt-agent-f2p: obsolete, no pom.xml depends on it anymore (superseded by
+# de-tbuchmann-bxagent-f2p below); its jar (lib/BXAgent.jar) has also moved to
+# oldVersion/BXAgent.jar and is no longer installed.
+# install "org.benchmarx.tools" "emt-agent-f2p" "1.0.0-SNAPSHOT" "${LIB_F2P}/BXAgent.jar"
 
-# emt-agent: lib/emt-agent-1.0.0-SNAPSHOT.jar
-# Contains the general dev.emtagent.correspondence.* framework classes used by BXAgentF2p.
-install "org.benchmarx.tools" "emt-agent"     "1.0.0-SNAPSHOT" "${LIB_F2P}/emt-agent-1.0.0-SNAPSHOT.jar"
+# emt-agent: obsolete, no pom.xml depends on it anymore (superseded by dev.bxagent:bx-runtime
+# below); its jar is also no longer present in lib/.
+# install "org.benchmarx.tools" "emt-agent"     "1.0.0-SNAPSHOT" "${LIB_F2P}/emt-agent-1.0.0-SNAPSHOT.jar"
 
 # bx-runtime: lib/bx-runtime-1.0.0-SNAPSHOT.jar
 install "org.benchmarx.tools" "bx-runtime"    "1.0.0-SNAPSHOT" "${LIB_F2P}/bx-runtime-1.0.0-SNAPSHOT.jar"
+
+# de-tbuchmann-bxagent-f2p / dev.bxagent:bx-runtime: the actual coordinates
+# BenchmarxFamiliesToPersons/pom.xml depends on (supersedes emt-agent-f2p/emt-agent/bx-runtime above).
+install "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-f2p" "1.0.0-SNAPSHOT" "${LIB_F2P}/de-tbuchmann-bxagent-f2p-1.0.0-SNAPSHOT.jar"
+install "dev.bxagent"          "bx-runtime"                "1.0.0-SNAPSHOT" "${LIB_F2P}/bx-runtime-1.0.0-SNAPSHOT.jar"
 
 # mediniQVT + qvtemf (shared coordinates with other examples, re-installing is idempotent)
 install "org.benchmarx.tools" "mediniQVT"     "1.0.0"          "${LIB_F2P}/mediniQVT/mediniQVT.jar"

@@ -78,7 +78,7 @@ Taking `BenchmarxBag1ToBag2` as an example, substitute as appropriate:
 
 ## Known limitations
 
-- `install-local-deps.sh` references a local Eclipse installation path (`ECLIPSE_PLUGINS`) and several `/tmp/*.jar` files that must be manually rebuilt from Eclipse workspace projects (paths and rebuild commands are documented inline in the script). These are not yet reproducible from a clean checkout — rebuilding them requires access to the original `~/workspaceBenchmarXUpdate` Eclipse workspace.
+- `install-local-deps.sh` references a local Eclipse installation path (`ECLIPSE_PLUGINS`) for `org.eclipse.emf.compare`, which must still be adjusted per machine. The handful of entries that used to require rebuilding a JAR from an Eclipse workspace under `.local-build/` are now superseded by the current `de.tbuchmann.bxagent:de-tbuchmann-bxagent-<name>` / `dev.bxagent:bx-runtime` jars checked into each example's `lib/`, and are commented out in the script — every other JAR the script installs comes straight from a `lib/` folder checked into the repo, so a clean checkout only needs the `emf.compare` path fixed up.
 - `BenchmarxFamiliesToPersons` and `BenchmarxEcoreToSQL` still have `ibextgg`/eMoflon-based implementations excluded from the Maven build (require a full IBeX-TGG Eclipse setup); see each module's `CAUTION.md`.
 - Per-example migration write-ups (what changed and why when porting each Eclipse project to Maven) live at the repo root: `BenchmarxAstToDag-Migration.md`, `BenchmarxBag1ToBag2-Migration.md` (+ `-MigrationPlan.md`), `BenchmarxEcoreToSQL-Migration.md`, `BenchmarxFamiliesToPersons-Migration.md`, `BenchmarxGanttToCPM-Migration.md`, `BenchmarxPetrinetToPetrinetWeighted-Migration.md`, `BenchmarxSetToOSet-Migration.md`.
 
