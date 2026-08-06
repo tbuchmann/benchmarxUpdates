@@ -2,12 +2,17 @@
 
 Bugs and gaps discovered in the `BXAgent` tool implementations while filling
 round-trip and concurrent test coverage across the benchmarx examples (see the
-per-example `concurrent/`/`alignment_based/roundtrip/` test suites). Bugs 1 and 2 still
-need a fix in the `bxagent`/`emt-agent` generator repos (sibling repos that generate the
+per-example `concurrent/`/`alignment_based/roundtrip/` test suites). Bug 1 still needs a
+fix in the `bxagent`/`emt-agent` generator repos (sibling repos that generate the
 `BXAgent*` transformation code), followed by a jar rebuild/copy back into this repo and
-re-verification of the affected test(s) — not fixable from `benchmarxUpdates` directly,
-since the adapter classes here just call into generated code. Bug 3 has been fixed the
-same way (fix landed in `bxagent`, jar rebuilt) and is now **resolved**.
+re-verification of the affected test — not fixable from `benchmarxUpdates` directly,
+since the transformation logic itself lives in generated code. Bug 3 has been fixed the
+same way (fix landed in `bxagent`, jar rebuilt) and is now **resolved**. Bug 2 turned out
+to be two separate, smaller defects — one of them (the adapter classes never calling
+`sync()`) *is* fixable from `benchmarxUpdates`, but only once the other (a genuine
+`sync()` generator gap: no deletion-cascade handling) lands in `bxagent` first, since
+fixing the adapter alone regresses other tests. See `BXAgent-KnownIssues-Fixes.md` for
+the full root-cause analysis and proposed fixes, both verified by prototyping.
 
 Found and documented: 2026-07-17 (bugs 1, 2); 2026-07-22 (bug 3, after the original
 stub was wired up and found to expose a deeper generator bug); 2026-07-23 (bug 3
@@ -17,14 +22,20 @@ claim to the precise "creation produces structurally empty stubs, deletion leave
 orphaned/corrupted references"; a second `bxagent`-repo fix later the same day resolved
 both remaining halves — all three previously-`@Disabled` reproduction tests in
 `Conflicts.java` now pass unchanged, confirming the fix against the exact assertions
-that caught the bug).
+that caught the bug); 2026-08-05 (bug 2's vague "likely a shared `bx-runtime` bug"
+diagnosis replaced with two concrete, code-verified root causes — see
+`BXAgent-KnownIssues-Fixes.md` — and two new `@Disabled` reproduction tests added,
+`NonMonotonic.testConcurrentSourceDeleteHelpersTargetChangeModelDuration` in gantttocpm
+and `Conflicts.testConcurrentDeleteASrcFullRenameTrgConflict` in settooset, both using
+genuine unrestricted target-side edits instead of the idle-target/scoped-conflict
+workarounds the existing passing tests use).
 
 ## Summary
 
 | # | Title | Examples affected | Trigger | Data-loss severity |
 |---|---|---|---|---|
 | 1 | `Operator.op` lost during conflict resolution | Ast2Dag | Concurrent **conflict** (both sides edit the same shared/structurally-relevant node) | High — AST/DAG end up structurally inconsistent |
-| 2 | Target-side edits dropped during concurrent sync | Gantt2Cpm, Set2OSet | Concurrent edit where target touches an attribute that has a **real source-side correspondence counterpart** | High — source/target end up permanently divergent, not just "resolved differently" |
+| 2 | Target-side edits dropped during concurrent sync — **root cause found 2026-08-05, fix proposed** | Gantt2Cpm, Set2OSet | Concurrent edit where target touches an attribute that has a **real source-side correspondence counterpart** | High — source/target end up permanently divergent, not just "resolved differently" |
 | 3 | ~~`sync()` creates empty Table stubs / leaves orphaned columns on delete~~ **RESOLVED 2026-07-23** | Ecore2SQL | Was: any concurrent edit that creates or deletes an EClass/EAttribute | Fixed upstream in `bxagent`; all 4 `Conflicts` tests (including 3 former reproduction cases) pass |
 
 **Working, not affected**: concurrent target-side edits to attributes with **no
@@ -36,15 +47,16 @@ If an attribute is legitimately target-only, there's nothing to drop, so those t
 stay green. See the `NonMonotonic`/`MonotonicCreating` tests in `pntopnw` and
 `asttodag` for confirmed-clean examples of this category.
 
-**Possible relationship between bug 1 and bug 2**: both manifest as *attribute data
-loss specifically around conflict/concurrent-resolution code paths* that don't occur on
-the plain forward/backward-only paths (which are exercised by nearly every other
-passing test in this suite and are demonstrably correct). It's plausible both trace
-back to the same underlying gap — e.g. a shared "recompute target attributes after
-conflict/concurrent merge" step in `bx-runtime` that isn't invoked, or isn't invoked
-completely, outside the simple one-directional propagation path. Worth investigating
-together rather than assuming two unrelated bugs; if a `bx-runtime` fix for bug 2 also
-resolves bug 1, that would confirm the shared root cause.
+**Relationship between bug 1 and bug 2 — superseded.** This section originally
+speculated both bugs shared a root cause in `bx-runtime`. Bug 2's actual root causes
+(found 2026-08-05, see `BXAgent-KnownIssues-Fixes.md`) are unrelated to bug 1: the
+`BXAgentGantt2Cpm`/`BXAgentSet2OSet` adapters simply never call `sync()` at all (they
+call the forward-only `transform()`), and separately, `sync()`'s generated code has no
+deletion-cascade handling. Neither of those is a "recompute target attributes after
+conflict" gap, and neither is shared `bx-runtime` code — both are specific to each
+example's generated `Gantt2CpmTransformation`/`Sets2OsetsTransformation` classes and
+their adapters. Bug 1 (`Operator.op` loss in Ast2Dag) remains open and unexplained by
+this finding; there is no longer a basis for assuming it shares a cause with bug 2.
 
 ---
 
@@ -172,44 +184,54 @@ so the `Conflicts` test in this example doesn't depend on backward-propagating
 non-conflicting target edits. With the conflict isolated to a single element, the
 result came back clean and consistent on both sides.
 
-### The bug (general)
+### The bug (general) — root cause found 2026-08-05
 
-`performAndPropagateEdit`'s concurrent reconciliation applies the source-side edit
-correctly (forward propagation works in both examples) but silently drops
-non-conflicting target-side edits instead of backward-propagating them to source, even
-though the identical operation backward-propagates correctly via the dedicated
-non-concurrent `performAndPropagateTargetEdit` path. Confirmed in two independently
-generated transformations, so likely a shared BXAgent runtime issue rather than a
-per-example code-generation bug — worth checking `bx-runtime`'s concurrent-sync
-implementation first before digging into either example's generated transformation
-code.
+Originally documented (2026-07-17) only as an observed symptom — non-conflicting
+target-side edits silently dropped during concurrent sync — with a guess that it was a
+shared `bx-runtime` issue. That guess was wrong. The actual root cause, found by
+prototyping fixes directly and using two new `@Disabled` reproduction tests as the
+oracle (`NonMonotonic.testConcurrentSourceDeleteHelpersTargetChangeModelDuration` in
+gantttocpm, `Conflicts.testConcurrentDeleteASrcFullRenameTrgConflict` in settooset), is
+two separate, smaller defects. Full analysis and proposed fixes in
+`BXAgent-KnownIssues-Fixes.md`; summary:
 
-**General workaround** (applied across examples going forward): keep target-side edits
-either idle, or scoped to *only* the contested element in `Conflicts` tests, until this
-is fixed upstream. Any future concurrent test that requires the target to make a real,
+1. **`BXAgentGantt2Cpm.performAndPropagateEdit` and `BXAgentSet2OSet.performAndPropagateEdit`
+   never call `sync()` at all** — they call the plain forward-only `transform()`. This
+   alone explains the entire symptom: `transform()` only ever reads source → target, so
+   target-only changes are never even looked at, and "conflicts" only appeared resolved
+   because forward-only `transform()` unconditionally overwrites target from source. For
+   comparison, `BXAgentEcore2SQL.performAndPropagateEdit` already calls `sync()`
+   correctly (that's why bug 3 above is fully resolved and this bug never affected
+   Ecore2SQL).
+2. **Fixing (1) alone is not enough**: `sync()`'s generated code in both
+   `Gantt2CpmTransformation.java` and `Sets2OsetsTransformation.java` never calls
+   `CorrespondenceModel.findDeletedSourceEntries`/`findDeletedTargetEntries` — unlike the
+   dedicated `transformIncremental`/`transformIncrementalBack` paths, which do. So
+   `sync()` cannot express "this object was deleted on one side, cascade-delete the
+   other side" during a concurrent step; it silently reinterprets a one-sided deletion as
+   "the other side created something new" and recreates the deleted object. Confirmed by
+   prototyping: swapping `transform()` → `sync()` in the adapter (with hooks correctly
+   passed, fixing a separate hook-wiring issue found along the way — see
+   `BXAgent-KnownIssues-Fixes.md`) made the target-edit backward-propagation case pass,
+   but broke three previously-passing deletion tests, all showing the deleted object
+   reappearing after `sync()`.
+
+Neither defect is shared `bx-runtime` code, and neither is a "recompute target
+attributes after conflict" gap as originally guessed — see the now-corrected
+"Relationship between bug 1 and bug 2" note in the Summary section above.
+
+**General workaround** (still applied across examples until both fixes land): keep
+target-side edits either idle, or scoped to *only* the contested element in `Conflicts`
+tests. Any future concurrent test that requires the target to make a real,
 independently-propagating edit alongside unrelated source changes should be expected to
-hit this same gap.
+hit this same gap. The two new `@Disabled` tests above are kept specifically to exercise
+the *un-worked-around* scenario once both fixes land.
 
-**To resume**: reproduce via the scenarios above (both 2a and 2b — having two
-independent repros in different generated transformations is valuable for confirming a
-shared-code fix actually resolves both), dig into the BXAgent-generated
-`Gantt2CpmTransformation`'s and `Set2OSetTransformation`'s concurrent/
-`performAndPropagateEdit` code path in the `bxagent` repo, compare against the working
-`performAndPropagateTargetEdit`-only path, fix, rebuild jars, copy into
-`benchmarxUpdates`, then redesign the affected tests to exercise genuine bidirectional
-concurrent edits (drop the "keep target idle"/"scope to one element" workarounds once
-fixed, to get back to testing the real bidirectional-concurrent behavior these tests
-were originally meant to exercise).
-
-**Concrete starting points**: since this reproduces identically in two separately
-generated transformations, look first at the **shared** `bx-runtime` code
-(`dev.bxagent.correspondence.*` — `CorrespondenceModel`, `TransformationContext`, or
-whatever orchestrates a concurrent `sync()` call across both generated transformations)
-rather than either example's generated code. Specifically: does the concurrent sync
-path call the same "update target attribute → mirror to source" routine that the
-dedicated `performAndPropagateTargetEdit` path calls, or a different/partial one? The
-non-concurrent path is proven correct (`IncrementalBackward.testIncrementalValueChange`
-passes in both examples), so it's a good reference implementation to diff against.
+**To resume**: land Fix 2 from `BXAgent-KnownIssues-Fixes.md` in the `bxagent` repo
+first (`sync()`'s missing deletion-cascade handling — the generator-level defect),
+rebuild jars, then apply Fix 1 (`benchmarxUpdates` adapter wiring) and re-enable both
+`@Disabled` tests without changing their assertions — same methodology used to close
+bug 3.
 
 ---
 

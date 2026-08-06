@@ -9,6 +9,7 @@ import org.benchmarx.BXTool;
 import org.benchmarx.examples.set2oset.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.set2oset.testsuite.Decisions;
 import org.benchmarx.examples.set2oset.testsuite.Set2OsetTestCase;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -59,5 +60,45 @@ public class Conflicts extends Set2OsetTestCase {
 		util.assertAnyPostcondition(Map.ofEntries(
 				entry("ConflictsDeleteWinsSet", "ConflictsDeleteWinsOset"),
 				entry("ConflictsRenameWinsSet", "ConflictsRenameWinsOset")));
+	}
+
+	/**
+	 * <b>Test</b> for the same delete-vs-modify conflict on A, but with a genuine
+	 * non-conflicting target-side edit alongside it: target renames A to Z (contested)
+	 * <i>and</i> B/C to X/Y (uncontested) in the same concurrent step
+	 * (CF-DeleteRenameAFullTrgEdit).<br/>
+	 * <b>Expect</b>: the A conflict resolves (delete wins), and the uncontested B/C
+	 * renames backward-propagate to the source, leaving both models at {@code {X, Y}}.<br/>
+	 * <b>Features</b>: concurrent, conflict, delete-vs-modify, bwd-required
+	 *
+	 * <p><b>Disabled</b>: reproduces a confirmed BXAgent bug rather than a
+	 * test-authoring issue. The delete-vs-rename conflict on A resolves correctly
+	 * (delete wins, consistently on both sides), but the uncontested renames of B and C
+	 * to X and Y never backward-propagate to the source: target ends up {@code {X, Y}}
+	 * while source stays at {@code {B, C}} - a genuinely inconsistent, divergent result
+	 * between the two models. Captured via {@code tool.saveModels(...)}. This is the
+	 * same underlying bug {@link #testConcurrentDeleteASrcRenameATrgConflict} works
+	 * around by using the narrower {@code OsetHelper.renameAToZ()} instead of
+	 * {@code changeABCtoZXY()}. See {@code BXAgent-KnownIssues.md} #2b and
+	 * {@code BXAgent-KnownIssues-Fixes.md} for the proposed fix. Re-enable once fixed in
+	 * the bxagent generator repo.</p>
+	 */
+	@Disabled("Reproduces a confirmed BXAgent bug (non-conflicting target-side edit "
+			+ "dropped during concurrent sync, never backward-propagated) - see "
+			+ "BXAgent-KnownIssues.md #2b. Re-enable once fixed in the bxagent generator repo.")
+	@ParameterizedTest
+	@MethodSource("tools")
+	public void testConcurrentDeleteASrcFullRenameTrgConflict(BXTool<sets.MySet, osets.MyOrderedSet, Decisions> tool) {
+		this.tool = tool;
+		initialise();
+		tool.performAndPropagateSourceEdit(srcEdit(helperSet::setSetName, helperSet::createA, helperSet::createB, helperSet::createC));
+		util.assertPrecondition("ConflictsPreSet", "ConflictsPreOset");
+		// Concurrent: SRC deletes A; TRG independently renames A to Z (contested, same
+		// conflict as above) AND renames B/C to X/Y (uncontested, disjoint from the
+		// conflict) in the same edit.
+		tool.performAndPropagateEdit(
+				srcEdit(helperSet::deleteA),
+				trgEdit(helperOset::changeABCtoZXY));
+		util.assertPostcondition("ConflictsFullRenameSet", "ConflictsFullRenameOset");
 	}
 }

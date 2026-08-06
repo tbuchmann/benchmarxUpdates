@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sets:MySet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:sets="http://de.ubt.ai1.bw.qvt.examples.sets.ecore" name="Alphabet">
+  <elements value="X"/>
+  <elements value="Y"/>
+</sets:MySet>
