@@ -25,6 +25,7 @@ import cpm.CpmFactory;
 import de.tbuchmann.bxagent.gantt2cpm.Gantt2CpmTransformation;
 import de.tbuchmann.bxagent.gantt2cpm.Gantt2CpmTransformation.PostProcessor;
 import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
 import dev.bxagent.correspondence.TransformationContext;
 import gantt.GanttDiagram;
 import gantt.GanttFactory;
@@ -292,8 +293,10 @@ public class BXAgentGantt2Cpm extends BXToolForEMF<gantt.GanttDiagram, cpm.CPMNe
 			Supplier<IEdit<CPMNetwork>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
-		Gantt2CpmTransformation.transform(source, target, corr,
-				TransformationContext.DeletionPolicy.CASCADE, forwardHook);
+		Gantt2CpmTransformation.sync(source, target, corr,
+            SyncConflictPolicy.SOURCE_WINS,
+            TransformationContext.DeletionPolicy.CASCADE, Gantt2CpmTransformation.Options.defaults(),
+            forwardHook, backwardHook);
 	}
 
 }

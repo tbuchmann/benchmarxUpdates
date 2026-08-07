@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import de.tbuchmann.bxagent.set2oset.Sets2OsetsTransformation;
 import de.tbuchmann.bxagent.set2oset.Sets2OsetsTransformation.PostProcessor;
 import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
 import dev.bxagent.correspondence.TransformationContext;
 import osets.MyOrderedSet;
 import osets.OsetsFactory;
@@ -128,8 +129,10 @@ public class BXAgentSet2OSet extends BXToolForEMF<sets.MySet, osets.MyOrderedSet
 			Supplier<IEdit<osets.MyOrderedSet>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
-		Sets2OsetsTransformation.transform(source, target, corr,
-				TransformationContext.DeletionPolicy.CASCADE, linkedListHook);
+		Sets2OsetsTransformation.sync(source, target, corr,
+				SyncConflictPolicy.SOURCE_WINS,
+				TransformationContext.DeletionPolicy.CASCADE, Sets2OsetsTransformation.Options.defaults(),
+				linkedListHook, PostProcessor.NOOP);
 	}
 
 	@Override

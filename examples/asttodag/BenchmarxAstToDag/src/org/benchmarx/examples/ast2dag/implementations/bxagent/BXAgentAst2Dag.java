@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import ast.Model;
 import de.tbuchmann.bxagent.ast2dag.Ast2DagTransformation;
 import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
 import dev.bxagent.correspondence.TransformationContext;
 
 public class BXAgentAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions> {
@@ -63,7 +64,10 @@ public class BXAgentAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions
 	public void performAndPropagateEdit(Supplier<IEdit<Model>> sourceEdit, Supplier<IEdit<dag.Model>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
-		Ast2DagTransformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
+		//Ast2DagTransformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
+		Ast2DagTransformation.sync(source, target, corr,
+            SyncConflictPolicy.TARGET_WINS,
+            TransformationContext.DeletionPolicy.CASCADE, Ast2DagTransformation.Options.defaults());
 	}
 	
 	@Override

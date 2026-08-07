@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import de.tbuchmann.bxagent.pn2pnw.Pn2PnwTransformation;
 import dev.bxagent.correspondence.CorrespondenceModel;
+import dev.bxagent.correspondence.SyncConflictPolicy;
 import dev.bxagent.correspondence.TransformationContext;
 import pn.Net;
 
@@ -63,7 +64,9 @@ public class BXAgentPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 	public void performAndPropagateEdit(Supplier<IEdit<Net>> sourceEdit, Supplier<IEdit<pnw.Net>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
-		Pn2PnwTransformation.transform(source, target, corr, TransformationContext.DeletionPolicy.CASCADE);
+		Pn2PnwTransformation.sync(source, target, corr,
+				SyncConflictPolicy.TARGET_WINS,
+				TransformationContext.DeletionPolicy.CASCADE, Pn2PnwTransformation.Options.defaults());
 	}
 	
 	@Override

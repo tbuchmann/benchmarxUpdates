@@ -6,13 +6,8 @@ per-example `concurrent/`/`alignment_based/roundtrip/` test suites). Bug 1 still
 fix in the `bxagent`/`emt-agent` generator repos (sibling repos that generate the
 `BXAgent*` transformation code), followed by a jar rebuild/copy back into this repo and
 re-verification of the affected test — not fixable from `benchmarxUpdates` directly,
-since the transformation logic itself lives in generated code. Bug 3 has been fixed the
-same way (fix landed in `bxagent`, jar rebuilt) and is now **resolved**. Bug 2 turned out
-to be two separate, smaller defects — one of them (the adapter classes never calling
-`sync()`) *is* fixable from `benchmarxUpdates`, but only once the other (a genuine
-`sync()` generator gap: no deletion-cascade handling) lands in `bxagent` first, since
-fixing the adapter alone regresses other tests. See `BXAgent-KnownIssues-Fixes.md` for
-the full root-cause analysis and proposed fixes, both verified by prototyping.
+since the transformation logic itself lives in generated code. Bugs 2 and 3 have both
+been fixed this way (fix landed in `bxagent`, jars rebuilt) and are now **resolved**.
 
 Found and documented: 2026-07-17 (bugs 1, 2); 2026-07-22 (bug 3, after the original
 stub was wired up and found to expose a deeper generator bug); 2026-07-23 (bug 3
@@ -28,14 +23,22 @@ diagnosis replaced with two concrete, code-verified root causes — see
 `NonMonotonic.testConcurrentSourceDeleteHelpersTargetChangeModelDuration` in gantttocpm
 and `Conflicts.testConcurrentDeleteASrcFullRenameTrgConflict` in settooset, both using
 genuine unrestricted target-side edits instead of the idle-target/scoped-conflict
-workarounds the existing passing tests use).
+workarounds the existing passing tests use); **2026-08-07 (bug 2 RESOLVED)** — Fix 1
+(switching `performAndPropagateEdit` from `transform()` to `sync()`) applied to all four
+affected adapters (`BXAgentGantt2Cpm`, `BXAgentSet2OSet`, and two more found to share the
+exact same defect while auditing the rest, `BXAgentAst2Dag` and `BXAgentPn2Pnw`), then
+Fix 2 (the `sync()` deletion-cascade generator gap) landed in `bxagent` and fixed the
+resulting regressions in all four; a related but distinct creation-propagation gap
+surfaced and was fixed in `ast2dag`'s generated `sync()` specifically. Both `@Disabled`
+reproduction tests from 2026-08-05 now pass unchanged and have been re-enabled; full
+BXAgent suite across all 8 examples is 239/239 passing, 0 failures.
 
 ## Summary
 
 | # | Title | Examples affected | Trigger | Data-loss severity |
 |---|---|---|---|---|
 | 1 | `Operator.op` lost during conflict resolution | Ast2Dag | Concurrent **conflict** (both sides edit the same shared/structurally-relevant node) | High — AST/DAG end up structurally inconsistent |
-| 2 | Target-side edits dropped during concurrent sync — **root cause found 2026-08-05, fix proposed** | Gantt2Cpm, Set2OSet | Concurrent edit where target touches an attribute that has a **real source-side correspondence counterpart** | High — source/target end up permanently divergent, not just "resolved differently" |
+| 2 | ~~Target-side edits dropped during concurrent sync~~ **RESOLVED 2026-08-07** | Was: Gantt2Cpm, Set2OSet (and the same adapter-wiring defect independently found in Ast2Dag, Pn2Pnw while auditing) | Was: concurrent edit where target touches an attribute that has a **real source-side correspondence counterpart** | Fixed upstream in `bxagent`; all 4 previously-affected examples plus the two `@Disabled` reproduction tests pass |
 | 3 | ~~`sync()` creates empty Table stubs / leaves orphaned columns on delete~~ **RESOLVED 2026-07-23** | Ecore2SQL | Was: any concurrent edit that creates or deletes an EClass/EAttribute | Fixed upstream in `bxagent`; all 4 `Conflicts` tests (including 3 former reproduction cases) pass |
 
 **Working, not affected**: concurrent target-side edits to attributes with **no
@@ -123,10 +126,23 @@ post-conflict-resolution model cleanup/rewrite step that might not be attribute-
 
 ## 2. Target-side edits dropped during concurrent sync (seen in Gantt2Cpm AND Set2OSet)
 
-**Status**: confirmed, reproducible, not fixed. Seen in two unrelated examples with two
-different generated transformations, which points at a shared BXAgent runtime bug
-(likely in `bx-runtime`/`dev.bxagent.correspondence.*`, not per-example generated code)
-rather than something specific to one transformation.
+**Status: RESOLVED 2026-08-07.** Fixed by applying both fixes from
+`BXAgent-KnownIssues-Fixes.md`: Fix 1 (switching `performAndPropagateEdit` from
+`transform()` to `sync()` in `benchmarxUpdates`) applied to `BXAgentGantt2Cpm` and
+`BXAgentSet2OSet`, plus `BXAgentAst2Dag` and `BXAgentPn2Pnw`, found to have the exact
+same defect while auditing the rest of the examples; and Fix 2 (the `sync()`
+deletion-cascade generator gap) landed in the `bxagent` repo. Verified by re-enabling
+both `@Disabled` reproduction tests from 2026-08-05
+(`NonMonotonic.testConcurrentSourceDeleteHelpersTargetChangeModelDuration` in
+gantttocpm, `Conflicts.testConcurrentDeleteASrcFullRenameTrgConflict` in settooset)
+without changing their assertions — both pass. Full BXAgent suite across all 8 examples:
+239/239 passing, 0 failures. The rest of this section is kept as historical diagnosis.
+
+**Original status (superseded)**: confirmed, reproducible, not fixed. Seen in two
+unrelated examples with two different generated transformations, which at the time
+suggested a shared BXAgent runtime bug (likely in `bx-runtime`/`dev.bxagent.correspondence.*`,
+not per-example generated code) rather than something specific to one transformation —
+this guess was later corrected, see "The bug (general)" below.
 
 ### 2a. Gantt2Cpm
 
@@ -154,9 +170,13 @@ Since every *pre-existing* concurrent test in this example
 (`trgEdit(helperCPM::idleDelta)`), this is the first time the concurrent path was
 exercised with a real target-side edit — so the bug was previously invisible.
 
-**Workaround applied**: new `NonMonotonic`/`Conflicts` tests added to `gantttocpm` keep
-the target side idle (or, for `Conflicts`, only assert the actually-observed outcome)
-to avoid this gap rather than working around it test-by-test.
+**Workaround applied (superseded 2026-08-07)**: new `NonMonotonic`/`Conflicts` tests
+added to `gantttocpm` kept the target side idle (or, for `Conflicts`, only asserted the
+actually-observed outcome) to avoid this gap rather than working around it test-by-test.
+No longer necessary — `BXAgentGantt2Cpm.performAndPropagateEdit` now calls `sync()`
+correctly and the underlying generator gap is fixed; the dedicated reproduction test
+(`NonMonotonic.testConcurrentSourceDeleteHelpersTargetChangeModelDuration`) is
+re-enabled and passes.
 
 ### 2b. Set2OSet
 
@@ -178,11 +198,15 @@ to avoid this gap rather than working around it test-by-test.
   divergent result between the two models, not just "a valid resolution policy".
   Captured via `tool.saveModels(...)`.
 
-**Workaround applied**: added a narrower `OsetHelper.renameAToZ()` (touches only the
-contested element, not the uncontested collateral data `changeABCtoZXY` also touches)
-so the `Conflicts` test in this example doesn't depend on backward-propagating
-non-conflicting target edits. With the conflict isolated to a single element, the
-result came back clean and consistent on both sides.
+**Workaround applied (superseded 2026-08-07)**: added a narrower `OsetHelper.renameAToZ()`
+(touches only the contested element, not the uncontested collateral data
+`changeABCtoZXY` also touches) so the `Conflicts` test in this example didn't depend on
+backward-propagating non-conflicting target edits. No longer necessary —
+`BXAgentSet2OSet.performAndPropagateEdit` now calls `sync()` correctly and the
+underlying generator gap is fixed; the dedicated reproduction test
+(`Conflicts.testConcurrentDeleteASrcFullRenameTrgConflict`, using the broader
+`changeABCtoZXY`) is re-enabled and passes. `renameAToZ()`-based test is left in place
+unchanged (harmless, just no longer load-bearing).
 
 ### The bug (general) — root cause found 2026-08-05
 
@@ -220,18 +244,19 @@ Neither defect is shared `bx-runtime` code, and neither is a "recompute target
 attributes after conflict" gap as originally guessed — see the now-corrected
 "Relationship between bug 1 and bug 2" note in the Summary section above.
 
-**General workaround** (still applied across examples until both fixes land): keep
-target-side edits either idle, or scoped to *only* the contested element in `Conflicts`
-tests. Any future concurrent test that requires the target to make a real,
-independently-propagating edit alongside unrelated source changes should be expected to
-hit this same gap. The two new `@Disabled` tests above are kept specifically to exercise
-the *un-worked-around* scenario once both fixes land.
-
-**To resume**: land Fix 2 from `BXAgent-KnownIssues-Fixes.md` in the `bxagent` repo
-first (`sync()`'s missing deletion-cascade handling — the generator-level defect),
-rebuild jars, then apply Fix 1 (`benchmarxUpdates` adapter wiring) and re-enable both
-`@Disabled` tests without changing their assertions — same methodology used to close
-bug 3.
+**Resolution (2026-08-07)**: both fixes landed, in the recommended order. Fix 2
+(`sync()`'s missing deletion-cascade handling) landed first in the `bxagent` repo and
+jars were rebuilt. Fix 1 (`benchmarxUpdates` adapter wiring) was then applied — and
+while auditing the other examples for the same defect, `BXAgentAst2Dag` and
+`BXAgentPn2Pnw` turned out to have the identical `transform()`-instead-of-`sync()` bug,
+so they were fixed the same way. Applying Fix 1 alone (before Fix 2 had actually landed
+in the jars this repo builds against) initially surfaced the deletion-cascade gap as 11
+concrete test regressions across all four newly-switched examples, plus a separate,
+newly-discovered creation-propagation gap specific to `ast2dag`'s generated `sync()`
+(source-side creations weren't reaching the target). Once Fix 2's jar was correctly
+rebuilt and the `ast2dag` creation-propagation gap was also fixed upstream, all 11
+regressions resolved and both `@Disabled` reproduction tests (re-enabled, unchanged
+assertions) pass. Full results in `BXAgent-TestSummary.md`.
 
 ---
 
