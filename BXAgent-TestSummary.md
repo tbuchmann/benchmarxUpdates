@@ -41,7 +41,22 @@ resolved.** The two `@Disabled` reproduction tests added on 2026-08-05
 gantttocpm, `Conflicts.testConcurrentDeleteASrcFullRenameTrgConflict` in settooset) were
 re-enabled without changing their assertions and pass.
 
-## Results table (final, all 8 adapters calling `sync()` correctly)
+## 2026-08-07: `ast2dag`'s `Operator.op` conflict-resolution bug also RESOLVED
+
+The one remaining disabled test in the whole suite — `Conflicts.testConcurrentRenameSharedVariableConflict`
+in asttodag (`BXAgent-KnownIssues.md` bug #1) — is now fixed too. Root cause turned out
+unrelated to bug #2: `Ast2DagTransformation.sync()` never called the pre-existing
+`_materializeStructuralDedupExpressionIncremental` method that the known-good
+forward-transform path always used to rebuild the DAG from the AST. Fixed upstream in
+the `bxagent-transformations` repo by adding that call inside `sync()`. Verified two
+ways: the re-enabled test passes with fresh fixtures, and independently, actual tool
+output was captured via `tool.saveModels(...)` and hand-compared against the committed
+fixture to confirm this isn't a fixture worked around to match still-buggy output — every
+`Operator.op` value matches on both the AST and DAG sides.
+
+**The full BXAgent suite is now 239/239 passing, 0 failures, 0 skipped, 0 disabled.**
+
+## Results table (final, all 8 adapters calling `sync()` correctly, 0 disabled tests)
 
 | Example | Batch Fwd | Batch Bwd | Incr Fwd | Incr Bwd | Roundtrip | Monotonic | Non-Monotonic | Conflicts | Total | Failures |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -49,24 +64,26 @@ re-enabled without changing their assertions and pass.
 | pdb1topdb2 | 4 | 6 | 5 | 7 | 3 | 5 | 2 | 2 | 34 | 0 |
 | familiestopersons | 7 | 11 | 8 | 8 | 3 | 7 | 2 | 4 | 50 | 0 |
 | ecoretosql¹ | 4 | 3 | 7 | 6 | 1 | 2 | 1 | 1 | 25 | 0 |
-| asttodag | 5 | 4 | 5 | 4 | 2 | 4 | 1 | 1 (+1 disabled) | 26 (+1 disabled) | 0 |
+| asttodag | 5 | 4 | 5 | 4 | 2 | 4 | 1 | 1 | 26 | 0 |
 | gantttocpm | 4 | 3 | 5 | 5 | 2 | 2 | 2 | 1 | 24 | 0 |
 | pntopnw | 4 | 3 | 5 | 5 | 3 | 3 | 1 | 1 | 25 | 0 |
 | settooset | 4 | 4 | 5 | 5 | 2 | 2 | 1 | 2 | 25 | 0 |
-| **Total** | **35** | **36** | **45** | **44** | **19** | **31** | **13** | **16 (+1 disabled)** | **239 (+1 disabled)** | **0** |
+| **Total** | **35** | **36** | **45** | **44** | **19** | **31** | **13** | **16** | **239** | **0** |
 
 ¹ ecoretosql's four concurrent scenarios (rename-conflict, `MonotonicCreating`,
 `MonotonicDeleting`, `NonMonotonic`) are all methods inside a single `Conflicts.java`
 rather than separate classes like the other examples — counted here by scenario, not
 by class.
 
-**Every currently-active test passes across all eight examples: 239/239, 0 failures.**
-One test remains disabled — unrelated to the `sync()` work above.
+**Every test in the suite passes across all eight examples: 239/239, 0 failures, 0
+skipped.** No tests remain disabled.
 
 ## Failing / disabled for BXAgent — final
 
+All three known bugs are resolved; none remain open.
+
 | # | Example | Status | Detail |
 |---|---|---|---|
-| 1 | asttodag `Conflicts` | **Open — 1 test `@Disabled`** | `Operator.op` attribute is lost during conflict resolution; reproduction kept in the suite but disabled rather than deleted. See `BXAgent-KnownIssues.md` #1. |
+| 1 | asttodag `Conflicts` | **RESOLVED 2026-08-07** | `Operator.op` attribute was lost during conflict resolution because `sync()` skipped a structural-rebuild phase (`_materializeStructuralDedupExpressionIncremental`) the forward-transform path always ran. Fixed upstream in `bxagent-transformations`; reproduction test re-enabled with fresh fixtures, verified against captured tool output. See `BXAgent-KnownIssues.md` #1. |
 | 2 | gantttocpm `NonMonotonic`, settooset `NonMonotonic`/`Conflicts` | **RESOLVED 2026-08-07** | Concurrent sync used to silently drop non-conflicting target-side edits instead of backward-propagating them. Root cause: adapters weren't calling `sync()` at all, plus a `sync()` generator-level deletion-cascade gap (and, for ast2dag, a separate creation-propagation gap). Both fixed upstream in `bxagent`; both `@Disabled` reproduction tests re-enabled and pass. See `BXAgent-KnownIssues.md` #2 and `BXAgent-KnownIssues-Fixes.md`. |
 | 3 | ecoretosql `sync()` | **Resolved 2026-07-23** | Was: role-based-type (EClass/Table) creation produced empty stubs and deletion left orphaned foreign keys. Fixed upstream in the `bxagent` generator repo; all 4 concurrent scenarios pass with structural (not just count-based) assertions. See `BXAgent-KnownIssues.md` #3. |

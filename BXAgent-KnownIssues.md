@@ -2,12 +2,13 @@
 
 Bugs and gaps discovered in the `BXAgent` tool implementations while filling
 round-trip and concurrent test coverage across the benchmarx examples (see the
-per-example `concurrent/`/`alignment_based/roundtrip/` test suites). Bug 1 still needs a
-fix in the `bxagent`/`emt-agent` generator repos (sibling repos that generate the
-`BXAgent*` transformation code), followed by a jar rebuild/copy back into this repo and
-re-verification of the affected test — not fixable from `benchmarxUpdates` directly,
-since the transformation logic itself lives in generated code. Bugs 2 and 3 have both
-been fixed this way (fix landed in `bxagent`, jars rebuilt) and are now **resolved**.
+per-example `concurrent/`/`alignment_based/roundtrip/` test suites). All three bugs
+found here required a fix in the `bxagent`/`bxagent-transformations` generator repos
+(sibling repos that generate the `BXAgent*` transformation code), followed by a jar
+rebuild/copy back into this repo and re-verification of the affected test — none were
+fixable from `benchmarxUpdates` directly, since the transformation logic itself lives in
+generated code. **All three are now resolved** (bug 1 as of 2026-08-07, bugs 2 and 3
+earlier).
 
 Found and documented: 2026-07-17 (bugs 1, 2); 2026-07-22 (bug 3, after the original
 stub was wired up and found to expose a deeper generator bug); 2026-07-23 (bug 3
@@ -31,13 +32,22 @@ Fix 2 (the `sync()` deletion-cascade generator gap) landed in `bxagent` and fixe
 resulting regressions in all four; a related but distinct creation-propagation gap
 surfaced and was fixed in `ast2dag`'s generated `sync()` specifically. Both `@Disabled`
 reproduction tests from 2026-08-05 now pass unchanged and have been re-enabled; full
-BXAgent suite across all 8 examples is 239/239 passing, 0 failures.
+BXAgent suite across all 8 examples is 239/239 passing, 0 failures. **2026-08-07 (bug 1
+RESOLVED)** — fixed in the `bxagent-transformations` repo by adding a call, inside
+`Ast2DagTransformation.sync()`, to the pre-existing `_materializeStructuralDedupExpressionIncremental`
+method (already used by the known-good forward-transform path, but never invoked from
+`sync()`). Not a fixture workaround: verified by capturing the tool's actual output via
+`tool.saveModels(...)` and confirming by hand that every `Operator.op` value matches the
+committed fixture, including the two nodes that previously reverted to the default
+`Add`. `Conflicts.testConcurrentRenameSharedVariableConflict` re-enabled with fresh
+`ConflictsSharedVarSrcWins*`/`ConflictsSharedVarTrgWins*` fixtures and passes. Full
+BXAgent suite across all 8 examples: 239/239 passing, 0 failures, 0 skipped.
 
 ## Summary
 
 | # | Title | Examples affected | Trigger | Data-loss severity |
 |---|---|---|---|---|
-| 1 | `Operator.op` lost during conflict resolution | Ast2Dag | Concurrent **conflict** (both sides edit the same shared/structurally-relevant node) | High — AST/DAG end up structurally inconsistent |
+| 1 | ~~`Operator.op` lost during conflict resolution~~ **RESOLVED 2026-08-07** | Ast2Dag | Was: concurrent **conflict** (both sides edit the same shared/structurally-relevant node) | Fixed upstream in `bxagent-transformations`; reproduction test re-enabled with fresh fixtures, verified against actual captured tool output |
 | 2 | ~~Target-side edits dropped during concurrent sync~~ **RESOLVED 2026-08-07** | Was: Gantt2Cpm, Set2OSet (and the same adapter-wiring defect independently found in Ast2Dag, Pn2Pnw while auditing) | Was: concurrent edit where target touches an attribute that has a **real source-side correspondence counterpart** | Fixed upstream in `bxagent`; all 4 previously-affected examples plus the two `@Disabled` reproduction tests pass |
 | 3 | ~~`sync()` creates empty Table stubs / leaves orphaned columns on delete~~ **RESOLVED 2026-07-23** | Ecore2SQL | Was: any concurrent edit that creates or deletes an EClass/EAttribute | Fixed upstream in `bxagent`; all 4 `Conflicts` tests (including 3 former reproduction cases) pass |
 
@@ -58,19 +68,48 @@ call the forward-only `transform()`), and separately, `sync()`'s generated code 
 deletion-cascade handling. Neither of those is a "recompute target attributes after
 conflict" gap, and neither is shared `bx-runtime` code — both are specific to each
 example's generated `Gantt2CpmTransformation`/`Sets2OsetsTransformation` classes and
-their adapters. Bug 1 (`Operator.op` loss in Ast2Dag) remains open and unexplained by
-this finding; there is no longer a basis for assuming it shares a cause with bug 2.
+their adapters. Bug 1 (`Operator.op` loss in Ast2Dag) turned out to have yet another,
+unrelated root cause (see section 1 below, resolved 2026-08-07) — confirming there was
+never a basis for assuming the two bugs shared a cause.
 
 ---
 
 ## 1. Ast2Dag: `Operator.op` attribute lost during conflict resolution
 
-**Status**: confirmed, reproducible, not fixed.
+**Status: RESOLVED 2026-08-07.** Fixed in the `bxagent-transformations` repo (a separate
+sibling repo from `bxagent`/`bx-runtime` that holds the per-example generated
+transformation source actually compiled into the jars this repo depends on). Verified by
+re-enabling `Conflicts.testConcurrentRenameSharedVariableConflict` with two new
+fixtures (`ConflictsSharedVarSrcWinsAst/Dag.xmi`, `ConflictsSharedVarTrgWinsAst/Dag.xmi`)
+and independently cross-checking: temporarily re-added `tool.saveModels(...)` to the
+test, ran it against the currently-installed jar, and confirmed by hand that the
+captured actual output is structurally identical to the committed `SrcWins` fixture —
+every `Operator.op` value (`Multiply`/`Subtract`) is preserved on both the AST and DAG
+sides, including the two nodes that used to silently revert to the default `Add`. This
+was a deliberate check against the fixture being hand-derived/reasoned-through rather
+than captured from a genuine run (the project's own convention this doc's "To resume"
+note below already warned about). The rest of this section is kept as historical
+diagnosis.
+
+**What actually fixed it**: not a change to conflict-resolution/attribute-merge logic at
+all (contrary to the "Hypothesis" below). `Ast2DagTransformation.sync()` was missing a
+call to `_materializeStructuralDedupExpressionIncremental` — a pre-existing method
+already used by the known-good forward-transform path (`transformIncremental`) to
+rebuild the DAG from the current AST, reusing matching nodes and creating new ones for
+new AST subtrees. `sync()` simply never invoked it, so the DAG never picked up the
+correct, freshly-recomputed `Operator` structure (including `op`) after a conflict
+resolution — the fix adds that call as a new "Phase 1e: Structural deduplication
+(incremental)" step inside `sync()`. This also fixed a separate, related bug found the
+same day: `ast2dag`'s `MonotonicCreating` tests failing because source-side creations
+weren't reaching the target during concurrent `sync()` at all (same missing call, same
+fix).
+
+**Original status (superseded)**: confirmed, reproducible, not fixed.
 
 **Where**: `examples/asttodag/BenchmarxAstToDag`, tool `BXAgentAst2Dag`. Reproduced by
 `Conflicts.testConcurrentRenameSharedVariableConflict` in
 `examples/asttodag/BenchmarxAstToDag/src/org/benchmarx/examples/ast2dag/testsuite/concurrent/Conflicts.java`
-(currently `@Disabled`, referencing this file).
+(was `@Disabled`, now re-enabled).
 
 **Reproduction**:
 1. Build the `BestDigitRef` precondition via forward source edit: `create42`,
@@ -104,23 +143,14 @@ correctly, per every other passing test in this suite). Worth checking whether t
 specific to `Ast2Dag`'s generated `computeFingerprintBack`/attribute-update logic, or a
 more general BXAgent conflict-resolution code path shared across examples.
 
-**To resume**: reproduce via the disabled test, dig into the BXAgent-generated
-`Ast2DagTransformation` conflict-resolution/merge logic in the `bxagent` repo, fix,
-rebuild jars, copy into `benchmarxUpdates/examples/asttodag/*/lib`, then re-enable the
-test (fixtures `ConflictsSharedVarSrcWinsAst.xmi`/`ConflictsSharedVarSrcWinsDag.xmi` are
-not yet created since the test is disabled — capture fresh via `tool.saveModels(...)`
-once the fix is in place).
-
-**Concrete starting points**: in the generated `Ast2DagTransformation.sync(...)` (the
-method `performAndPropagateEdit` ultimately calls, per the `BXTool` architecture — see
-this repo's root `CLAUDE.md` for the `performAndPropagateEdit` → `sync` call chain),
-find the branch that handles a detected conflict on a node touched by both sides.
-Compare what it does to `Operator` nodes against what the plain forward-transform path
-(`transform`/`transformIncremental`) does — the forward path is known-correct (every
-non-conflict test passes), so a side-by-side diff of "what attributes get (re)written"
-between the two code paths should surface where `op` is dropped. Also check
-`dev.bxagent.correspondence.*` (in `bx-runtime`) for any generic
-post-conflict-resolution model cleanup/rewrite step that might not be attribute-type-aware.
+**(Historical) planned approach**: this section originally suggested reproducing via
+the disabled test, then diffing the conflict-resolution branch of generated
+`Ast2DagTransformation.sync(...)` against the known-good forward-transform path to see
+where `op` gets dropped. The actual fix (see RESOLVED note above) took a different
+shape — `sync()` wasn't dropping `op` in a conflict-merge step, it was skipping an
+entire structural-rebuild phase (`_materializeStructuralDedupExpressionIncremental`)
+that the forward path always ran. Kept here as a reminder that the initial hypothesis
+about *where* a bug lives can be wrong even when the symptom is correctly diagnosed.
 
 ---
 

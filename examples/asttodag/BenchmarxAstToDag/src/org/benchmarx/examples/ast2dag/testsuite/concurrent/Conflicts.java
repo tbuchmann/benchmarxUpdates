@@ -9,7 +9,6 @@ import org.benchmarx.BXTool;
 import org.benchmarx.examples.ast2dag.testsuite.Ast2DagTestCase;
 import org.benchmarx.examples.ast2dag.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.ast2dag.testsuite.Decisions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -41,22 +40,7 @@ public class Conflicts extends Ast2DagTestCase {
 	 * models end up consistent with whichever side won.<br/>
 	 * <b>Features</b>: concurrent, conflict, rename, sharing
 	 *
-	 * <p><b>Disabled</b>: reproduces a confirmed BXAgent bug rather than a test-authoring
-	 * issue. The naming conflict itself resolves correctly (source wins: variable ends up
-	 * "zwei" on both sides), but in the same resolution step two {@code Operator} nodes on
-	 * the DAG side lose their {@code op} attribute (silently reverts to the EMF default
-	 * {@code Add} instead of the correct {@code Multiply}), while the corresponding AST
-	 * nodes correctly retain {@code op="Multiply"} - leaving the AST and DAG models
-	 * structurally inconsistent with each other. Captured via {@code tool.saveModels(...)}
-	 * and confirmed {@code Add} really is the declared-first/default
-	 * {@code ArithmeticOperator} literal (so the omission is a genuine lost value, not a
-	 * default-omission serialization artifact for those two non-root nodes). Full writeup
-	 * in memory {@code bxagent_conflict_op_attribute_bug.md}; needs a fix in the bxagent
-	 * generator repo, then re-enable this test with fresh fixtures.</p>
 	 */
-	@Disabled("Reproduces a confirmed BXAgent bug (Operator.op lost on conflict resolution, "
-			+ "AST/DAG diverge) - see memory bxagent_conflict_op_attribute_bug.md. Re-enable "
-			+ "once fixed in the bxagent generator repo.")
 	@ParameterizedTest
 	@MethodSource("tools")
 	public void testConcurrentRenameSharedVariableConflict(BXTool<ast.Model, dag.Model, Decisions> tool) {
