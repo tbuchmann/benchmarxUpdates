@@ -87,6 +87,7 @@ public class BXtendSet2Oset extends BXToolForEMF<sets.MySet, osets.MyOrderedSet,
 	public void performAndPropagateEdit(Supplier<IEdit<sets.MySet>> sourceEdit, Supplier<IEdit<osets.MyOrderedSet>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
+		set2oset.synch();
 	}
 
 	@Override

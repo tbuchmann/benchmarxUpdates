@@ -101,8 +101,9 @@ public abstract class Pn2PnwTestCase {
 				//new BXLangPn2Pnw(),
 				new BXAgentPn2Pnw()
 				//new IBeXTGGPetrinets()
-		,
-				new DirectLLMPn2Pnw());
+//		,
+//				new DirectLLMPn2Pnw()
+				);
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

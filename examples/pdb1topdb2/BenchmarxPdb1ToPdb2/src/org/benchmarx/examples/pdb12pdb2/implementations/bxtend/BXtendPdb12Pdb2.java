@@ -150,6 +150,9 @@ public class BXtendPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database, 
 	public void performAndPropagateEdit(Supplier<IEdit<Database>> sourceEdit,
 			Supplier<IEdit<pdb2.Database>> targetEdit) {
 		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
+		pdb12pdb2t.synch();
 		
 	}
 

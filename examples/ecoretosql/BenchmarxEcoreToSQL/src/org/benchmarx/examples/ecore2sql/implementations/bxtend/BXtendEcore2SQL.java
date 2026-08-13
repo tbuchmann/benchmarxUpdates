@@ -124,6 +124,7 @@ public class BXtendEcore2SQL extends BXToolForEMF<EPackage, Schema, Decisions> {
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		ecore2sql.synch();
 	}
 
 }

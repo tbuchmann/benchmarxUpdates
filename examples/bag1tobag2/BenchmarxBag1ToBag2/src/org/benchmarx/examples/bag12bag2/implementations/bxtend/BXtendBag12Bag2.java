@@ -125,6 +125,7 @@ public class BXtendBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, Deci
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		bags2bags.synch();
 	}
 
 }

@@ -105,11 +105,13 @@ public abstract class Pdb12Pdb2TestCase {
 				new BXtendPdb12Pdb2(),				
 				//new MediniQVTPdb12Pdb2(),
 				//new IBeXTGGPDB1ToPDB2(),
-				new BXAgentPdb12Pdb2(),
+				new BXAgentPdb12Pdb2()
+//				,
 				//new BXLangPdb12Pdb2(),
 				//new JavaPdb12Pdb2(),
 				//new LLMPdb12Pdb2(),
-				new DirectLLMPdb());
+//				new DirectLLMPdb()
+				);
 		
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {

@@ -123,6 +123,7 @@ public class BXtendGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, Deci
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		gantt2cpm.synch();
 	}
 
 }

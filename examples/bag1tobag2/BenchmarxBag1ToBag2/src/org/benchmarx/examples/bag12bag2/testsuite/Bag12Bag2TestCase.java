@@ -95,13 +95,14 @@ public abstract class Bag12Bag2TestCase {
 	
 	public static Collection<BXTool<bags1.MyBag, bags2.MyBag, Decisions>> tools() {
 		List<BXTool<bags1.MyBag, bags2.MyBag, Decisions>> allTools = Arrays.asList(
-				//new BXtendBag12Bag2(),
+				new BXtendBag12Bag2(),
 				//new PlainJavaUbtBag12Bag2(),
 				//new MediniQVTBag12Bag2(),
 				//new BXLangBag12Bag2(),
 				new BXAgentBags2Bags()
-		,
-				new DirectLLMBags());
+		//,
+		//		new DirectLLMBags()
+				);
 		String toolName = System.getProperty("benchmarx.tool");
 		if (toolName != null && !toolName.isEmpty()) {
 			return allTools.stream()

@@ -95,7 +95,7 @@ public abstract class EcoreToSQLTestCase {
 	
 	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
 		List<BXTool<EPackage, Schema, Decisions>> allTools = Arrays.asList(
-				//new BXtendEcore2SQL(),   // Currently 0 failures
+				new BXtendEcore2SQL(),   // Currently 0 failures
 				//new MediniQVTEcore2SQL(),
 				//new IBeXTGGEcoreToSQL(),
 				new BXAgentEcore2SQL()

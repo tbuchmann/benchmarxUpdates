@@ -18,7 +18,15 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.junit;bundle-version="4.12.0"
+ org.junit;bundle-version="4.12.0",
+ org.hamcrest.core,
+ org.opentest4j
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: Gantt
-
+Import-Package: org.junit.jupiter.api;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.condition;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.extension;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.function;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.io;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.parallel;version="[5.1.0,6.0.0)",
+ org.junit.platform.commons.support;version="[1.0.0,2.0.0)";resolution:=optional

@@ -72,7 +72,7 @@ install "org.benchmarx.tools" "qvtemf"           "1.0.0"          "${LIB_AST}/me
 # bxtend-bag12bag2: from BenchmarxBag1ToBag2/lib/ (pre-built JAR)
 LIB_BAG="${SCRIPT_DIR}/examples/bag1tobag2/BenchmarxBag1ToBag2/lib"
 
-install "org.benchmarx.tools" "bxtend-bag12bag2"      "1.0.0"          "${LIB_BAG}/bxtend-bag12bag2-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-bag12bag2"      "1.1.0"          "${LIB_BAG}/bxtend-bag12bag2-1.1.0.jar"
 # bxlang-bag12bag2: BXLang excluded for now (see per-example TestCase.java tools()).
 #   CAUTION §2 – BXtend-Bag12Bag2.jar has wrong package; if re-enabled, rebuild from
 #   Bags12Bags2-bxlang workspace project:

@@ -17,7 +17,16 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
  org.apache.log4j;bundle-version="1.2.15",
- org.eclipse.emf.compare;bundle-version="3.3.1"
+ org.eclipse.emf.compare;bundle-version="3.3.1",
+ org.junit,
+ org.hamcrest.core,
+ org.opentest4j
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: Set
-
+Import-Package: org.junit.jupiter.api;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.condition;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.extension;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.function;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.io;version="[5.1.0,6.0.0)",
+ org.junit.jupiter.api.parallel;version="[5.1.0,6.0.0)",
+ org.junit.platform.commons.support;version="[1.0.0,2.0.0)";resolution:=optional

@@ -119,6 +119,7 @@ public class BXtendPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		pn2pnw.synch();
 	}
 
 }

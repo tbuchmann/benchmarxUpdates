@@ -119,6 +119,7 @@ public class BXtendAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisions>
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		ast2dag.synch();
 	}
 
 }
