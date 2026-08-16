@@ -48,6 +48,21 @@ public class PNHelper {
 			net.get().setIncrementalID("changed");
 		}
 	}
+
+	public void changeIncrementalIDNTimes(int n) {
+		for (int i = 0; i < n; i++) {
+			changeIncrementalID();
+		}
+	}
+
+	public void createNPTPUnits(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			builder
+				.place(prefix + "A" + i, 1)
+				.place(prefix + "B" + i, 0)
+				.transition(prefix + "T" + i, prefix + "A" + i, prefix + "B" + i);
+		}
+	}
 	
 	public void createSimpleLettersDigits() {
 		builder

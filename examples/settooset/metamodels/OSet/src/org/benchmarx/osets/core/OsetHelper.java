@@ -93,12 +93,28 @@ public class OsetHelper {
 		delete("C");
 	}
 	
-	public void createD() {	
+	public void createD() {
 		builder.next().setElementValue("D");
 	}
-	
+
 	public void deleteD() {
 		delete("D");
+	}
+
+	public void createElement(String value) {
+		builder.next().setElementValue(value);
+	}
+
+	public void createNElements(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			createElement(prefix + i);
+		}
+	}
+
+	public void renameNElementsToZ(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			getElement(prefix + i).setValue("Z_" + prefix + i);
+		}
 	}
 	
 	public void insertABeforeC() {		

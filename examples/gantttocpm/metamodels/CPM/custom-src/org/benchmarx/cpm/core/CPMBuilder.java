@@ -27,6 +27,12 @@ public class CPMBuilder {
 	private static int number = 1;
 	private Consumer<EObject> createNode;
 	private BiConsumer<EReference, List<EObject>> createEdge;
+	// Cache of event number -> Event, avoiding an O(n) scan of the whole model on
+	// every findEventByNumber() call (previously O(n) per activity() call, i.e.
+	// O(n^2) total when building n activities - prohibitively slow at scale).
+	// Safe: this builder is always constructed against a fresh, empty net, and is
+	// the only place events are added to it.
+	private final java.util.Map<Integer, Event> eventsByNumber = new java.util.HashMap<>();
 	
 //	public CPMBuilder(String name) {
 //		net = f.createCPMNetwork();
@@ -48,16 +54,18 @@ public class CPMBuilder {
 		Event e = f.createEvent();
 		e.setNumber(number);
 		number++;
-		net.get().getElements().add(e);		
+		net.get().getElements().add(e);
+		eventsByNumber.put(e.getNumber(), e);
 		return this;
 	}
-	
-	public CPMBuilder events(int num) {		
+
+	public CPMBuilder events(int num) {
 		for (int i = 1; i <= num; i++) {
 			Event e = f.createEvent();
 			e.setNumber(number);
 			number++;
 			net.get().getElements().add(e);
+			eventsByNumber.put(e.getNumber(), e);
 		}
 		return this;
 	}
@@ -79,14 +87,7 @@ public class CPMBuilder {
 	}
 	
 	private Event findEventByNumber(int number) {
-		List<Event> result = net.get().getElements().stream()
-				.filter(Event.class::isInstance)
-				.map(Event.class::cast)
-				.filter(e -> e.getNumber() == number)
-				.collect(Collectors.toList());
-			
-			if (result.size() > 0) return result.get(0);
-			else return null;
+		return eventsByNumber.get(number);
 	}
 	
 	public static void reset() {

@@ -55,12 +55,30 @@ public class Bag1Helper {
 	}
 	
 	public void createBeerGlass() {
-		
+
 		builder.addElement().setValue("Beer Glass");
 	}
-	
+
+	public void createNBeers(int n) {
+		for (int i = 0; i < n; i++) {
+			builder.addElement().setValue("Beer");
+		}
+	}
+
+	public void createNBeerGlasses(int n) {
+		for (int i = 0; i < n; i++) {
+			builder.addElement().setValue("Beer Glass");
+		}
+	}
+
 	public void deleteBeer() {
 		EcoreUtil.delete(getElement("Beer"), true);
+	}
+
+	public void deleteNBeers(int n) {
+		for (int i = 0; i < n; i++) {
+			deleteBeer();
+		}
 	}
 	
 	public void deleteBeerGlass() {

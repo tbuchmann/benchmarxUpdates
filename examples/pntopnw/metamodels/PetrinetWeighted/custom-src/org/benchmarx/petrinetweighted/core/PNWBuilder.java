@@ -1,9 +1,8 @@
 package org.benchmarx.petrinetweighted.core;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -27,37 +26,57 @@ public class PNWBuilder {
 	private final Supplier<Net> net;
 	private final PnwFactory f = PnwFactory.eINSTANCE;
 	private Transition lastTransition;
-	
+	// Name -> element caches, avoiding an O(n) scan of the whole model on every
+	// find*ByName() call. Kept in sync by every method that creates, renames, or
+	// deletes a Place/Transition. Safe: this builder is always constructed
+	// against a fresh, empty net (see PNWHelper), and is the only place
+	// Places/Transitions are added to it.
+	private final java.util.Map<String, Place> placesByName = new java.util.HashMap<>();
+	private final java.util.Map<String, Transition> transitionsByName = new java.util.HashMap<>();
+	// Total NetElements (places + transitions + PTEdges + TPEdges - everything
+	// contained in net.elements, per the eOpposite containment in the ecore
+	// model) created/deleted through this builder. Compared against the live
+	// net.getElements().size() to detect whether anything bypassed the builder.
+	private int knownElementCount = 0;
+
 	public PNWBuilder(Supplier<Net> n) {
 		net = n;
 	}
-	
+
 	public PNWBuilder netName(String name) {
 		net.get().setName(name);
 		return this;
 	}
-	
+
 	public PNWBuilder place(String name, int numberOfTokens) {
 		Place p = f.createPlace();
 		net.get().getElements().add(p);
 		p.setName(name);
 		p.setNoOfTokens(numberOfTokens);
+		placesByName.put(name, p);
+		knownElementCount++;
 		return this;
 	}
-	
+
 	public PNWBuilder deletePlace(String place) {
 		ArrayList<Edge> edges = new ArrayList<>();
 		edges.addAll(findPlaceByName(place).getOutPTEdges());
 		edges.addAll(findPlaceByName(place).getInTPEdges());
 		for (Edge edge : edges) {
 			EcoreUtil.delete(edge);
+			knownElementCount--;
 		}
 		EcoreUtil.delete(findPlaceByName(place));
+		placesByName.remove(place);
+		knownElementCount--;
 		return this;
 	}
-	
+
 	public PNWBuilder renamePlace(String oldName, String newName) {
-		findPlaceByName(oldName).setName(newName);
+		Place p = findPlaceByName(oldName);
+		p.setName(newName);
+		placesByName.remove(oldName);
+		placesByName.put(newName, p);
 		return this;
 	}
 	
@@ -67,11 +86,13 @@ public class PNWBuilder {
 	}
 	
 	public PNWBuilder transition(String name, String source, String target, int sourceWeight, int targetWeight) {
-		Transition trans = findTransitionByName(name); 
-		if (trans == null) {		
+		Transition trans = findTransitionByName(name);
+		if (trans == null) {
 			trans = f.createTransition();
 			trans.setName(name);
 			net.get().getElements().add(trans);
+			transitionsByName.put(name, trans);
+			knownElementCount++;
 		}
 		lastTransition = trans;
 		if (source != null) {
@@ -89,13 +110,19 @@ public class PNWBuilder {
 		edges.addAll(findTransitionByName(transition).getOutTPEdges());
 		for (Edge edge : edges) {
 			EcoreUtil.delete(edge);
+			knownElementCount--;
 		}
 		EcoreUtil.delete(findTransitionByName(transition));
+		transitionsByName.remove(transition);
+		knownElementCount--;
 		return this;
 	}
-	
+
 	public PNWBuilder renameTransition(String oldName, String newName) {
-		findTransitionByName(oldName).setName(newName);
+		Transition t = findTransitionByName(oldName);
+		t.setName(newName);
+		transitionsByName.remove(oldName);
+		transitionsByName.put(newName, t);
 		return this;
 	}
 	
@@ -148,26 +175,44 @@ public class PNWBuilder {
 		return this;
 	}
 	
+	// Self-healing cache lookup: the cache is authoritative when it hits and still
+	// matches the live name, but falls back to a full scan (and re-populates the
+	// cache) for elements that entered/were renamed in the net without going
+	// through this builder - e.g. places/transitions created by the BX tool
+	// itself during propagation, then looked up here in a later idle edit.
+	// On a miss, an O(1) size check tells us whether the two caches already
+	// mirror every element in the net (i.e. nothing bypassed this builder); if
+	// so a miss really does mean "not present" and the O(n) scan is skipped -
+	// this is what keeps bulk get-or-create loops (e.g. transition()) from
+	// degrading to O(n^2).
+	private boolean cachesMirrorModel() {
+		return knownElementCount == net.get().getElements().size();
+	}
+
 	private Place findPlaceByName(String name) {
-		List<Place> result = net.get().getElements().stream()
+		Place cached = placesByName.get(name);
+		if (cached != null && name.equals(cached.getName())) return cached;
+		if (cached == null && cachesMirrorModel()) return null;
+		Optional<Place> found = net.get().getElements().stream()
 				.filter(Place.class::isInstance)
 				.map(Place.class::cast)
-				.filter(a -> a.getName().equals(name))
-				.collect(Collectors.toList());
-			
-		if (result.size() > 0) return result.get(0);
-		else return null;
+				.filter(a -> name.equals(a.getName()))
+				.findFirst();
+		found.ifPresent(p -> placesByName.put(name, p));
+		return found.orElse(null);
 	}
-	
+
 	private Transition findTransitionByName(String name) {
-		List<Transition> result = net.get().getElements().stream()
+		Transition cached = transitionsByName.get(name);
+		if (cached != null && name.equals(cached.getName())) return cached;
+		if (cached == null && cachesMirrorModel()) return null;
+		Optional<Transition> found = net.get().getElements().stream()
 				.filter(Transition.class::isInstance)
 				.map(Transition.class::cast)
-				.filter(t -> t.getName().equals(name))
-				.collect(Collectors.toList());
-		
-		if (result.size() > 0) return result.get(0);
-		else return null;
+				.filter(t -> name.equals(t.getName()))
+				.findFirst();
+		found.ifPresent(t -> transitionsByName.put(name, t));
+		return found.orElse(null);
 	}
 	
 	private PTEdge findPTEdge(String place, String transition) {
@@ -210,8 +255,10 @@ public class PNWBuilder {
 			pte.setWeight(weight);
 			pte.setFromPlace(s);
 			pte.setToTransition(lastTransition);
+			knownElementCount++;
 		} else if (!add && edge != null) {
 			EcoreUtil.delete(edge);
+			knownElementCount--;
 		}
 		return this;
 	}
@@ -234,8 +281,10 @@ public class PNWBuilder {
 			tpe.setWeight(weight);
 			tpe.setToPlace(t);
 			tpe.setFromTransition(lastTransition);
+			knownElementCount++;
 		} else if (!add && edge != null) {
 			EcoreUtil.delete(edge);
+			knownElementCount--;
 		}
 		return this;
 	}

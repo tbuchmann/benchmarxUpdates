@@ -23,28 +23,69 @@ import sql.SqlFactory;
 import sql.Table;
 
 public class SQLHelper {
-	
-	private SchemaBuilder builder;
+
 	private Supplier<Schema> schemaSupplier;
+	private Consumer<EObject> createNode;
+	private BiConsumer<EReference, List<EObject>> createEdge;
 	private BiConsumer<EAttribute, List<?>> changeAttribute;
 	private Consumer<EObject> deleteNode;
 	private BiConsumer<EReference, List<EObject>> deleteEdge;
-	
+
 	public SQLHelper(Supplier<Schema> schemaSupplier, Consumer<EObject> createNode,
 			BiConsumer<EReference, List<EObject>> createEdge,
 			BiConsumer<EAttribute, List<?>> changeAttribute, Consumer<EObject> deleteNode,
 			BiConsumer<EObject, List<EObject>> moveTargetNode, BiConsumer<EReference, List<EObject>> deleteEdge) {
-		builder = new SchemaBuilder(schemaSupplier, createNode, createEdge);
 		this.schemaSupplier = schemaSupplier;
+		this.createNode = createNode;
+		this.createEdge = createEdge;
 		this.changeAttribute = changeAttribute;
 		this.deleteEdge = deleteEdge;
 		this.deleteNode = deleteNode;
 	}
 
+	// SchemaBuilder resolves schemaSupplier.get() eagerly in its own constructor, so
+	// it must be (re-)created on every use rather than cached as a field - otherwise
+	// it would capture the model instance from before initiateSynchronisationDialogue()
+	// created the real one (as happens under the scalability harness, which builds
+	// helpers before the dialogue starts). SchemaBuilder holds no cross-call cursor
+	// state, so recreating it per statement is safe.
+	private SchemaBuilder builder() {
+		return new SchemaBuilder(schemaSupplier, createNode, createEdge);
+	}
+
+	// Creates n independent standalone tables, each named prefix+i with an id column
+	// and a "length" int column - the target-side counterpart of
+	// EcoreHelper#createNListsWithLength, used to scale the rename/rename conflict
+	// scenario from Conflicts#testConcurrentRenameListLengthConflict across n tables.
+	public void createNListTables(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			builder().table().name(prefix + i)
+				.annotation().name("class").end(TableBuilder.class)
+				.annotation().name("concrete").end(TableBuilder.class)
+				.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
+				.column().name("length").type("int")
+					.annotation().name("attribute").end(ColumnBuilder.class)
+					.annotation().name("single").end(ColumnBuilder.class)
+					.end(TableBuilder.class)
+				.primaryKey().referencedColumn("id");
+		}
+	}
+
+	public void renameNListLengthColumns(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			String tableName = prefix + i;
+			Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals(tableName)).findAny();
+			if (ot.isPresent()) {
+				Optional<Column> oc = ot.get().getOwnedColumns().stream().filter(c -> c.getName().equals("length")).findAny();
+				oc.ifPresent(c -> c.setName("size"));
+			}
+		}
+	}
+
 	public void createListTable() {
-		//Precondition: Table Node must exist.		
+		//Precondition: Table Node must exist.
 		//Create table List
-		builder.table().name("List")
+		builder().table().name("List")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("concrete").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -70,7 +111,7 @@ public class SQLHelper {
 		//Add List column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("List").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("List").referencedTable("List").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -78,7 +119,7 @@ public class SQLHelper {
 	
 	public void createNodeTable() {		
 		//Create table Node
-		builder.table().name("Node")
+		builder().table().name("Node")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("abstract").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -90,7 +131,7 @@ public class SQLHelper {
 		//Add Node column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("Node").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("Node").referencedTable("Node").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -100,7 +141,7 @@ public class SQLHelper {
 		//Precondition: Table Node must exist
 		
 		//Create table Leaf
-		builder.table().name("Leaf")
+		builder().table().name("Leaf")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("concrete").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -112,7 +153,7 @@ public class SQLHelper {
 		//Add Leaf column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("Leaf").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("Leaf").referencedTable("Leaf").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -122,7 +163,7 @@ public class SQLHelper {
 		//Precondition: Table Node must exist
 		
 		//Create table DataNode
-		builder.table().name("DataNode")
+		builder().table().name("DataNode")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("concrete").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -146,7 +187,7 @@ public class SQLHelper {
 		//Add DataNode column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("DataNode").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("DataNode").referencedTable("DataNode").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -155,7 +196,7 @@ public class SQLHelper {
 	public void createDataElementTable() {
 		
 		//Create table DataElement
-		builder.table().name("DataElement")
+		builder().table().name("DataElement")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("abstract").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -167,7 +208,7 @@ public class SQLHelper {
 		//Add DataElement column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("DataElement").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("DataElement").referencedTable("DataElement").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -175,7 +216,7 @@ public class SQLHelper {
 //	public void createDataElementTable() {                                        
 //        
 //	      //Create table DataElement                                                
-//	      builder.table().name("DataElement")
+//	      builder().table().name("DataElement")
 //	          .annotation().name("class").end(TableBuilder.class)                   
 //	          .annotation().name("abstract").end(TableBuilder.class)
 //	          .column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)                                                                
@@ -188,7 +229,7 @@ public class SQLHelper {
 //	      Optional<Table> t = schemaSupplier.get().getOwnedTables().stream()
 //	              .filter(f -> f.getName().equals("EObject")).findAny();            
 //	      if(t.isPresent()) {
-//	          TableBuilder b = new TableBuilder(t.get(), builder);                  
+//	          TableBuilder b = new TableBuilder(t.get(), builder());                  
 //	          b.column().name("DataElement").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 //	          .foreignKey().referencedColumn("DataElement").referencedTable("DataElement")
 //	          .event().condition(Condition.DELETE).action(Action.CASCADE);
@@ -209,7 +250,7 @@ public class SQLHelper {
 //	                  uniAnn.setAnnotation("unidirectional");
 //	                  col.getOwnedAnnotations().add(uniAnn);                        
 //	              });                                                               
-//	          new TableBuilder(dn.get(), builder)                      
+//	          new TableBuilder(dn.get(), builder())                      
 //	          .foreignKey().referencedColumn("data").referencedTable("DataElement")
 //	          .event().condition(Condition.DELETE).action(Action.SET_NULL).end(ForeignKeyBuilder.class)                                                   
 //	          .annotation().name("single").end(ForeignKeyBuilder.class)        
@@ -222,7 +263,7 @@ public class SQLHelper {
 		//Precondition: Table DataElement must exist
 		
 		//Create table Pair
-		builder.table().name("Pair")
+		builder().table().name("Pair")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("concrete").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -234,7 +275,7 @@ public class SQLHelper {
 		//Add Pair column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("Pair").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("Pair").referencedTable("Pair").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -244,7 +285,7 @@ public class SQLHelper {
 		//Precondition: Table Pair must exist
 		
 		//Create table Value
-		builder.table().name("Value")
+		builder().table().name("Value")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("concrete").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -266,7 +307,7 @@ public class SQLHelper {
 		//Add Value column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("Value").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("Value").referencedTable("Value").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -276,7 +317,7 @@ public class SQLHelper {
 		//Precondition: Table Pair must exist
 		
 		//Create table Key
-		builder.table().name("Key")
+		builder().table().name("Key")
 			.annotation().name("class").end(TableBuilder.class)
 			.annotation().name("concrete").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -297,7 +338,7 @@ public class SQLHelper {
 		//Add Key column to EObject table
 		Optional<Table> t = schemaSupplier.get().getOwnedTables().stream().filter(f -> f.getName().equals("EObject")).findAny();
 		if(t.isPresent()) {
-			TableBuilder b = new TableBuilder(t.get(), builder);
+			TableBuilder b = new TableBuilder(t.get(), builder());
 			b.column().name("Key").property(Property.UNIQUE).type("int").end(TableBuilder.class)
 				.foreignKey().referencedColumn("Key").referencedTable("Key").event().condition(Condition.DELETE).action(Action.CASCADE);
 		}
@@ -307,7 +348,7 @@ public class SQLHelper {
 		//Precondition: Tables Node and List must exist
 		
 		//Create table List_start_inverse_Node_startOf
-		builder.table().name("List_start_inverse_Node_startOf")
+		builder().table().name("List_start_inverse_Node_startOf")
 			.annotation().name("backwardSingle").end(TableBuilder.class)
 			.annotation().name("forwardSingle").end(TableBuilder.class)
 			.annotation().name("bidirectional").end(TableBuilder.class)
@@ -324,7 +365,7 @@ public class SQLHelper {
 		//Precondition: Table Key must exist
 		
 		//Create table Key_keyValues
-		builder.table().name("Key_keyValues")
+		builder().table().name("Key_keyValues")
 			.annotation().name("attribute").end(TableBuilder.class)
 			.annotation().name("multi").end(TableBuilder.class)
 			.column().name("id").type("int").property(Property.NOT_NULL).end(TableBuilder.class)
@@ -347,14 +388,14 @@ public class SQLHelper {
 			while(!fl.isEmpty()) {
 				EcoreUtil.delete(fl.remove(0),true);
 			}
-			ColumnBuilder builder = new ColumnBuilder(oc.get(), null);
-			builder
+			ColumnBuilder columnBuilder = new ColumnBuilder(oc.get(), null);
+			columnBuilder
 			.annotation().name("single").end(ColumnBuilder.class)
 			.annotation().name("unidirectional").end(ColumnBuilder.class)
 			.annotation().name("cross");
 		}
-		TableBuilder builder = new TableBuilder(t, null);
-		builder.foreignKey().referencedColumn("data").referencedTable("DataElement")
+		TableBuilder tableBuilder = new TableBuilder(t, null);
+		tableBuilder.foreignKey().referencedColumn("data").referencedTable("DataElement")
 			.event().condition(Condition.DELETE).action(Action.SET_NULL).end(ForeignKeyBuilder.class)
 			.annotation().name("single").end(ForeignKeyBuilder.class)
 			.annotation().name("unidirectional").end(ForeignKeyBuilder.class)
@@ -427,8 +468,8 @@ public class SQLHelper {
 		ColumnBuilder b = new ColumnBuilder(c, null);
 		b.annotation().name("unidirectional");
 		
-		TableBuilder builder = new TableBuilder(t, null);
-		builder.foreignKey()
+		TableBuilder tableBuilder = new TableBuilder(t, null);
+		tableBuilder.foreignKey()
 			.referencedColumn("end")
 			.referencedTable("Node")
 			.event().condition(Condition.DELETE).action(Action.SET_NULL).end(ForeignKeyBuilder.class)
@@ -459,8 +500,8 @@ public class SQLHelper {
 		Table t = ot.get();
 		Optional<Column> oc = t.getOwnedColumns().stream().filter(c -> c.getName().equals("data")).findAny();
 		if(oc.isPresent()) {
-			ColumnBuilder builder = new ColumnBuilder(oc.get(), null);
-			builder.annotation().name("Just an example of the possible type");
+			ColumnBuilder columnBuilder = new ColumnBuilder(oc.get(), null);
+			columnBuilder.annotation().name("Just an example of the possible type");
 		}
 	}
 	
@@ -468,8 +509,8 @@ public class SQLHelper {
 		Optional<Table> ot = schemaSupplier.get().getOwnedTables().stream().filter(t -> t.getName().equals("DataNode")).findAny();
 		if(!ot.isPresent()) return;
 		Table t = ot.get();
-		TableBuilder builder = new TableBuilder(t, null);
-		builder.annotation().name("saves the data");
+		TableBuilder tableBuilder = new TableBuilder(t, null);
+		tableBuilder.annotation().name("saves the data");
 	}
 	
 	public void deleteListLengthColumn() {

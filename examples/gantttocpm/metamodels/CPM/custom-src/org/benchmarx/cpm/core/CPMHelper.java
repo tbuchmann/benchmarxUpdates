@@ -55,6 +55,12 @@ public class CPMHelper {
 		}
 	}
 	
+	public void changeIncrementalIDNTimes(int n) {
+		for (int i = 0; i < n; i++) {
+			changeIncrementalID();
+		}
+	}
+
 	public void createSimpleNetwork() {
 		
 		builder.events(6)
@@ -213,8 +219,36 @@ public class CPMHelper {
 			.activity(6, 8, "spam tanks->win game", 181);
 	}
 	
+	// Note: CPMBuilder assigns event numbers from a JVM-wide static counter, so we
+	// can't just predict "last known max + 1" from scratch - the counter's absolute
+	// value may already be far ahead of this net's own contents. Instead, scan once
+	// after the first events() call to learn the actual starting point the counter
+	// handed out, then track incrementally: nothing else touches this net's events
+	// concurrently within this loop, so each subsequent events(2) call is guaranteed
+	// to add exactly the next two sequential numbers. Rescanning and re-sorting all
+	// events on every iteration (as an earlier version of this method did) is O(n)
+	// per call, i.e. O(n^2 log n) overall - prohibitively slow for large n.
+	public void createNActivities(int n, String prefix) {
+		Integer max = null;
+		for (int i = 1; i <= n; i++) {
+			builder.events(2);
+			if (max == null) {
+				List<Integer> numbers = net.get().getElements().stream()
+						.filter(Event.class::isInstance)
+						.map(Event.class::cast)
+						.map(Event::getNumber)
+						.sorted()
+						.collect(Collectors.toList());
+				max = numbers.get(numbers.size() - 1);
+			} else {
+				max += 2;
+			}
+			builder.activity(max - 1, max, prefix + i, 1);
+		}
+	}
+
 	public void idleDelta() {
-		
+
 	}
 	
 	private Event findEventByNumber(int number) {

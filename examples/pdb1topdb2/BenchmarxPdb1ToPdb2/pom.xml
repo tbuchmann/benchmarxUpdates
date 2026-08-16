@@ -102,7 +102,7 @@
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-pdb12pdb2</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
     </dependency>
     <!--
       de-tbuchmann-bxagent-pdb12pdb2: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.pdb12pdb2

@@ -94,7 +94,7 @@
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-set2oset</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
     </dependency>
     <!-- bxlang-set2oset: built from Set2OSets-bxlang Eclipse project (CAUTION §2) -->
     <dependency>

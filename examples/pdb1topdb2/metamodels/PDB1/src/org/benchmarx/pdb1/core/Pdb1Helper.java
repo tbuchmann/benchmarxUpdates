@@ -96,8 +96,24 @@ public class Pdb1Helper {
 	}
 	
 	public void deleteKurtKiesinger() {
-		
+
 		EcoreUtil.delete(getKurtKiesinger());
+	}
+
+	public void createPerson(String id) {
+		builder.addPerson(id).firstName("First_" + id).lastName("Last_" + id).birthday("01.01.1900").placeOfBirth("Berlin");
+	}
+
+	public void createNPersons(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			createPerson(prefix + i);
+		}
+	}
+
+	public void deleteNPersons(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			EcoreUtil.delete(getPerson(prefix + i));
+		}
 	}
 	
 	public void changeFirstNameOfKonradAdenauer() {
@@ -143,6 +159,12 @@ public class Pdb1Helper {
 		k.setLastName("Adenauer");
 	}
 	
+	private Person getPerson(String id) {
+		Optional<Person> p = db.get().getPersons().stream().filter(x -> x.getId().equals(id)).findAny();
+		if (!p.isPresent()) throw new IllegalStateException("Expected person " + id + " to be present");
+		return p.get();
+	}
+
 	private Person getWrongKonradAdenauer() {
 		Optional<Person> ka = db.get().getPersons().stream().filter(p -> p.getId().equals("KA")).findAny();
 		if (!ka.isPresent()) throw new IllegalStateException("Expected person KA to be present");

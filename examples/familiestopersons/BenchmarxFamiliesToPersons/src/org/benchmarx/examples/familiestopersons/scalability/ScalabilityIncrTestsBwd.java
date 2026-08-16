@@ -10,9 +10,9 @@ import org.benchmarx.BXTool;
 import org.benchmarx.examples.familiestopersons.testsuite.BXToolParameterResolver;
 import org.benchmarx.examples.familiestopersons.testsuite.Decisions;
 import org.benchmarx.util.BXToolTimer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,13 +39,20 @@ public class ScalabilityIncrTestsBwd extends ScalabilityTests {
 	static void teardown() throws FileNotFoundException { }
 
 	private void createOnePerson(int nrOfFamilies) {
+		org.junit.jupiter.api.Assumptions.assumeFalse(timedOut.contains(tool.getName()),
+				() -> tool.getName() + " already timed out at a smaller size in this class");
 		var timer = new BXToolTimer<>(tool, REPEAT);
-		assertTimeoutPreemptively(Duration.ofSeconds(TIMEOUT * REPEAT), () -> {
-			results.put(nrOfFamilies,
-					timer.timeTargetEditAfterSetUpInS(
-							trgEdit(() -> helperPerson.createPersons(nrOfFamilies, 5)),
-							trgEdit(() -> helperPerson.createOnePerson())));
-		});
+		timer.prepareTargetEditAfterSetUp(trgEdit(() -> helperPerson.createPersons(nrOfFamilies, 5)));
+		try {
+			assertTimeoutPreemptively(Duration.ofSeconds(TIMEOUT), () -> {
+				recordResult(tool, nrOfFamilies,
+						timer.measureTargetEditAfterSetUpInS(
+						trgEdit(() -> helperPerson.createOnePerson())));
+			});
+		} catch (Throwable t) {
+			timedOut.add(tool.getName());
+			throw t;
+		}
 	}
 
 	@ParameterizedTest @MethodSource("tools")
@@ -61,14 +68,26 @@ public class ScalabilityIncrTestsBwd extends ScalabilityTests {
 	@ParameterizedTest @MethodSource("tools")
 	public void testCreate0000300Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(300); }
 
-	@Disabled @ParameterizedTest @MethodSource("tools")
-	public void testCreate0000500Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(500); }
-	@Disabled @ParameterizedTest @MethodSource("tools")
+	@ParameterizedTest @MethodSource("tools")
 	public void testCreate0001000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(1000); }
-	@Disabled @ParameterizedTest @MethodSource("tools")
+
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreate0005000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(5000); }
+
+	@ParameterizedTest @MethodSource("tools")
 	public void testCreate0010000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(10000); }
-	@Disabled @ParameterizedTest @MethodSource("tools")
+
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreate0050000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(50000); }
+
+	@ParameterizedTest @MethodSource("tools")
 	public void testCreate0100000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(100000); }
-	@Disabled @ParameterizedTest @MethodSource("tools")
-	public void testCreate1000000FamiliesWithMembers(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(1000000); }
+
+	@Disabled
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreate0500000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(500000); }
+
+	@Disabled
+	@ParameterizedTest @MethodSource("tools")
+	public void testCreate1000000Persons(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createOnePerson(1000000); }
 }

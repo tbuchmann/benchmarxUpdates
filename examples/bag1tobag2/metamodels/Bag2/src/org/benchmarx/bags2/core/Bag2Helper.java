@@ -63,11 +63,34 @@ public class Bag2Helper {
 		//builder = new Bag2MyBagBuilder(bag);
 		builder.addElement().setMultiplicity(1).setValue("Beer Glass");
 	}
-	
+
+	public void createBeer(int multiplicity) {
+		builder.addElement().setMultiplicity(multiplicity).setValue("Beer");
+	}
+
+	public void createNEmptyBottles(int n) {
+		builder.addElement().setMultiplicity(n).setValue("Empty Bottle");
+	}
+
+	public void incrementBeerMultiplicity() {
+		Element beer = getElement("Beer");
+		beer.setMultiplicity(beer.getMultiplicity() + 1);
+	}
+
+	public void decrementBeerMultiplicity(int n) {
+		Element beer = getElement("Beer");
+		int newMultiplicity = beer.getMultiplicity() - n;
+		if (newMultiplicity <= 0) {
+			EcoreUtil.delete(beer, true);
+		} else {
+			beer.setMultiplicity(newMultiplicity);
+		}
+	}
+
 	public void deleteBeerGlass () {
 		EcoreUtil.delete(getElement("Beer Glass"), true);
 	}
-	
+
 	public void deleteAllBeers () {
 		EcoreUtil.delete(getElement("Beer"), true);
 	}

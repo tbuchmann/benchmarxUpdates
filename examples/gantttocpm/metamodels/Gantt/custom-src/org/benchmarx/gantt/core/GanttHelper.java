@@ -62,6 +62,12 @@ public class GanttHelper {
 		}
 	}
 	
+	public void changeIncrementalIDNTimes(int n) {
+		for (int i = 0; i < n; i++) {
+			changeIncrementalID();
+		}
+	}
+
 	public void addGantt2CPMHelpers() {
 		//Precondition: createGantt2CPMTestCases
 		
@@ -183,8 +189,14 @@ public class GanttHelper {
 			.endend("spam tanks", "win game", 181);
 	}
 	
+	public void createNActivities(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			builder.activity(prefix + i, 1);
+		}
+	}
+
 	public void idleDelta() {
-		
+
 	}
 	
 	private Activity findActivityByName(String name) {

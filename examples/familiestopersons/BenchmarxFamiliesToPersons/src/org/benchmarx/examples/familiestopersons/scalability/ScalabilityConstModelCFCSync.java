@@ -11,6 +11,7 @@ import org.benchmarx.examples.familiestopersons.testsuite.Decisions;
 import org.benchmarx.examples.familiestopersons.testsuite.concurrent.MonotonicCreating;
 import org.benchmarx.examples.familiestopersons.testsuite.concurrent.MonotonicDeleting;
 import org.benchmarx.util.BXToolTimer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,75 +39,62 @@ public class ScalabilityConstModelCFCSync extends ScalabilityTests {
 		return ScalabilityTests.tools();
 	}
 
-	private void createFamiliesAndConflictingChanges(int nrOfFamilyPairs, int nrOfEditedFamilyPairs) {
-		var timer = new BXToolTimer<>(tool, REPEAT);
+	@BeforeAll
+	static void setup() {
+		initResults();
+	}
 
-		assertTimeoutPreemptively(Duration.ofSeconds(TIMEOUT * REPEAT), () -> {
-			results.put(nrOfEditedFamilyPairs, //
-					timer.timeEditAfterSetUpInS(
-							srcEdit(() -> helperFamily.createSimpsonFamiliesWithMembers(nrOfFamilyPairs)),
-							srcEdit(() -> helperFamily.createSonHugo(nrOfEditedFamilyPairs)),
-							trgEdit(() -> helperPerson.deleteLisa(nrOfEditedFamilyPairs))));
-		});
+	private void createFamiliesAndConflictingChanges(int nrOfFamilyPairs, int nrOfEditedFamilyPairs) {
+		org.junit.jupiter.api.Assumptions.assumeFalse(timedOut.contains(tool.getName()),
+				() -> tool.getName() + " already timed out at a smaller size in this class");
+		var timer = new BXToolTimer<>(tool, REPEAT);
+		try {
+			assertTimeoutPreemptively(Duration.ofSeconds(TIMEOUT), () -> {
+				recordResult(tool, nrOfEditedFamilyPairs, //
+						timer.timeEditAfterSetUpInS(
+								srcEdit(() -> helperFamily.createSimpsonFamiliesWithMembers(nrOfFamilyPairs)),
+								srcEdit(() -> helperFamily.createSonHugo(nrOfEditedFamilyPairs)),
+								trgEdit(() -> helperPerson.deleteLisa(nrOfEditedFamilyPairs))));
+			});
+		} catch (Throwable t) {
+			timedOut.add(tool.getName());
+			throw t;
+		}
 	}
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000003ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 3);
-	}
+	public void testCreateFamiliesAndCreate0000003ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 3); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000005ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 5);
-	}
+	public void testCreateFamiliesAndCreate0000005ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 5); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000010ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 10);
-	}
+	public void testCreateFamiliesAndCreate0000010ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 10); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000020ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 20);
-	}
+	public void testCreateFamiliesAndCreate0000020ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 20); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000030ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 30);
-	}
+	public void testCreateFamiliesAndCreate0000030ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 30); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000040ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 40);
-	}
+	public void testCreateFamiliesAndCreate0000040ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 40); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000050ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 50);
-	}
+	public void testCreateFamiliesAndCreate0000050ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 50); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000060ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 60);
-	}
+	public void testCreateFamiliesAndCreate0000060ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 60); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000070ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 70);
-	}
+	public void testCreateFamiliesAndCreate0000070ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 70); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000080ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 80);
-	}
+	public void testCreateFamiliesAndCreate0000080ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 80); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000090ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 90);
-	}
+	public void testCreateFamiliesAndCreate0000090ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 90); }
 	
 	@ParameterizedTest @MethodSource("tools")
-	public void testCreateFamiliesAndCreate0000100ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); } {
-		createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 100);
-	}
+	public void testCreateFamiliesAndCreate0000100ConflictingChanges(BXTool<FamilyRegister, PersonRegister, Decisions> tool) { this.tool = tool; initialise(); createFamiliesAndConflictingChanges(NR_OF_FAMILY_PAIRS, 100); }
 }

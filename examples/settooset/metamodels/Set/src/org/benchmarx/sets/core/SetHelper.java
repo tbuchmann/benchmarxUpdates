@@ -141,6 +141,25 @@ public class SetHelper {
 		EcoreUtil.delete(getElement("D"));
 		delta.add(new SetHelper.Delta.ElementDeletion("D"));
 	}
+
+	public void createElement(String value) {
+		builder.addElement().setElementValue(value);
+		delta.add(new SetHelper.Delta.ElementCreation(value));
+	}
+
+	public void createNElements(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			createElement(prefix + i);
+		}
+	}
+
+	public void deleteNElements(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			String value = prefix + i;
+			EcoreUtil.delete(getElement(value));
+			delta.add(new SetHelper.Delta.ElementDeletion(value));
+		}
+	}
 	
 	public void changeABCtoZXY() {
 		getElement("A").setValue("Z");

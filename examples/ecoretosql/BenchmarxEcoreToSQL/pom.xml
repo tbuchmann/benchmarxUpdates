@@ -104,24 +104,25 @@
       Tool JARs from lib/ – installed into the local Maven repo once via
       install-local-deps.sh (run from the repository root).
     -->
+    <!-- bxagent-ecore2sql 1.0.0 (old, dev.emtagent package) kept in lib for reference only — excluded from classpath -->
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-ecore2sql</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
-    <!-- bxagent-ecore2sql 1.0.0 (old, dev.emtagent package) kept in lib for reference only — excluded from classpath -->
+    <!--
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>emt-agent</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-    </dependency>
+    </dependency>-->
     <!--
       de-tbuchmann-bxagent-ecore2sql: built from bxagent-transformations/de.tbuchmann.bxagent.ecore2sql
       Contains de.tbuchmann.bxagent.ecore2sql.Ecore2SqlTransformation used by BXAgentEcoreToSQL.
       Supersedes the old org.benchmarx.tools:bxagent-ecore2sql.
     -->
     <dependency>
-      <groupId>org.benchmarx.tools</groupId>
+      <groupId>de.tbuchmann.bxagent</groupId>
       <artifactId>de-tbuchmann-bxagent-ecore2sql</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

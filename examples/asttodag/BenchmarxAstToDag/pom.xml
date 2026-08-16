@@ -107,7 +107,7 @@
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-ast2dag</artifactId>
-      <version>1.0.0</version>
+      <version>1.2.0</version>
     </dependency>
     <!-- bxlang-ast2dag: built from Ast2Dag-bxlang Eclipse project (dev.bxlang.generated.*) -->
     <dependency>

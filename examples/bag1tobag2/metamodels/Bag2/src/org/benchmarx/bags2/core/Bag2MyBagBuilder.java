@@ -8,16 +8,16 @@ import bags2.MyBag;
 
 public class Bag2MyBagBuilder {
 	private Bags2Factory f = Bags2Factory.eINSTANCE;
-	private MyBag bag;
+	private Supplier<MyBag> bag;
 	private Element last;
-	
+
 	Bag2MyBagBuilder(Supplier<MyBag> bag) {
-		this.bag = bag.get();
+		this.bag = bag;
 	}
-	
+
 	public Bag2MyBagBuilder addElement() {
 		last = f.createElement();
-		last.setBag(bag);
+		last.setBag(bag.get());
 		return this;
 	}
 	

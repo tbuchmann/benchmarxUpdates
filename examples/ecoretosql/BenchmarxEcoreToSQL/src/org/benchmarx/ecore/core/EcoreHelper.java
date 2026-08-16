@@ -18,8 +18,7 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class EcoreHelper {
-	
-	private EcoreBuilder builder;
+
 	private Supplier<EPackage> packageSupplier;
 	private BiConsumer<EAttribute, List<?>> changeAttribute;
 	private Consumer<EObject> createNode;
@@ -27,14 +26,13 @@ public class EcoreHelper {
 	private BiConsumer<EObject, List<EObject>> moveNode;
 	private Consumer<EObject> deleteNode;
 	private BiConsumer<EReference, List<EObject>> deleteEdge;
-	
+
 	public EcoreHelper(Supplier<EPackage> packageSupplier, Consumer<EObject> deleteNode,
 			BiConsumer<EReference, List<EObject>> deleteEdge, BiConsumer<EAttribute, List<?>> changeAttribute) {
 		this.packageSupplier = packageSupplier;
 		this.deleteNode = deleteNode;
 		this.deleteEdge = deleteEdge;
 		this.changeAttribute = changeAttribute;
-		this.builder = new EcoreBuilder(packageSupplier, deleteNode, deleteEdge);
 	}
 
 	public EcoreHelper(Supplier<EPackage> rootSupplier, Consumer<EObject> createSourceNode,
@@ -48,13 +46,48 @@ public class EcoreHelper {
 		this.createNode = createSourceNode;
 		this.createEdge = createSourceEdge;
 		this.moveNode = moveSourceNode;
-		this.builder = new EcoreBuilder(packageSupplier, deleteNode, deleteEdge);
+	}
+
+	// EcoreBuilder resolves packageSupplier.get() eagerly in its own constructor, so
+	// it must be (re-)created on every use rather than cached as a field - otherwise
+	// it would capture the model instance from before initiateSynchronisationDialogue()
+	// created the real one (as happens under the scalability harness, which builds
+	// helpers before the dialogue starts). EcoreBuilder holds no cross-call cursor
+	// state, so recreating it per statement is safe.
+	private EcoreBuilder builder() {
+		return new EcoreBuilder(packageSupplier, deleteNode, deleteEdge);
 	}
 
 	public void idleDelta() {
-		
+
 	}
-	
+
+	// Creates n independent EClasses, each named prefix+i with a single "length"
+	// int attribute - a scale-parameterized generalization of the "List" class from
+	// createSimpleCompositeList(), used to scale the rename/rename conflict scenario
+	// from Conflicts#testConcurrentRenameListLengthConflict across n classes.
+	public void createNListsWithLength(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			String className = prefix + i;
+			builder().clazz(className)
+				.field(className, "length", "int");
+		}
+	}
+
+	public void renameNListLengthAttributes(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			EClass c = (EClass) packageSupplier.get().getEClassifier(prefix + i);
+			Optional<EAttribute> ea = c.getEAttributes().stream().filter(a -> a.getName().equals("length")).findAny();
+			ea.ifPresent(a -> a.setName("count"));
+		}
+	}
+
+	public void addNDataElementFeatures(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			builder().field(prefix + i, "extra", "boolean");
+		}
+	}
+
 	public void hippocraticDelta() {
 		//Delete method in List
 		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
@@ -70,13 +103,13 @@ public class EcoreHelper {
 			a.setTransient(false);
 		}
 		
-		builder.operation("Leaf", "isLeaf", "boolean");
+		builder().operation("Leaf", "isLeaf", "boolean");
 		
 	}
 	
 	public void createSimpleCompositeList() {
-		
-		builder
+
+		builder()
 		.abstractClass("Node")
 		.clazz("Leaf", "Node")
 		.clazz("DataNode", "Node")
@@ -104,12 +137,12 @@ public class EcoreHelper {
 	
 	public void createDataAttribute() {
 		
-		builder.field("DataNode", "data", "int");
+		builder().field("DataNode", "data", "int");
 	}
 	
 	public void createDataNode() {
 		
-		builder.clazz("DataNode", "Node")
+		builder().clazz("DataNode", "Node")
 			.field("DataNode", "data", "int")
 			.reference("DataNode", "follower", "Node")
 			.operation("DataNode", "addLast", "Node")
@@ -131,8 +164,8 @@ public class EcoreHelper {
 	}
 	
 	public void createMethods() {
-		
-		builder
+
+		builder()
 		.operation("Node", "addLast", "Node")
 			.param("newNode", "DataNode")
 		.operation("DataNode", "addLast", "Node")
@@ -144,8 +177,8 @@ public class EcoreHelper {
 	}
 	
 	public void createMethodsSimple() {
-		
-		builder
+
+		builder()
 		.operation("Node", "addLast", "Node")
 			.param("newNode", "DataNode")
 		.operation("DataNode", "addLast", "Node")
@@ -161,13 +194,13 @@ public class EcoreHelper {
 		
 		EClass l = (EClass) packageSupplier.get().getEClassifier("DataNode");
 		EcoreUtil.delete(l.getEStructuralFeature("data"), true);
-		builder.reference("Node", "startOf", "List");
+		builder().reference("Node", "startOf", "List");
 		l = (EClass) packageSupplier.get().getEClassifier("Node");
 		EClass c = (EClass) packageSupplier.get().getEClassifier("List");
 		EReference r = (EReference) l.getEStructuralFeature("startOf");
 		r.setEOpposite((EReference) c.getEStructuralFeature("start"));
 		((EReference) c.getEStructuralFeature("start")).setEOpposite(r);
-		builder.iface("DataElement")
+		builder().iface("DataElement")
 			.clazz("Pair", "DataElement")
 			.clazz("Value")
 				.reference("Value", "pair", "Pair")
@@ -175,7 +208,7 @@ public class EcoreHelper {
 				.multiField("Key", "keyValues", "String")
 			.multiReference("Pair", "values", "Value")
 			.reference("Pair", "key", "Key");
-		builder.reference("DataNode", "data", "DataElement");
+		builder().reference("DataNode", "data", "DataElement");
 		
 		
 		c = (EClass) packageSupplier.get().getEClassifier("Pair");
@@ -217,7 +250,7 @@ public class EcoreHelper {
 	
 	public void changePackageName() {
 		
-		builder.name("CompositeList");
+		builder().name("CompositeList");
 	}
 	
 	public void changeGeneralizationDataElement() {
@@ -338,7 +371,7 @@ public class EcoreHelper {
 	
 	public void renamePackage() {
 		
-		builder.name("CompositeQueue");
+		builder().name("CompositeQueue");
 	}
 	
 	public void renameDataNodeDataReference() {

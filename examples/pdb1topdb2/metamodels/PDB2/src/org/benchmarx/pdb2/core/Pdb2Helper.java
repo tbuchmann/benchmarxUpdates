@@ -90,6 +90,28 @@ public class Pdb2Helper {
 	public void deleteKurtKiesinger() {
 		EcoreUtil.delete(getKurtKiesinger());
 	}
+
+	public void createPerson(String id) {
+		builder.addPerson(id).name("First_" + id + " Last_" + id).birthday("01.01.1900").placeOfBirth("Berlin");
+	}
+
+	public void createNPersons(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			createPerson(prefix + i);
+		}
+	}
+
+	public void changeBirthdayOfNPersons(int n, String prefix) {
+		for (int i = 1; i <= n; i++) {
+			getPerson(prefix + i).setBirthday("01.01.1990");
+		}
+	}
+
+	private Person getPerson(String id) {
+		Optional<Person> p = db.get().getPersons().stream().filter(x -> x.getId().equals(id)).findAny();
+		if (!p.isPresent()) throw new IllegalStateException("Expected person " + id + " to be present");
+		return p.get();
+	}
 	
 	public void changeFirstNameOfKonradAdenauer() {
 		getKonradAdenauer().setName("Heinz Jochen Adenauer");

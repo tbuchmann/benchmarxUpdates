@@ -1,5 +1,6 @@
 package org.benchmarx.examples.familiestopersons.scalability;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -23,11 +24,12 @@ import Persons.PersonsPackage;
 
 public abstract class ScalabilityTests extends FamiliesToPersonsTestCase {
 	private static final String DELIMITER = "\n";
-	protected static final int REPEAT = 3;
-	protected static final int TIMEOUT = 7200; // seconds
+	protected static final int REPEAT = 1;
+	protected static final int TIMEOUT = 180; // seconds
 	private static final String resultFolder = "scalability_results";
 
-	protected static Map<Integer, Double> results;
+	protected static Map<String, Map<Integer, Double>> results;
+	protected static java.util.Set<String> timedOut;
 	protected static String label;
 
 	@Override
@@ -56,21 +58,30 @@ public abstract class ScalabilityTests extends FamiliesToPersonsTestCase {
 		// this happens within each test
 	}
 
-	public static void saveResults(BXTool<FamilyRegister, PersonRegister, Decisions> tool)
+	protected static void recordResult(BXTool<FamilyRegister, PersonRegister, Decisions> tool, int size, double timeInS)
 			throws FileNotFoundException {
-		if (results.isEmpty())
+		results.computeIfAbsent(tool.getName(), k -> new HashMap<>()).put(size, timeInS);
+		saveResults(tool);
+	}
+
+	private static void saveResults(BXTool<FamilyRegister, PersonRegister, Decisions> tool)
+			throws FileNotFoundException {
+		Map<Integer, Double> perTool = results.get(tool.getName());
+		if (perTool == null || perTool.isEmpty())
 			return;
 
+		new File(resultFolder).mkdirs();
 		try (PrintWriter out = new PrintWriter(resultFolder + "/" + label + tool.getName() + ".txt")) {
-			out.println(results.keySet().stream()//
+			out.println(perTool.keySet().stream()//
 					.sorted()//
-					.map(k -> k + ", " + results.get(k))//
+					.map(k -> k + ", " + perTool.get(k))//
 					.collect(Collectors.joining(DELIMITER)));
 		}
 	}
 
 	public static void initResults() {
 		results = new HashMap<>();
+		timedOut = new java.util.HashSet<>();
 	}
 
 	public ScalabilityTests(BXTool<FamilyRegister, PersonRegister, Decisions> tool, String l) {

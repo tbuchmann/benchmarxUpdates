@@ -41,7 +41,7 @@ fi
 install "org.eclipse.emf.compare" "org.eclipse.emf.compare" "3.5.3" "${EMF_COMPARE_JAR}"
 
 # ── Tool JARs from lib/ ───────────────────────────────────────────────────────
-install "org.benchmarx.tools" "bxtend-pdb12pdb2"  "1.0.0"          "${LIB}/bxtend-pdb12pdb2-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-pdb12pdb2"  "1.1.0"          "${LIB}/bxtend-pdb12pdb2-1.1.0.jar"
 install "org.benchmarx.tools" "bxagent-pdb12pdb2" "1.0.0"          "${LIB}/bxagent-pdb12pdb2-1.0.0.jar"
 # bxlang-pdb12pdb2: BXLang excluded for now (see per-example TestCase.java tools()).
 # install "org.benchmarx.tools" "bxlang-pdb12pdb2"  "1.0.0"          "${LIB}/bxlang-pdb12pdb2.jar"
@@ -56,7 +56,7 @@ install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB}/medi
 # ── AST to DAG Tool JARs ──────────────────────────────────────────────────────
 LIB_AST="${SCRIPT_DIR}/examples/asttodag/BenchmarxAstToDag/lib"
 
-install "org.benchmarx.tools" "bxtend-ast2dag"  "1.0.0"          "${LIB_AST}/bxtend-ast2dag-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-ast2dag"  "1.2.0"          "${LIB_AST}/bxtend-ast2dag-1.2.0.jar"
 # bxlang-ast2dag: BXLang excluded for now (see per-example TestCase.java tools()).
 # install "org.benchmarx.tools" "bxlang-ast2dag"  "1.0.0"          "${LIB_AST}/BXtend-AST2DAG.jar"
 install "org.benchmarx.tools" "emt-agent"        "1.0.0-SNAPSHOT" "${LIB_AST}/emt-agent-1.0.0-SNAPSHOT.jar"
@@ -72,7 +72,7 @@ install "org.benchmarx.tools" "qvtemf"           "1.0.0"          "${LIB_AST}/me
 # bxtend-bag12bag2: from BenchmarxBag1ToBag2/lib/ (pre-built JAR)
 LIB_BAG="${SCRIPT_DIR}/examples/bag1tobag2/BenchmarxBag1ToBag2/lib"
 
-install "org.benchmarx.tools" "bxtend-bag12bag2"      "1.1.0"          "${LIB_BAG}/bxtend-bag12bag2-1.1.0.jar"
+install "org.benchmarx.tools" "bxtend-bag12bag2"      "1.2.0"          "${LIB_BAG}/bxtend-bag12bag2-1.2.0.jar"
 # bxlang-bag12bag2: BXLang excluded for now (see per-example TestCase.java tools()).
 #   CAUTION §2 – BXtend-Bag12Bag2.jar has wrong package; if re-enabled, rebuild from
 #   Bags12Bags2-bxlang workspace project:
@@ -97,7 +97,7 @@ install "org.benchmarx.tools" "qvtemf"                 "1.0.0"          "${LIB_B
 # ── Set to OSet Tool JARs ─────────────────────────────────────────────────────
 LIB_SET="${SCRIPT_DIR}/examples/settooset/BenchmarxSetToOSet/lib"
 
-install "org.benchmarx.tools" "bxtend-set2oset"   "1.0.0"          "${LIB_SET}/bxtend-set2oset-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-set2oset"   "1.1.0"          "${LIB_SET}/bxtend-set2oset-1.1.0.jar"
 # bxlang-set2oset: BXLang excluded for now (see per-example TestCase.java tools()).
 #   CAUTION §2 – if re-enabled, rebuild from Set2OSets-bxlang workspace project:
 #   cd /home/tb/workspaceBenchmarXUpdate/Set2OSets-bxlang/bin && jar cf ${BUILD_TMP}/bxlang-set2oset-1.0.0.jar dev/
@@ -118,7 +118,7 @@ install "org.benchmarx.tools" "qvtemf"             "1.0.0"          "${LIB_SET}/
 # ── Gantt to CPM Tool JARs ────────────────────────────────────────────────────
 LIB_G2C="${SCRIPT_DIR}/examples/gantttocpm/BenchmarxGanttToCPM/lib"
 
-install "org.benchmarx.tools" "bxtend-gantt2cpm"  "1.0.0"          "${LIB_G2C}/bxtend-gantt2cpm-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-gantt2cpm"  "1.1.0"          "${LIB_G2C}/bxtend-gantt2cpm-1.1.0.jar"
 install "org.benchmarx.tools" "bxagent-gantt2cpm" "1.0.0"          "${LIB_G2C}/bxagent-gantt2cpm-1.0.0.jar"
 # bxlang-gantt2cpm: BXLang excluded for now (see per-example TestCase.java tools()).
 #   CAUTION §2 – BXtend-Gantt2CPM.jar has wrong package; if re-enabled, rebuild from
@@ -138,7 +138,7 @@ LIB_PN="${SCRIPT_DIR}/examples/pntopnw/BenchmarxPetrinetToPetrinetWeighted/lib"
 
 # bxtend-pn2pnw: lib/bxtend-pn2pnw-1.0.0.jar contains the correct package
 #   de.tbuchmann.bxtend.pn2pnw.* (differs from the obsolete BXtend-PN2PNW.jar).
-install "org.benchmarx.tools" "bxtend-pn2pnw"    "1.0.0"          "${LIB_PN}/bxtend-pn2pnw-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-pn2pnw"    "1.1.0"          "${LIB_PN}/bxtend-pn2pnw-1.1.0.jar"
 
 # emt-agent-pn2pnw: obsolete, no pom.xml depends on it anymore (superseded by
 # de-tbuchmann-bxagent-pn2pnw below); kept commented out since its jar must be
@@ -190,7 +190,7 @@ install "org.benchmarx.tools" "qvtemf"        "1.0.0"          "${LIB_F2P}/medin
 # ── Ecore to SQL Tool JARs ────────────────────────────────────────────────────
 LIB_E2S="${SCRIPT_DIR}/examples/ecoretosql/BenchmarxEcoreToSQL/lib"
 
-install "org.benchmarx.tools" "bxtend-ecore2sql"  "1.0.0"          "${LIB_E2S}/bxtend-ecore2sql-1.0.0.jar"
+install "org.benchmarx.tools" "bxtend-ecore2sql"  "2.0.0"          "${LIB_E2S}/bxtend-ecore2sql-2.0.0.jar"
 install "org.benchmarx.tools" "bxagent-ecore2sql" "1.0.0"          "${LIB_E2S}/bxagent-ecore2sql-1.0.0.jar"
 install "org.benchmarx.tools" "emt-agent"          "1.0.0-SNAPSHOT" "${LIB_E2S}/emt-agent-1.0.0-SNAPSHOT.jar"
 # New BXAgent transformation (supersedes bxagent-ecore2sql)
