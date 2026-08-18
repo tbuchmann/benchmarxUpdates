@@ -47,14 +47,13 @@ public class BXAgentPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 		
 		source = set.createResource(URI.createURI("pn.xmi"));
 		target = set.createResource(URI.createURI("pnw.xmi"));
-		corr = set.createResource(URI.createURI("corr.xmi"));
 		pn.Net root = pn.PnFactory.eINSTANCE.createNet();
 		pnw.Net targetRoot = pnw.PnwFactory.eINSTANCE.createNet();
 		source.getContents().add(root);
 		target.getContents().add(targetRoot);
 				
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://pn2pnw-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 		
 		Pn2PnwTransformation.transform(source, target, corr);

@@ -51,15 +51,14 @@ public class BXAgentPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Database,
 				
 		source = set.createResource(URI.createURI("pdb1.xmi"));
 		target = set.createResource(URI.createURI("pdb2.xmi"));
-		corr = set.createResource(URI.createURI("corr.xmi"));
 		pdb1.Database pdb1Root = Pdb1Factory.eINSTANCE.createDatabase();
 		pdb2.Database pdb2Root = pdb2.Pdb2Factory.eINSTANCE.createDatabase();
 		source.getContents().add(pdb1Root);
 		//target.getContents().add(pdb2Root);
 		
 		// perform batch to establish consistent starting state		
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://pdb12pdb2-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 		Pdb12Pdb2Transformation.transform(source, target, corr);
 	}

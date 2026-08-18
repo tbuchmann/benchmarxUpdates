@@ -53,7 +53,6 @@ public class BXAgentBags2Bags  extends BXToolForEMF<bags1.MyBag, bags2.MyBag, De
 		
 		source = set.createResource(URI.createURI("bag1.xmi"));
 		target = set.createResource(URI.createURI("bag2.xmi"));
-		corr = set.createResource(URI.createURI("corr.xmi"));
 		bags1.MyBag root = bags1.Bags1Factory.eINSTANCE.createMyBag();
 		source.getContents().add(root);
 		bags2.MyBag targetRoot = bags2.Bags2Factory.eINSTANCE.createMyBag();
@@ -61,8 +60,8 @@ public class BXAgentBags2Bags  extends BXToolForEMF<bags1.MyBag, bags2.MyBag, De
 				
 		// perform batch to establish consistent starting state
 		Bags12Bags2Transformation.transform(source, target);
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://bags-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 	}
 	

@@ -59,7 +59,6 @@ public class BXAgentSet2OSet extends BXToolForEMF<sets.MySet, osets.MyOrderedSet
 				
 		source = set.createResource(URI.createURI("pdb1.xmi"));
 		target = set.createResource(URI.createURI("pdb2.xmi"));
-		corr = set.createResource(URI.createURI("corr.xmi"));
 		sets.MySet setRoot = SetsFactory.eINSTANCE.createMySet();
 		osets.MyOrderedSet osetRoot = OsetsFactory.eINSTANCE.createMyOrderedSet();
 		
@@ -68,8 +67,8 @@ public class BXAgentSet2OSet extends BXToolForEMF<sets.MySet, osets.MyOrderedSet
 		
 		// perform batch to establish consistent starting state
 		Sets2OsetsTransformation.transform(source, target);
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://set2oset-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 		
 		linkedListHook = new PostProcessor() {

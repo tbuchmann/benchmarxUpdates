@@ -47,21 +47,21 @@ private static final String RESULTPATH = "results/BXAgent";
 
 	@Override
 	public void initiateSynchronisationDialogue() {
+		set = new ResourceSetImpl();
 		set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 		set.getResourceFactoryRegistry().getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
-		
+
 		source = set.createResource(URI.createURI("ecore.ecore"));
 		target = set.createResource(URI.createURI("sql.xmi"));
-		corr = set.createResource(URI.createURI("corr.xmi"));
 		EPackage root = EcoreFactory.eINSTANCE.createEPackage();
 		source.getContents().add(root);
 		Schema targetRoot = SqlFactory.eINSTANCE.createSchema();
 		target.getContents().add(targetRoot);
-				
+
 		// perform batch to establish consistent starting state
 		Ecore2SqlTransformation.transform(source, target);
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		URI corrURI = URI.createURI("memory://ecore_sql.corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 	}
 	

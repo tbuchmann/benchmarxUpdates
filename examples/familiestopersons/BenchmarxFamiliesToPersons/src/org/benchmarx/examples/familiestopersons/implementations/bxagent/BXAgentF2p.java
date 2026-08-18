@@ -76,8 +76,8 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 
 		// perform batch to establish consistent starting state
 		Families2PersonsTransformation.transform(source, target);
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://f2p-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 		
 	}
@@ -173,8 +173,7 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 		Families2PersonsTransformation.Options options = 
 				new Families2PersonsTransformation.Options(conf.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW),
 						conf.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD));
-		saveModels("Pre_ConcurrentEdit");
-		Families2PersonsTransformation.sync(source, target, corr, 
+		Families2PersonsTransformation.sync(source, target, corr,
 				SyncConflictPolicy.TARGET_WINS, 
 				TransformationContext.DeletionPolicy.CASCADE, 
 				options);
@@ -182,13 +181,8 @@ public class BXAgentF2p extends BXToolForEMF<FamilyRegister, PersonRegister, Dec
 	
 	@Override
 	public void terminateSynchronisationDialogue() {
-	    // Delete persisted corr file so the next test starts with a clean state.
-	    // Without this, the corr file from test N influences test N+1 when
-	    // CorrespondenceModel.loadOrCreate() finds it on disk.
-	    if (corr != null && corr.getURI() != null) {
-	        java.io.File corrFile = new java.io.File(corr.getURI().toFileString());
-	        if (corrFile != null) corrFile.delete();
-	    }
+	    // No file to delete — correspondence model is held in memory only (memory:// URI).
+	    corr = null;
 	    set = new ResourceSetImpl();
 	}
 

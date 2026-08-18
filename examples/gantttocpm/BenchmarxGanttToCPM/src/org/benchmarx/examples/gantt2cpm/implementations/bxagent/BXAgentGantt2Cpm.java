@@ -58,7 +58,6 @@ public class BXAgentGantt2Cpm extends BXToolForEMF<gantt.GanttDiagram, cpm.CPMNe
 				
 		source = set.createResource(URI.createURI("gantt.xmi"));
 		target = set.createResource(URI.createURI("cpm.xmi"));
-		corr = set.createResource(URI.createURI("corr.xmi"));
 		gantt.GanttDiagram ganttRoot = GanttFactory.eINSTANCE.createGanttDiagram();
 		cpm.CPMNetwork cpmRoot = CpmFactory.eINSTANCE.createCPMNetwork();
 		source.getContents().add(ganttRoot);
@@ -66,8 +65,8 @@ public class BXAgentGantt2Cpm extends BXToolForEMF<gantt.GanttDiagram, cpm.CPMNe
 		
 		// perform batch to establish consistent starting state
 		Gantt2CpmTransformation.transform(source, target);
-		org.eclipse.emf.common.util.URI corrURI = CorrespondenceModel.deriveCorrespondenceURI(
-				source.getURI(), target.getURI());
+		// Use in-memory URI so saveAndUpdateTimestamp skips XMI serialization (avoids O(n²) cost)
+		org.eclipse.emf.common.util.URI corrURI = org.eclipse.emf.common.util.URI.createURI("memory://gantt-cpm-corr.xmi");
 		corr = CorrespondenceModel.loadOrCreate(corrURI, set);
 		
 		forwardHook = new PostProcessor() {
