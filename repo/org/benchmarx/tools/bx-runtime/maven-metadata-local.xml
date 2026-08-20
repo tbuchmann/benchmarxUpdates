@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.benchmarx.tools</groupId>
+  <artifactId>bx-runtime</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20260820145530</lastUpdated>
+  </versioning>
+</metadata>

@@ -24,11 +24,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 mvn surefire-report:report
 ```
 
-Before running tests for the first time, install the non-Maven-Central JARs (BX tool JARs, emf.compare) into `~/.m2` — this is a single root-level script covering every example, not a per-example one:
-```sh
-./install-local-deps.sh
-```
-See `README.md` for the caveats around this script (it references a local Eclipse install path and a few `/tmp/*.jar` files that must be rebuilt from Eclipse workspace projects for some tool implementations).
+No setup step is required before running tests: every non-Maven-Central JAR (BX tool
+JARs, emf.compare) is already checked into the relevant example's `lib/` folder and
+resolvable via the committed `repo/` Maven repository (a `<repositories>` entry in the
+root `pom.xml`, populated by symlinks back into `lib/`). `vendor-deps.sh` only needs to
+be re-run when adding a brand-new non-Central JAR — see README.md.
 
 ## Architecture
 
@@ -100,13 +100,11 @@ examples/<name>/
         concurrent/Conflicts.java
       implementations/
         bxagent/BXAgent<Name>.java
-        bxlang/BXLang<Name>.java
       helpers/                     (in metamodel modules, not in test module)
         <Src>Helper.java           (named edit operations for test bodies)
         <Trg>Helper.java
     resources/                     (XMI fixture files for expected model states)
-    lib/                           (local BX tool JARs)
-    install-local-deps.sh
+    lib/                           (local BX tool JARs, vendored via root vendor-deps.sh)
 ```
 
 #### `<Name>TestCase` — per-example test base class
@@ -182,7 +180,7 @@ util.assertPostcondition("NameChangeFamilyEmpty", "NameChangePersonEmpty")
 
 **Concurrent sync (`performAndPropagateEdit`):** Both source and target edits are applied first, then `Families2PersonsTransformation.sync(src, tgt, corr, SyncConflictPolicy.TARGET_WINS, ...)` resolves conflicts. `Conflicts` tests use `util.assertAnyPostcondition(map)` to accept multiple valid resolutions.
 
-**Adding a new BX tool implementation:** implement `BXToolForEMF<FamilyRegister, PersonRegister, Decisions>`, register it in `FamiliesToPersonsTestCase.tools()`, and add the tool's JAR to `lib/` + `install-local-deps.sh`.
+**Adding a new BX tool implementation:** implement `BXToolForEMF<FamilyRegister, PersonRegister, Decisions>`, register it in `FamiliesToPersonsTestCase.tools()`, and add the tool's JAR to `lib/` + `vendor-deps.sh`.
 
 ## Module Registration Status
 
@@ -196,7 +194,7 @@ When migrating an example to Maven:
 1. Create a parent POM for the example group and register it in the root `pom.xml`.
 2. Create `pom.xml` for each metamodel submodule.
 3. Create the test module `pom.xml` with dependencies on `core/Benchmarx`, metamodel JARs, and tool JARs.
-4. Add `install "<groupId>" "<artifactId>" "<version>" "<jar>"` entries for the new example's non-Central JARs to the root-level `install-local-deps.sh` (uses `mvn install:install-file` under the hood — one script covers all examples).
+4. Add `vendor "<groupId>" "<artifactId>" "<version>" "<jar>"` entries for the new example's non-Central JARs to the root-level `vendor-deps.sh` (uses `mvn install:install-file` under the hood, targeting the committed `repo/` — one script covers all examples).
 5. Fix any JUnit 4 `Assert` imports in comparator classes → JUnit 5 `Assertions`.
 6. Add a `CAUTION.md` documenting known issues (mismatched JAR packages, pre-existing tool failures).
 

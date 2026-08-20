@@ -48,7 +48,6 @@ All tests are executed as JUnit 5 `@ParameterizedTest` and run against the follo
 
 The following implementations exist in the source tree but are **not currently active**:
 - `BXtendBag12Bag2` (BXtend DSL)
-- `PlainJavaUbtBag12Bag2` (plain Java)
 - `MediniQVTBag12Bag2` (MediniQVT)
 
 ---

@@ -11,6 +11,21 @@
   <packaging>pom</packaging>
   <name>BenchmarX Updates - Root Parent</name>
 
+  <!--
+    Vendored Maven repository for JARs that aren't on Maven Central (BXtend/BXAgent tool
+    implementations, MediniQVT/qvtemf, emf.compare). The actual jar bytes live
+    once each under the relevant example's lib/ folder (kept there so Eclipse .classpath
+    entries, which reference lib/ directly, keep working); repo/ holds only symlinks back to
+    those files plus small generated poms, so a fresh clone resolves everything with no
+    manual setup step. See vendor-deps.sh to add a new non-Central jar.
+  -->
+  <repositories>
+    <repository>
+      <id>vendored</id>
+      <url>file://${maven.multiModuleProjectDirectory}/repo</url>
+    </repository>
+  </repositories>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
@@ -41,7 +56,7 @@
         <artifactId>org.eclipse.emf.common</artifactId>
         <version>${emf.version}</version>
       </dependency>
-      <!-- emf.compare is NOT on Maven Central; installed via install-local-deps.sh -->
+      <!-- emf.compare is NOT on Maven Central; resolved from the vendored repo/ repository -->
       <dependency>
         <groupId>org.eclipse.emf.compare</groupId>
         <artifactId>org.eclipse.emf.compare</artifactId>

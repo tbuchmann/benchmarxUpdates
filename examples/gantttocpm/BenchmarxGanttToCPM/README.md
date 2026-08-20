@@ -37,7 +37,6 @@ The test suite is parameterised and runs against every tool returned by `GanttTo
 
 Commented-out (available but currently not run):
 - `BXtendGantt2CPM`
-- `PlainJavaUbtGantt2Cpm`
 - `MediniQVTGantt2CPM`
 
 ---

@@ -655,7 +655,7 @@ To add a new bidirectional transformation tool to this test suite, follow these 
 2. **Add Dependencies**
    If your tool requires additional libraries, add them to `BenchmarxPdb1ToPdb2/pom.xml`. If the libraries are not available on Maven Central, you must:
    - Place the JARs in the `lib/` folder.
-   - Update `install-local-deps.sh` in the workspace root to install those JARs into the local Maven repository.
+   - Add a matching `vendor` line to `vendor-deps.sh` in the workspace root and re-run it to populate `repo/`.
    - Add the corresponding dependency to `BenchmarxPdb1ToPdb2/pom.xml`.
 
 3. **Register the Tool**

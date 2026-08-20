@@ -15,7 +15,6 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.pdb12pdb2.implementations.bxagent.BXAgentPdb12Pdb2;
-import org.benchmarx.examples.pdb12pdb2.implementations.bxlang.BXLangPdb12Pdb2;
 import org.benchmarx.examples.pdb12pdb2.implementations.bxtend.BXtendPdb12Pdb2;
 import org.benchmarx.examples.pdb12pdb2.implementations.medini.MediniQVTPdb12Pdb2;
 import org.benchmarx.pdb1.core.Pdb1Comparator;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>de.tbuchmann.bxagent</groupId>
+  <artifactId>de-tbuchmann-bxagent-ast2dag</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20260820145447</lastUpdated>
+  </versioning>
+</metadata>

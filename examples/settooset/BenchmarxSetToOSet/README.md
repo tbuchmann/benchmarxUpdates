@@ -109,7 +109,6 @@ The active set is defined in `Set2OsetTestCase.tools()`.
 | `BXLangSet2Oset` | **BXLang** (uses generated `Sets2OrderedSetsTransformation`) | ✅ active |
 | `BXAgentSet2OSet` | **BXAgent** (uses `Sets2OsetsTransformation` with post-processor for linked-list maintenance) | ✅ active |
 | `IBeXTGGSetToOSet` | **IBeX TGG** | ⛔ commented out |
-| `PlainJavaUbtSet2Oset` | **Plain Java (UBT)** | ⛔ commented out (stub only) |
 
 ---
 

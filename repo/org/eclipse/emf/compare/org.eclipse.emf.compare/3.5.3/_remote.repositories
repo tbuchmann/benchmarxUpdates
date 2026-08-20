@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Aug 20 16:54:37 CEST 2026
+org.eclipse.emf.compare-3.5.3.jar>=
+org.eclipse.emf.compare-3.5.3.pom>=

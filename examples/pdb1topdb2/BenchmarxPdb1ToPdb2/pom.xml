@@ -19,9 +19,9 @@
   <build>
     <sourceDirectory>src</sourceDirectory>  <!-- tests live in src/, not src/test/java -->
     <!--
-      The tool JARs in lib/ are on the compile/test classpath via system scope below.
-      The resources/ directory (XMI files, etc.) is added as a test resource so
-      the tests can load models at runtime.
+      The tool JARs in lib/ are resolved as ordinary dependencies via the vendored
+      repo/ Maven repository (root pom.xml). The resources/ directory (XMI files,
+      etc.) is added as a test resource so the tests can load models at runtime.
     -->
     <testResources>
       <testResource>
@@ -37,6 +37,18 @@
     </testResources>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <!-- BXLang excluded for now (see per-example TestCase.java tools()); no
+                 bxlang-pdb12pdb2 jar checked into lib/, see the pom's bxlang dependency
+                 comment for how to rebuild it if re-enabled. -->
+            <exclude>**/bxlang/BXLangPdb12Pdb2.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -114,11 +126,14 @@
       <artifactId>de-tbuchmann-bxagent-pdb12pdb2</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    <!-- bxlang-pdb12pdb2: BXLang excluded for now (see per-example TestCase.java tools());
+         no jar checked into lib/, rebuild from Pdb12Pdb2-bxlang Eclipse project if re-enabled.
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxlang-pdb12pdb2</artifactId>
       <version>1.0.0</version>
     </dependency>
+    -->
     <!--
       bx-runtime: dev.bxagent.correspondence.* needed by BXAgentPdb12Pdb2.
       Supersedes the old org.benchmarx.tools:bx-runtime.

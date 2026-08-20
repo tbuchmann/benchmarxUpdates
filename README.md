@@ -18,20 +18,22 @@ examples/<name>/
       implementations/           one package per bx tool
     resources/                   expected pre-/postcondition .xmi files
     lib/                         pre-built tool JARs not available on Maven Central
-install-local-deps.sh            one-time script: installs all non-Central JARs into ~/.m2
+repo/                             vendored Maven repository (symlinks into the lib/ folders
+                                   above); committed, so a fresh clone needs no setup step
+vendor-deps.sh                    maintainer script: re-populates repo/ from lib/; only
+                                   needed when adding a new non-Central JAR
 ```
 
 Registered example modules (root `pom.xml`): `pdb1topdb2`, `asttodag`, `bag1tobag2`, `settooset`, `gantttocpm`, `pntopnw`, `familiestopersons`, `ecoretosql`. See `CLAUDE.md` for the detailed architecture (interfaces, edit model, test lifecycle).
 
 ## One-time setup
 
-1. Install a JDK 17 and make sure `./mvnw` works (`./mvnw -v`).
-2. From the repository root, install the JARs that aren't on Maven Central into your local `~/.m2` repo:
-   ```sh
-   ./install-local-deps.sh
-   ```
-   This installs `org.eclipse.emf.compare` (from a local Eclipse install — adjust `ECLIPSE_PLUGINS` in the script if yours differs) plus the pre-built tool JARs for every example (from each example's `lib/` folder). **Caveat:** a few entries install from files under `/tmp/*.jar` that are not checked into the repo — the script's comments explain how to rebuild them from the corresponding Eclipse workspace project (e.g. a `bxlang-*` or `bxagent-*` JAR). Until those JARs are rebuilt and placed at the expected `/tmp` path, the affected tool implementations for that example won't compile/run; every other tool in that example is unaffected. This is a known gap — see "Known limitations" below.
-3. Run `./install-local-deps.sh` again any time a new example/tool is added with its own non-Central dependencies (it's idempotent).
+Install a JDK 17 and make sure `./mvnw` works (`./mvnw -v`). That's it — every non-Central
+JAR (BXtend/BXAgent tool implementations, MediniQVT/qvtemf, emf.compare) is already
+checked into the relevant example's `lib/` folder and resolvable via the committed `repo/`
+Maven repository (wired in via a `<repositories>` entry in the root `pom.xml`). No manual
+install step, no machine-specific paths, no local Eclipse install required. See "Known
+limitations" below for the one narrow exception (`ibextgg`/eMoflon tools).
 
 ## Running tests
 
@@ -62,9 +64,9 @@ mvn surefire-report:report
 Taking `BenchmarxBag1ToBag2` as an example, substitute as appropriate:
 
 1. Add a package for your tool under `examples/bag1tobag2/BenchmarxBag1ToBag2/src/org/benchmarx/examples/bag12bag2/implementations/<your_bx_tool>/` and implement `BXToolForEMF<S, T, Decisions>` (see `core/Benchmarx` and existing implementations for the pattern).
-2. If your tool ships as a pre-built JAR not on Maven Central, drop it into that example's `lib/` folder, add a Maven `<dependency>` for it in `Benchmarx<Name>/pom.xml`, and add a matching `install "<groupId>" "<artifactId>" "<version>" "<jar path>"` line to the root `install-local-deps.sh`.
+2. If your tool ships as a pre-built JAR not on Maven Central, drop it into that example's `lib/` folder, add a Maven `<dependency>` for it in `Benchmarx<Name>/pom.xml`, and add a matching `vendor "<groupId>" "<artifactId>" "<version>" "<jar path>"` line to the root `vendor-deps.sh`.
 3. Register your new tool class in the example's `tools()` method (e.g. `Bag12Bag2TestCase.tools()`), which both the default `mvn test` run and the `-Dbenchmarx.tool=...` filter use.
-4. Run `./install-local-deps.sh` again, then `./mvnw test -pl examples/<name>/Benchmarx<Name> -am -Dbenchmarx.tool=<YourToolClassName>` to exercise just your tool.
+4. Run `./vendor-deps.sh` to populate `repo/`, then `./mvnw test -pl examples/<name>/Benchmarx<Name> -am -Dbenchmarx.tool=<YourToolClassName>` to exercise just your tool.
 5. Feel free to add new JUnit tests that demonstrate the strengths of your tool. Classify new tests using the existing categories (`Batch*`, `Incremental*`, `Roundtrip*`, `concurrent/*`) — see `examples/ecoretosql/BenchmarxEcoreToSQL/INSTRUCTIONS.md` for a worked template on writing roundtrip/concurrent tests.
 6. If a comparator/helper class you touch still imports JUnit 4's `org.junit.Assert`, replace it with plain `if (...) throw new AssertionError(...)` — see any example's `CAUTION.md` for the established pattern.
 
@@ -73,12 +75,11 @@ Taking `BenchmarxBag1ToBag2` as an example, substitute as appropriate:
 1. Copy the structure of an existing example (e.g. `examples/bag1tobag2`): an example parent `pom.xml`, `metamodels/<Src>/pom.xml` + `metamodels/<Trg>/pom.xml` (EMF-generated code, packaged as a Maven module — add the `build-helper-maven-plugin` source-folder config shown in `metamodels/Bag1/pom.xml` if generated code lives outside `src/`), and a `Benchmarx<Name>/pom.xml` test module depending on `core/Benchmarx` and both metamodel modules.
 2. Write the `<Name>TestCase` base class, `Decisions` enum, `BXToolParameterResolver`, comparators, and helpers, following the pattern described in `CLAUDE.md`.
 3. Register the example's parent module in the root `pom.xml`'s `<modules>` list.
-4. Add any non-Central tool JAR installs to `install-local-deps.sh`.
+4. Add any non-Central tool JAR installs to `vendor-deps.sh`.
 5. Document known migration/porting issues for the example in a `CAUTION.md` inside the test module (see existing examples for the format).
 
 ## Known limitations
 
-- `install-local-deps.sh` references a local Eclipse installation path (`ECLIPSE_PLUGINS`) for `org.eclipse.emf.compare`, which must still be adjusted per machine. The handful of entries that used to require rebuilding a JAR from an Eclipse workspace under `.local-build/` are now superseded by the current `de.tbuchmann.bxagent:de-tbuchmann-bxagent-<name>` / `dev.bxagent:bx-runtime` jars checked into each example's `lib/`, and are commented out in the script — every other JAR the script installs comes straight from a `lib/` folder checked into the repo, so a clean checkout only needs the `emf.compare` path fixed up.
 - `BenchmarxFamiliesToPersons` and `BenchmarxEcoreToSQL` still have `ibextgg`/eMoflon-based implementations excluded from the Maven build (require a full IBeX-TGG Eclipse setup); see each module's `CAUTION.md`.
 - Per-example migration write-ups (what changed and why when porting each Eclipse project to Maven) live at the repo root: `BenchmarxAstToDag-Migration.md`, `BenchmarxBag1ToBag2-Migration.md` (+ `-MigrationPlan.md`), `BenchmarxEcoreToSQL-Migration.md`, `BenchmarxFamiliesToPersons-Migration.md`, `BenchmarxGanttToCPM-Migration.md`, `BenchmarxPetrinetToPetrinetWeighted-Migration.md`, `BenchmarxSetToOSet-Migration.md`.
 

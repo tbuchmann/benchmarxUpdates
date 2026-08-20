@@ -34,6 +34,18 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <!-- BXLang excluded for now (see per-example TestCase.java tools()); no
+                 bxlang-set2oset jar checked into lib/, see the pom's bxlang dependency
+                 comment for how to rebuild it if re-enabled. -->
+            <exclude>**/bxlang/BXLangSet2Oset.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
@@ -97,11 +109,14 @@
       <version>1.1.0</version>
     </dependency>
     <!-- bxlang-set2oset: built from Set2OSets-bxlang Eclipse project (CAUTION §2) -->
+    <!-- bxlang-set2oset: BXLang excluded for now (see per-example TestCase.java tools());
+         no jar checked into lib/, rebuild from Set2OSets-bxlang Eclipse project if re-enabled.
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxlang-set2oset</artifactId>
       <version>1.0.0</version>
     </dependency>
+    -->
     <!--
       de-tbuchmann-bxagent-set2oset: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.set2oset
       Contains de.tbuchmann.bxagent.set2oset.Sets2OsetsTransformation used by BXAgentSet2OSet.
@@ -137,17 +152,6 @@
       <artifactId>commons-io</artifactId>
       <version>2.18.0</version>
       <optional>true</optional>
-    </dependency>
-    <!-- PlainJavaUbt: needed to compile PlainJavaUbtSet2Oset (not active in tools()) -->
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>plainjavaubt-set2oset</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>plainjavaubt-util</artifactId>
-      <version>1.0.0</version>
     </dependency>
   </dependencies>
 

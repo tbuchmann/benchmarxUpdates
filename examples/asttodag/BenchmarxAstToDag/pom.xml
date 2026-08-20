@@ -109,12 +109,14 @@
       <artifactId>bxtend-ast2dag</artifactId>
       <version>1.2.0</version>
     </dependency>
-    <!-- bxlang-ast2dag: built from Ast2Dag-bxlang Eclipse project (dev.bxlang.generated.*) -->
+    <!-- bxlang-ast2dag: BXLang excluded for now (see per-example TestCase.java tools());
+         no jar checked into lib/, rebuild from Ast2Dag-bxlang Eclipse project if re-enabled.
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxlang-ast2dag</artifactId>
       <version>1.0.0</version>
     </dependency>
+    -->
     <!--
       de-tbuchmann-bxagent-ast2dag: built from ~/work/git/forschung/bxagent-transformations/de.tbuchmann.bxagent.ast2dag
       Contains de.tbuchmann.bxagent.ast2dag.Ast2DagTransformation used by BXAgentAst2Dag.
@@ -142,17 +144,6 @@
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>qvtemf</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <!-- PlainJavaUbt tool (inactive, compiled for completeness) -->
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>plainjavaubt-ast2dag</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.benchmarx.tools</groupId>
-      <artifactId>plainjavaubt-util</artifactId>
       <version>1.0.0</version>
     </dependency>
     <!-- commons-io: needed by MediniQVT implementation (NullOutputStream) -->

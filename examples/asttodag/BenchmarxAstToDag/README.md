@@ -62,8 +62,7 @@ BenchmarxAstToDag/
 │   │       ├── bxlang/BXLangAst2Dag.java     — BXLang tool adapter
 │   │       ├── bxagent/BXAgentAst2Dag.java   — BXAgent tool adapter
 │   │       ├── bxtend/BXtendAst2Dag.java     — BXtend adapter (disabled)
-│   │       ├── medini/MediniQVTAst2Dag.java  — MediniQVT adapter (disabled)
-│   │       └── plainjavaubt/...              — Plain Java adapter (disabled)
+│   │       └── medini/MediniQVTAst2Dag.java  — MediniQVT adapter (disabled)
 ├── resources/                               — expected model states (XMI)
 ├── samples/                                 — sample models
 └── ast_dag.corr.xmi                         — example correspondence model
