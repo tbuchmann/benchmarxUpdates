@@ -118,11 +118,10 @@ public abstract class GanttToCPMTestCase {
 
 	public static Collection<BXTool<GanttDiagram, CPMNetwork, Decisions>> tools() {
 		List<BXTool<GanttDiagram, CPMNetwork, Decisions>> allTools = Arrays.asList(
-				new BXtendGantt2CPM()     // Currently 0 failures
+				new BXtendGantt2CPM(),     // Currently 0 failures
 				//new PlainJavaUbtGantt2Cpm(),
-//				new MediniQVTGantt2CPM(),
+				new MediniQVTGantt2CPM(),
 				//new BXLangGantt2Cpm(),
-				,
 				new BXAgentGantt2Cpm()
 //		,
 //				new DirectLLMGantt2Cpm()

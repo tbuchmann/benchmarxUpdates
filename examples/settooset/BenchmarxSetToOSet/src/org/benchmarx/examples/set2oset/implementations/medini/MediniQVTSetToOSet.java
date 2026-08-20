@@ -164,6 +164,8 @@ public class MediniQVTSetToOSet extends BXToolForEMF<sets.MySet, osets.MyOrdered
 	public void performAndPropagateEdit(Supplier<IEdit<sets.MySet>> sourceEdit, Supplier<IEdit<osets.MyOrderedSet>> targetEdit) {
 		sourceEdit.get();
 		targetEdit.get();
+		launchFWD();
+		launchBWD();
 	}
 
 	@Override

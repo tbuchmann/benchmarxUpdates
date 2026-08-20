@@ -310,6 +310,10 @@ public class MediniQVTPdb12Pdb2 extends BXToolForEMF<pdb1.Database, pdb2.Databas
 	public void performAndPropagateEdit(Supplier<IEdit<Database>> sourceEdit,
 			Supplier<IEdit<pdb2.Database>> targetEdit) {
 		// TODO Auto-generated method stub
+		sourceEdit.get();
+		targetEdit.get();
+		launchFWD();
+		launchBWD();
 		
 	}
 }

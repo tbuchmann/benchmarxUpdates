@@ -334,7 +334,10 @@ public class MediniQVTBag12Bag2 extends BXToolForEMF<bags1.MyBag, bags2.MyBag, D
 	@Override
 	public void performAndPropagateEdit(Supplier<IEdit<MyBag>> sourceEdit, Supplier<IEdit<bags2.MyBag>> targetEdit) {
 		// TODO Auto-generated method stub
-		
+		sourceEdit.get();
+		targetEdit.get();
+		launchFWD();
+		launchBWD();
 	}
 
 }

@@ -310,5 +310,7 @@ public class MediniQVTGantt2CPM extends BXToolForEMF<GanttDiagram, CPMNetwork, D
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		launchFWD();
+		launchBWD();
 	}
 }

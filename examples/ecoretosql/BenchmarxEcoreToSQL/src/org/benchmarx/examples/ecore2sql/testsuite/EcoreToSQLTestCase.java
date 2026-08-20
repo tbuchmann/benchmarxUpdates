@@ -19,6 +19,7 @@ import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.ecore2sql.implementations.bxagent.BXAgentEcore2SQL;
 import org.benchmarx.examples.ecore2sql.implementations.bxtend.BXtendEcore2SQL;
+import org.benchmarx.examples.ecore2sql.implementations.medini.MediniQVTEcore2SQL;
 import org.benchmarx.sql.core.SQLComparator;
 import org.benchmarx.sql.core.SQLHelper;
 import org.benchmarx.util.BenchmarxUtil;
@@ -96,7 +97,7 @@ public abstract class EcoreToSQLTestCase {
 	public static Collection<BXTool<EPackage, Schema, Decisions>> tools() {
 		List<BXTool<EPackage, Schema, Decisions>> allTools = Arrays.asList(
 				new BXtendEcore2SQL(),   // Currently 0 failures
-				//new MediniQVTEcore2SQL(),
+				new MediniQVTEcore2SQL(),
 				//new IBeXTGGEcoreToSQL(),
 				new BXAgentEcore2SQL()
 		);

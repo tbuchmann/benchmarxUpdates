@@ -334,5 +334,7 @@ public class MediniQVTAst2Dag extends BXToolForEMF<ast.Model, dag.Model, Decisio
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		launchFWD();
+		launchBWD();
 	}
 }

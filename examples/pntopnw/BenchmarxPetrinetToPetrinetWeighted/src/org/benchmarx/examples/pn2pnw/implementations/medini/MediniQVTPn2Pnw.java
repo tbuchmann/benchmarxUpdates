@@ -305,5 +305,7 @@ public class MediniQVTPn2Pnw extends BXToolForEMF<pn.Net, pnw.Net, Decisions> {
 		// TODO Auto-generated method stub
 		sourceEdit.get();
 		targetEdit.get();
+		launchFWD();
+		launchBWD();
 	}
 }

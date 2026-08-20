@@ -19,6 +19,8 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.familiestopersons.implementations.bxagent.BXAgentF2p;
+import org.benchmarx.examples.familiestopersons.implementations.medini.MediniQVTFamiliesToPersons;
+import org.benchmarx.examples.familiestopersons.implementations.medini.MediniQVTFamiliesToPersonsConfig;
 import org.benchmarx.families.core.FamiliesComparator;
 import org.benchmarx.families.core.FamilyHelper;
 import org.benchmarx.persons.core.PersonHelper;
@@ -130,8 +132,8 @@ public abstract class FamiliesToPersonsTestCase {
 				// new NMFFamiliesToPersonsIncremental(), // See setup: implementations/nmf/README-SETUP
 				// new JTLFamiliesToPersons(),          // Excluded: problems with Emftext
 				// new EMoflonFamiliesToPersons(),
-				// new MediniQVTFamiliesToPersons(),
-				// new MediniQVTFamiliesToPersonsConfig(),
+				new MediniQVTFamiliesToPersons(),
+				new MediniQVTFamiliesToPersonsConfig(),
 				// new BXtendFamiliesToPersons(),       // No failures
 				// new WrapperOverBXtendWithMerge(),    // No failures
 				// new BXtendDSLFamiliesToPersons(),    // 3 failures

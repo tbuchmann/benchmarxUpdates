@@ -16,6 +16,7 @@ import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.pn2pnw.implementations.bxagent.BXAgentPn2Pnw;
 import org.benchmarx.examples.pn2pnw.implementations.bxtend.BXtendPn2Pnw;
+import org.benchmarx.examples.pn2pnw.implementations.medini.MediniQVTPn2Pnw;
 import org.benchmarx.petrinet.core.PNComparator;
 import org.benchmarx.petrinet.core.PNHelper;
 import org.benchmarx.petrinetweighted.core.PNWComparator;
@@ -97,7 +98,7 @@ public abstract class Pn2PnwTestCase {
 	public static Collection<BXTool<pn.Net, pnw.Net, Decisions>> tools() {
 		List<BXTool<pn.Net, pnw.Net, Decisions>> allTools = Arrays.asList(
 				new BXtendPn2Pnw(),
-				//new MediniQVTPn2Pnw(),
+				new MediniQVTPn2Pnw(),
 				//new BXLangPn2Pnw(),
 				new BXAgentPn2Pnw()
 				//new IBeXTGGPetrinets()
