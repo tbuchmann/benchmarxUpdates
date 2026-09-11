@@ -24,7 +24,7 @@ import gantt.GanttPackage;
 
 public abstract class ScalabilityTests extends GanttToCPMTestCase {
 	private static final String DELIMITER = "\n";
-	protected static final int REPEAT = 1;
+	protected static final int REPEAT = 5;
 	protected static final int TIMEOUT = 120; // seconds (temp: MediniQVT comparison run)
 	private static final String resultFolder = "scalability_results";
 

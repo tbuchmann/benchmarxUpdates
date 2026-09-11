@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.xtend.XTEND_CONTAINER"/>
-	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+	<classpathentry excluding="**/bxlang/BXLangGantt2Cpm.java" including="**/*.java" kind="src" output="target/classes" path="src">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 			<attribute name="optional" value="true"/>
