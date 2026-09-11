@@ -81,3 +81,1192 @@ Edit size fixed; the base model grows.
 - Families → Persons / `CDCSync` — `CDCsync_BXtend Synch.txt` is 333 days old
 - Families → Persons / `CDCFCSync` — `CDCFCSync_BXtend Synch.txt` is 333 days old
 
+## Raw data (all measured points, per example)
+
+Every line below is copied verbatim from the corresponding `scalability_results/<label>_<tool>.txt` file (`size, seconds` per line, mean of `REPEAT=5` runs) — nothing is filtered or downsampled. Use this section as the data source for scatterplots; the tables above are only a condensed summary.
+
+
+### AST → DAG (`asttodag`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:05 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.001
+50, 0.002
+100, 0.001
+300, 0.004
+1000, 0.009
+5000, 0.036
+10000, 0.049
+50000, 0.382
+100000, 0.819
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:05 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.001
+10, 0.001
+50, 0.001
+100, 0.001
+1000, 0.007
+5000, 0.02
+10000, 0.034
+50000, 0.16
+100000, 0.357
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:05 (0.9 days ago) -->
+```
+3, 0.002
+5, 0.001
+10, 0.001
+50, 0.002
+100, 0.003
+300, 0.005
+1000, 0.009
+5000, 0.06
+10000, 0.091
+50000, 0.405
+100000, 0.872
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:05 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.001
+10, 0.002
+50, 0.003
+100, 0.004
+1000, 0.01
+5000, 0.042
+10000, 0.054
+50000, 0.239
+100000, 0.499
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.003
+5, 0.001
+10, 0.001
+20, 0.001
+30, 0.001
+40, 0.001
+50, 0.001
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.006
+5, 0.003
+10, 0.001
+20, 0.002
+30, 0.002
+40, 0.002
+50, 0.002
+60, 0.002
+70, 0.001
+80, 0.001
+90, 0.001
+100, 0.001
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCSync_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.009
+5, 0.002
+10, 0.001
+20, 0.002
+30, 0.001
+40, 0.001
+50, 0.002
+1000, 0.027
+5000, 0.069
+10000, 0.105
+50000, 0.528
+100000, 1.0
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.003
+5, 0.001
+10, 0.001
+20, 0.001
+30, 0.002
+40, 0.002
+50, 0.003
+60, 0.002
+70, 0.002
+80, 0.002
+90, 0.003
+100, 0.002
+1000, 0.014
+5000, 0.08
+10000, 0.153
+50000, 0.71
+100000, 1.349
+```
+
+
+### Bag1 → Bag2 (`bag1tobag2`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.0
+100, 0.0
+300, 0.001
+1000, 0.001
+5000, 0.005
+10000, 0.006
+50000, 0.016
+100000, 0.035
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.0
+1000, 0.001
+5000, 0.004
+10000, 0.004
+50000, 0.011
+100000, 0.023
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.001
+1000, 0.001
+5000, 0.004
+10000, 0.005
+50000, 0.02
+100000, 0.03
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:06 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.001
+10, 0.0
+50, 0.0
+100, 0.0
+300, 0.0
+1000, 0.0
+5000, 0.002
+10000, 0.001
+50000, 0.003
+100000, 0.003
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:07 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:07 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+60, 0.0
+70, 0.0
+80, 0.0
+90, 0.0
+100, 0.0
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCsync_BXtend.txt, last written 2026-09-11 00:07 (0.9 days ago) -->
+```
+3, 0.003
+5, 0.0
+10, 0.001
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+1000, 0.0
+5000, 0.002
+10000, 0.003
+50000, 0.015
+100000, 0.023
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:07 (0.9 days ago) -->
+```
+3, 0.007
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.001
+40, 0.0
+50, 0.0
+60, 0.001
+70, 0.001
+80, 0.0
+90, 0.001
+100, 0.001
+1000, 0.001
+5000, 0.003
+10000, 0.003
+50000, 0.017
+100000, 0.019
+```
+
+
+### Ecore → SQL (`ecoretosql`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:07 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.001
+10, 0.001
+50, 0.003
+100, 0.003
+300, 0.01
+1000, 0.02
+5000, 0.076
+10000, 0.126
+50000, 0.791
+100000, 1.347
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:08 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.001
+10, 0.001
+50, 0.002
+100, 0.002
+1000, 0.012
+5000, 0.054
+10000, 0.108
+50000, 0.511
+100000, 1.076
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:08 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.001
+10, 0.001
+50, 0.003
+100, 0.004
+300, 0.005
+1000, 0.011
+5000, 0.056
+10000, 0.106
+50000, 0.571
+100000, 1.207
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:08 (0.9 days ago) -->
+```
+3, 0.002
+5, 0.001
+10, 0.002
+50, 0.003
+100, 0.004
+1000, 0.016
+5000, 0.054
+10000, 0.112
+50000, 0.528
+100000, 1.127
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:09 (0.9 days ago) -->
+```
+3, 0.005
+5, 0.003
+10, 0.003
+20, 0.003
+30, 0.003
+40, 0.003
+50, 0.003
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:09 (0.9 days ago) -->
+```
+3, 0.006
+5, 0.003
+10, 0.003
+20, 0.003
+30, 0.003
+40, 0.004
+50, 0.005
+60, 0.003
+70, 0.004
+80, 0.004
+90, 0.004
+100, 0.004
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCSync_BXtend.txt, last written 2026-09-11 00:08 (0.9 days ago) -->
+```
+3, 0.005
+5, 0.002
+10, 0.003
+20, 0.004
+30, 0.003
+40, 0.003
+50, 0.003
+1000, 0.029
+5000, 0.168
+10000, 0.252
+50000, 1.468
+100000, 2.759
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:08 (0.9 days ago) -->
+```
+3, 0.006
+5, 0.002
+10, 0.003
+20, 0.003
+30, 0.003
+40, 0.003
+50, 0.003
+60, 0.002
+70, 0.003
+80, 0.003
+90, 0.002
+100, 0.003
+1000, 0.028
+5000, 0.157
+10000, 0.264
+50000, 1.445
+100000, 2.885
+```
+
+
+### Families → Persons (`familiestopersons`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend Synch.txt, last written 2025-11-22 10:11 (293.4 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 293 days; not fresh data.
+
+```
+3, 0.002
+5, 0.001
+10, 0.001
+50, 0.005
+100, 0.005
+300, 0.009
+500, 0.01
+1000, 0.012
+3000, 0.046
+5000, 0.041
+10000, 0.112
+100000, 1.226
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend Synch.txt, last written 2025-11-29 08:43 (286.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 286 days; not fresh data.
+
+```
+100000, 2.131
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend Synch.txt, last written 2025-10-13 09:54 (333.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 334 days; not fresh data.
+
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.0
+100, 0.001
+300, 0.004
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend Synch.txt, last written 2025-10-13 09:54 (333.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 334 days; not fresh data.
+
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.0
+100, 0.001
+300, 0.002
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend Synch.txt, last written 2025-10-13 09:54 (333.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 334 days; not fresh data.
+
+```
+3, 0.004
+5, 0.014
+10, 0.043
+20, 0.114
+30, 0.217
+40, 0.339
+50, 0.484
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend Synch.txt, last written 2025-10-13 09:54 (333.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 334 days; not fresh data.
+
+```
+3, 0.018
+5, 0.028
+10, 0.05
+20, 0.148
+30, 0.262
+40, 0.385
+50, 0.56
+60, 0.77
+70, 1.022
+80, 1.291
+90, 1.589
+100, 1.97
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCsync_BXtend Synch.txt, last written 2025-10-13 09:54 (333.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 334 days; not fresh data.
+
+```
+3, 0.0
+5, 0.002
+10, 0.002
+20, 0.003
+30, 0.006
+40, 0.01
+50, 0.014
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend Synch.txt, last written 2025-10-13 09:54 (333.5 days ago) -->
+**⚠️ STALE** — this file predates the 2026-09-11 run by 334 days; not fresh data.
+
+```
+3, 0.0
+5, 0.0
+10, 0.002
+20, 0.002
+30, 0.003
+40, 0.01
+50, 0.008
+60, 0.012
+70, 0.015
+80, 0.02
+90, 0.025
+100, 0.029
+```
+
+
+### Gantt → CPM (`gantttocpm`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:10 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.002
+1000, 0.003
+5000, 0.014
+10000, 0.019
+50000, 0.086
+100000, 0.197
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:10 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+1000, 0.002
+5000, 0.012
+10000, 0.015
+50000, 0.09
+100000, 0.197
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:10 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.0
+10, 0.001
+50, 0.001
+100, 0.001
+300, 0.001
+1000, 0.002
+5000, 0.005
+10000, 0.011
+50000, 0.026
+100000, 0.061
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:10 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.001
+10, 0.0
+50, 0.0
+100, 0.001
+1000, 0.003
+5000, 0.005
+10000, 0.011
+50000, 0.032
+100000, 0.06
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+60, 0.0
+70, 0.0
+80, 0.001
+90, 0.0
+100, 0.0
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCSync_BXtend.txt, last written 2026-09-11 00:10 (0.9 days ago) -->
+```
+3, 0.007
+5, 0.001
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.001
+50, 0.0
+1000, 0.005
+5000, 0.007
+10000, 0.011
+50000, 0.058
+100000, 0.108
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:10 (0.9 days ago) -->
+```
+3, 0.004
+5, 0.0
+10, 0.001
+20, 0.0
+30, 0.001
+40, 0.001
+50, 0.001
+60, 0.001
+70, 0.001
+80, 0.0
+90, 0.001
+100, 0.001
+1000, 0.001
+5000, 0.005
+10000, 0.015
+50000, 0.057
+100000, 0.112
+```
+
+
+### PDB1 → PDB2 (`pdb1topdb2`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.001
+1000, 0.003
+5000, 0.011
+10000, 0.018
+50000, 0.096
+100000, 0.182
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.001
+50, 0.001
+100, 0.001
+1000, 0.004
+5000, 0.016
+10000, 0.018
+50000, 0.074
+100000, 0.152
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.001
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.001
+1000, 0.002
+5000, 0.004
+10000, 0.009
+50000, 0.036
+100000, 0.057
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.0
+1000, 0.002
+5000, 0.003
+10000, 0.01
+50000, 0.031
+100000, 0.047
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.004
+5, 0.002
+10, 0.003
+20, 0.003
+30, 0.004
+40, 0.005
+50, 0.006
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.001
+10, 0.0
+20, 0.0
+30, 0.001
+40, 0.001
+50, 0.001
+60, 0.001
+70, 0.001
+80, 0.001
+90, 0.0
+100, 0.0
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCsync_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.007
+5, 0.001
+10, 0.001
+20, 0.001
+30, 0.0
+40, 0.001
+50, 0.001
+1000, 0.008
+5000, 0.017
+10000, 0.031
+50000, 0.162
+100000, 0.512
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:11 (0.9 days ago) -->
+```
+3, 0.003
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.001
+50, 0.0
+60, 0.0
+70, 0.0
+80, 0.001
+90, 0.0
+100, 0.001
+1000, 0.003
+5000, 0.008
+10000, 0.013
+50000, 0.049
+100000, 0.083
+```
+
+
+### Petrinet → PetrinetWeighted (`pntopnw`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.002
+1000, 0.004
+5000, 0.01
+10000, 0.018
+50000, 0.121
+100000, 0.255
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+1000, 0.005
+5000, 0.015
+10000, 0.026
+50000, 0.144
+100000, 0.266
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.001
+10, 0.001
+50, 0.001
+100, 0.002
+300, 0.003
+1000, 0.004
+5000, 0.014
+10000, 0.017
+50000, 0.09
+100000, 0.345
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.002
+100, 0.002
+300, 0.003
+1000, 0.008
+5000, 0.019
+10000, 0.021
+50000, 0.12
+100000, 0.341
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.001
+5, 0.0
+10, 0.0
+20, 0.001
+30, 0.001
+40, 0.001
+50, 0.0
+60, 0.0
+70, 0.001
+80, 0.001
+90, 0.001
+100, 0.0
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCsync_BXtend.txt, last written 2026-09-11 00:12 (0.9 days ago) -->
+```
+3, 0.003
+5, 0.001
+10, 0.001
+20, 0.001
+30, 0.001
+40, 0.001
+50, 0.001
+1000, 0.007
+5000, 0.023
+10000, 0.058
+50000, 0.234
+100000, 0.64
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.003
+5, 0.001
+10, 0.0
+20, 0.001
+30, 0.001
+40, 0.001
+50, 0.002
+60, 0.002
+70, 0.002
+80, 0.001
+90, 0.001
+100, 0.001
+1000, 0.006
+5000, 0.028
+10000, 0.041
+50000, 0.252
+100000, 0.646
+```
+
+
+### Set → OSet (`settooset`)
+
+
+#### Batch Forward (FWD)
+
+<!-- source: FWD_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.001
+300, 0.001
+1000, 0.003
+5000, 0.009
+10000, 0.016
+50000, 0.048
+100000, 0.169
+```
+
+
+#### Batch Backward (BWD)
+
+<!-- source: BWD_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.0
+50, 0.001
+100, 0.0
+1000, 0.003
+5000, 0.008
+10000, 0.012
+50000, 0.046
+100000, 0.106
+```
+
+
+#### Incremental Forward (INCR_FWD)
+
+<!-- source: INCR_FWD_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.001
+50, 0.001
+100, 0.001
+300, 0.001
+1000, 0.001
+5000, 0.004
+10000, 0.008
+50000, 0.021
+100000, 0.034
+```
+
+
+#### Incremental Backward (INCR_BWD)
+
+<!-- source: INCR_BWD_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.0
+10, 0.001
+50, 0.001
+100, 0.0
+300, 0.0
+1000, 0.001
+5000, 0.003
+10000, 0.005
+50000, 0.013
+100000, 0.031
+```
+
+
+#### Concurrent, constant model / growing conflicting delta (CMCSync)
+
+<!-- source: CMCSync_BXtend.txt, last written 2026-09-11 00:14 (0.9 days ago) -->
+```
+3, 0.005
+5, 0.004
+10, 0.003
+20, 0.005
+30, 0.008
+40, 0.008
+50, 0.008
+```
+
+
+#### Concurrent, constant model / growing conflict-free delta (CMCFCSync)
+
+<!-- source: CMCFCSync_BXtend.txt, last written 2026-09-11 00:14 (0.9 days ago) -->
+```
+3, 0.0
+5, 0.001
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.0
+60, 0.0
+70, 0.0
+80, 0.001
+90, 0.0
+100, 0.0
+```
+
+
+#### Concurrent, constant delta / growing model, conflicting (CDCSync)
+
+<!-- source: CDCsync_BXtend.txt, last written 2026-09-11 00:13 (0.9 days ago) -->
+```
+3, 0.002
+5, 0.001
+10, 0.001
+20, 0.001
+30, 0.0
+40, 0.002
+50, 0.001
+1000, 0.014
+5000, 0.026
+10000, 0.038
+50000, 0.21
+100000, 0.407
+```
+
+
+#### Concurrent, constant delta / growing model, conflict-free (CDCFCSync)
+
+<!-- source: CDCFCSync_BXtend.txt, last written 2026-09-11 00:14 (0.9 days ago) -->
+```
+3, 0.004
+5, 0.0
+10, 0.0
+20, 0.0
+30, 0.0
+40, 0.0
+50, 0.001
+60, 0.0
+70, 0.001
+80, 0.0
+90, 0.0
+100, 0.0
+1000, 0.002
+5000, 0.009
+10000, 0.018
+50000, 0.053
+100000, 0.072
+```
+
