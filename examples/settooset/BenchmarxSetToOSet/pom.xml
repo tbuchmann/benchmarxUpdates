@@ -102,7 +102,7 @@
     <!--
       Tool JARs – installed into the local Maven repo via install-local-deps.sh.
     -->
-    <!-- BXtend Set2OSet: lib/bxtend-set2oset-1.0.0.jar (pre-built) -->
+    <!-- BXtend Set2OSet: lib/bxtend-set2oset-1.1.0.jar (pre-built) -->
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-set2oset</artifactId>

@@ -4,9 +4,7 @@ Bundle-Name: Test
 Bundle-SymbolicName: BenchmarxPdb1ToPdb2
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
- lib/bxagent-pdb12pdb2-1.0.0.jar,
- lib/bxtend-pdb12pdb2-1.0.0.jar,
- lib/bxlang-pdb12pdb2.jar,
+ lib/bxtend-pdb12pdb2-1.1.0.jar,
  lib/bx-runtime-1.0.0-SNAPSHOT.jar,
  lib/mediniQVT/mediniQVT.jar,
  lib/mediniQVT/qvtemf.jar

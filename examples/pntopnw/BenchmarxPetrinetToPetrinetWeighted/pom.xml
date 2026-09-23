@@ -108,7 +108,7 @@
       install-local-deps.sh (run from the repository root).
       After that these are normal Maven dependencies.
     -->
-    <!-- bxtend-pn2pnw: lib/bxtend-pn2pnw-1.0.0.jar (correct package de.tbuchmann.bxtend.pn2pnw.*) -->
+    <!-- bxtend-pn2pnw: lib/bxtend-pn2pnw-1.1.0.jar (correct package de.tbuchmann.bxtend.pn2pnw.*) -->
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-pn2pnw</artifactId>

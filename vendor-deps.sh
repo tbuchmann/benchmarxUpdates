@@ -58,7 +58,6 @@ vendor "org.eclipse.emf.compare" "org.eclipse.emf.compare" "3.5.3" "${SCRIPT_DIR
 # ── PDB1 to PDB2 Tool JARs ────────────────────────────────────────────────────
 LIB="${SCRIPT_DIR}/examples/pdb1topdb2/BenchmarxPdb1ToPdb2/lib"
 vendor "org.benchmarx.tools" "bxtend-pdb12pdb2"  "1.1.0"          "${LIB}/bxtend-pdb12pdb2-1.1.0.jar"
-vendor "org.benchmarx.tools" "bxagent-pdb12pdb2" "1.0.0"          "${LIB}/bxagent-pdb12pdb2-1.0.0.jar"
 vendor "org.benchmarx.tools" "bx-runtime"        "1.0.0-SNAPSHOT" "${LIB}/bx-runtime-1.0.0-SNAPSHOT.jar"
 vendor "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-pdb12pdb2" "1.0.0-SNAPSHOT" "${LIB}/de-tbuchmann-bxagent-pdb12pdb2-1.0.0-SNAPSHOT.jar"
 vendor "dev.bxagent"          "bx-runtime"                     "1.0.0-SNAPSHOT" "${LIB}/bx-runtime-1.0.0-SNAPSHOT.jar"
@@ -85,7 +84,6 @@ vendor "org.benchmarx.tools" "qvtemf"                 "1.0.0"          "${LIB_BA
 # ── Set to OSet Tool JARs ─────────────────────────────────────────────────────
 LIB_SET="${SCRIPT_DIR}/examples/settooset/BenchmarxSetToOSet/lib"
 vendor "org.benchmarx.tools" "bxtend-set2oset"   "1.1.0"          "${LIB_SET}/bxtend-set2oset-1.1.0.jar"
-vendor "org.benchmarx.tools" "bxagent-set2oset"  "1.0.0"          "${LIB_SET}/bxagent-set2oset-1.0.0.jar"
 vendor "org.benchmarx.tools" "bx-runtime"         "1.0.0-SNAPSHOT" "${LIB_SET}/bx-runtime-1.0.0-SNAPSHOT.jar"
 vendor "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-set2oset" "1.0.0-SNAPSHOT" "${LIB_SET}/de-tbuchmann-bxagent-set2oset-1.0.0-SNAPSHOT.jar"
 vendor "dev.bxagent"          "bx-runtime"                    "1.0.0-SNAPSHOT" "${LIB_SET}/bx-runtime-1.0.0-SNAPSHOT.jar"
@@ -121,7 +119,6 @@ vendor "org.benchmarx.tools" "qvtemf"        "1.0.0"          "${LIB_F2P}/medini
 # ── Ecore to SQL Tool JARs ────────────────────────────────────────────────────
 LIB_E2S="${SCRIPT_DIR}/examples/ecoretosql/BenchmarxEcoreToSQL/lib"
 vendor "org.benchmarx.tools" "bxtend-ecore2sql"  "2.0.0"          "${LIB_E2S}/bxtend-ecore2sql-2.0.0.jar"
-vendor "org.benchmarx.tools" "bxagent-ecore2sql" "1.0.0"          "${LIB_E2S}/bxagent-ecore2sql-1.0.0.jar"
 vendor "de.tbuchmann.bxagent" "de-tbuchmann-bxagent-ecore2sql" "1.0.0-SNAPSHOT" "${LIB_E2S}/de-tbuchmann-bxagent-ecore2sql-1.0.0-SNAPSHOT.jar"
 vendor "org.benchmarx.tools" "bx-runtime"         "1.0.0-SNAPSHOT" "${LIB_E2S}/bx-runtime-1.0.0-SNAPSHOT.jar"
 vendor "org.benchmarx.tools" "mediniQVT"          "1.0.0"          "${LIB_E2S}/mediniQVT/mediniQVT.jar"

@@ -19,6 +19,9 @@ import org.benchmarx.edit.Edit;
 import org.benchmarx.edit.IEdit;
 import org.benchmarx.edit.MoveNode;
 import org.benchmarx.examples.familiestopersons.implementations.bxagent.BXAgentF2p;
+import org.benchmarx.examples.familiestopersons.implementations.bxtend.BXtendFamiliesToPersons;
+import org.benchmarx.examples.familiestopersons.implementations.bxtend.WrapperOverBXtendWithMerge;
+import org.benchmarx.examples.familiestopersons.implementations.bxtenddsl.BXtendDSLFamiliesToPersons;
 import org.benchmarx.examples.familiestopersons.implementations.medini.MediniQVTFamiliesToPersons;
 import org.benchmarx.examples.familiestopersons.implementations.medini.MediniQVTFamiliesToPersonsConfig;
 import org.benchmarx.families.core.FamiliesComparator;
@@ -134,9 +137,9 @@ public abstract class FamiliesToPersonsTestCase {
 				// new EMoflonFamiliesToPersons(),
 				new MediniQVTFamiliesToPersons(),
 				new MediniQVTFamiliesToPersonsConfig(),
-				// new BXtendFamiliesToPersons(),       // No failures
-				// new WrapperOverBXtendWithMerge(),    // No failures
-				// new BXtendDSLFamiliesToPersons(),    // 3 failures
+				new BXtendFamiliesToPersons(),       // No failures
+				new WrapperOverBXtendWithMerge(),    // No failures
+				new BXtendDSLFamiliesToPersons(),    // 3 failures
 				new BXAgentF2p()                        // 4 failures
 				// new ENeoFamiliesToPersons(),         // See setup: implementations/eneo/README-SETUP
 				// new IBeXTGGIntegrateFamiliesToPersons() // See setup: implementations/ibextgg/integrate/README-SETUP

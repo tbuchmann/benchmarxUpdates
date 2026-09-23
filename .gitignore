@@ -25,3 +25,7 @@ examples/pdb1topdb2/BenchmarxPdb1ToPdb2/src/org/benchmarx/examples/pdb12pdb2/imp
 **/src-gen/**
 **/xtend-gen/**
 *.corr.xmi
+# scalability sweep logs (scalability-lib.sh)
+scalability_logs/
+**/scalability_results/**
+**/traces/**

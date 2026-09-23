@@ -102,7 +102,7 @@
     <!--
       Tool JARs – installed into the local Maven repo via install-local-deps.sh.
     -->
-    <!-- BXtend Gantt2CPM: lib/bxtend-gantt2cpm-1.0.0.jar (pre-built) -->
+    <!-- BXtend Gantt2CPM: lib/bxtend-gantt2cpm-1.1.0.jar (pre-built) -->
     <dependency>
       <groupId>org.benchmarx.tools</groupId>
       <artifactId>bxtend-gantt2cpm</artifactId>

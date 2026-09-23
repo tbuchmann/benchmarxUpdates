@@ -10,7 +10,6 @@
 	<classpathentry kind="con" path="org.eclipse.xtend.XTEND_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
-	<classpathentry kind="lib" path="lib/bxlang-pdb12pdb2.jar"/>
 	<classpathentry kind="lib" path="lib/bx-runtime-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/de-tbuchmann-bxagent-pdb12pdb2-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
